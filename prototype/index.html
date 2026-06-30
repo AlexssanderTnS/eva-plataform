@@ -11,49 +11,308 @@
 
     <header class="site-header">
         <nav class="navbar">
-            <a href="#hero" class="navbar-logo">
+            <a href="#hero" class="navbar-logo" aria-label="Ir para o início">
                 EVA
+                <small>Evolução • Visão • Ação</small>
             </a>
 
             <ul class="navbar-menu">
                 <li><a href="#hero">Início</a></li>
-                <li><a href="#business">Para Empresas</a></li>
-                <li><a href="#for-you">Para Você</a></li>
+                <li><a href="#business" class="open-business">Para Empresas</a></li>
+                <li><a href="#for-you" class="open-personal">Para Você</a></li>
+                <li><a href="#about">Quem Somos</a></li>
                 <li><a href="#contact">Contato</a></li>
             </ul>
 
-            <a href="#journey" class="navbar-cta">
-                Conhecer soluções
+            <a href="#contact" class="navbar-cta">
+                Fale com a EVA
             </a>
         </nav>
     </header>
 
     <main>
-
         <section id="hero" class="hero-section">
-            <!-- Hero principal da EVA -->
+            <div class="hero-content">
+                <span class="hero-eyebrow">
+                    Psicologia • Educação • Tecnologia
+                </span>
+
+                <h1>
+                    Desenvolvimento humano que transforma pessoas, equipes e empresas.
+                </h1>
+
+                <p>
+                    A EVA conecta ciência do comportamento, aprendizagem e experiências práticas
+                    para apoiar jornadas de crescimento, bem-estar e transformação real.
+                </p>
+
+                <div class="hero-actions">
+                    <a href="#journey" class="btn btn-primary">Conhecer soluções</a>
+                    <a href="#contact" class="btn btn-secondary">Falar com a EVA</a>
+                </div>
+
+                <div class="hero-highlights">
+                    <span>Evolução</span>
+                    <span>Visão</span>
+                    <span>Ação</span>
+                </div>
+            </div>
+
+            <div class="hero-visual logo-hero" aria-hidden="true">
+                <div class="logo-orb">
+                    <img src="./assets/images/eva-logo.png" alt="">
+                </div>
+            </div>
         </section>
 
-        <section id="wave-divider" class="wave-divider">
-            <!-- Transição visual entre Hero e Jornada -->
-        </section>
+   <section class="origin-section">
+    <div class="origin-story">
+        <span class="section-tag">De onde surgiu a EVA</span>
+
+        <h2>
+            Tudo começou em uma viagem de fim de ano ao Colorado.
+        </h2>
+
+        <p class="origin-lead">
+            Ao longo de quase 20 dias juntas, Mariana e Juliana tiveram tempo para conversar
+            sobre suas trajetórias, suas inquietações como psicólogas e o tipo de impacto que
+            gostariam de gerar.
+        </p>
+
+        <div class="origin-quote">
+            <p>
+                Apesar dos avanços da psicologia e das ciências do comportamento, grande parte
+                desse conhecimento ainda permanece restrita a contextos específicos — e nem sempre
+                chega às pessoas de forma prática, acessível e aplicável ao dia a dia.
+            </p>
+        </div>
+    </div>
+
+    <div class="origin-manifest">
+        <span>O coração da EVA</span>
+
+        <h3>
+            Psicologia ocupando novos espaços.
+        </h3>
+
+        <p>
+            Foi dessa inquietação que surgiu a EVA. Acreditamos que a psicologia pode — e deve —
+            ocupar novos espaços: nas empresas, na educação, na tecnologia, nas comunidades e nas
+            relações cotidianas.
+        </p>
+
+        <p>
+            Mais do que ensinar competências, queremos criar experiências que ajudem as pessoas
+            a desenvolver habilidades humanas essenciais e a construir relações mais conscientes,
+            autênticas e significativas.
+        </p>
+
+        <p>
+            Para nós, desenvolver pessoas vai além da aquisição de conhecimento. Significa criar
+            oportunidades para que elas se reconectem consigo mesmas, compreendam melhor o outro
+            e fortaleçam as habilidades necessárias para viver, trabalhar e se relacionar de forma
+            mais saudável.
+        </p>
+    </div>
+</section>
 
         <section id="journey" class="journey-section">
-            <!-- Escolha sua jornada -->
+            <div class="section-heading">
+                <span>Escolha sua jornada</span>
+                <h2>Uma EVA. Dois caminhos principais.</h2>
+                <p>
+                    A Fase 1 organiza a experiência em fluxos simples: soluções para empresas
+                    e recursos para pessoas, com acesso orientado ao Moodle.
+                </p>
+            </div>
 
-            <section id="business" class="journey-card">
-                <!-- Card Para Empresas -->
-            </section>
+            <div class="journey-grid">
+                <article id="business" class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-face flip-card-front business-card">
+                            <span class="card-label">Empresas</span>
+                            <button class="flip-button" type="button" aria-label="Virar card">+</button>
 
-            <section id="for-you" class="journey-card">
-                <!-- Card Para Você -->
-            </section>
+                            <h3>Desenvolvemos pessoas, equipes e culturas.</h3>
+                            <p>
+                                Apoiamos empresas na construção de ambientes mais saudáveis,
+                                conscientes e sustentáveis.
+                            </p>
+
+                            <span class="flip-hint">Clique para saber mais</span>
+                        </div>
+
+                        <div class="flip-card-face flip-card-back">
+                            <button class="flip-button" type="button" aria-label="Voltar card">←</button>
+
+                            <h3>O que oferecemos</h3>
+
+                            <ul>
+                                <li>Treinamentos de liderança</li>
+                                <li>Workshops corporativos</li>
+                                <li>Jornadas de aprendizagem</li>
+                                <li>Diagnósticos organizacionais</li>
+                                <li>Programas personalizados</li>
+                            </ul>
+
+                            <a href="./empresas.html">Conhecer soluções</a>
+                        </div>
+                    </div>
+                </article>
+
+                <article id="for-you" class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-face flip-card-front personal-card">
+                            <span class="card-label">Para você</span>
+                            <button class="flip-button" type="button" aria-label="Virar card">+</button>
+
+                            <h3>Jornadas para desenvolvimento pessoal.</h3>
+                            <p>
+                                Recursos, cursos e experiências para quem busca autoconhecimento,
+                                comunicação, bem-estar e crescimento.
+                            </p>
+
+                            <span class="flip-hint">Clique para saber mais</span>
+                        </div>
+
+                        <div class="flip-card-face flip-card-back">
+                            <button class="flip-button" type="button" aria-label="Voltar card">←</button>
+
+                            <h3>Você encontra</h3>
+
+                            <ul>
+                                <li>Desenvolvimento emocional</li>
+                                <li>Comunicação e relações humanas</li>
+                                <li>Autoconhecimento</li>
+                                <li>Bem-estar e tomada de decisão</li>
+                                <li>Acesso orientado ao Moodle</li>
+                            </ul>
+
+                            <a href="./recursos.html">Explorar recursos</a>
+                        </div>
+                    </div>
+                </article>
+            </div>
         </section>
 
+        <section class="fronts-section">
+            <div class="section-heading">
+                <span>Frentes de atuação</span>
+                <h2>Conhecimento técnico transformado em prática.</h2>
+            </div>
+
+            <div class="fronts-grid">
+                <article>
+                    <h3>Liderança</h3>
+                    <p>Desenvolvimento de lideranças mais conscientes, humanas e preparadas.</p>
+                </article>
+
+                <article>
+                    <h3>Saúde emocional</h3>
+                    <p>Experiências voltadas ao cuidado, bem-estar e prevenção de sofrimento.</p>
+                </article>
+
+                <article>
+                    <h3>Comunicação</h3>
+                    <p>Fortalecimento da escuta, clareza, confiança e relações humanas.</p>
+                </article>
+
+                <article>
+                    <h3>Aprendizagem</h3>
+                    <p>Jornadas práticas para transformar conhecimento em mudança real.</p>
+                </article>
+
+                <article>
+                    <h3>Cultura organizacional</h3>
+                    <p>Ações para empresas que desejam ambientes mais saudáveis e sustentáveis.</p>
+                </article>
+
+                <article>
+                    <h3>Desenvolvimento pessoal</h3>
+                    <p>Recursos para pessoas que querem evoluir com consciência e propósito.</p>
+                </article>
+            </div>
+        </section>
+
+       <section id="about" class="about-section">
+    <div class="section-heading">
+        <span>Quem somos</span>
+        <h2>Trajetórias complementares, uma visão em comum.</h2>
+        <p>
+            A EVA nasceu da união de duas trajetórias diferentes que compartilham o mesmo propósito:
+            tornar o desenvolvimento humano mais acessível, prático e transformador.
+        </p>
+    </div>
+
+    <div class="about-timeline">
+        <div>
+            <strong>Colorado</strong>
+            <span>Uma viagem de fim de ano</span>
+        </div>
+
+        <div>
+            <strong>Conversas</strong>
+            <span>Quase 20 dias de trocas</span>
+        </div>
+
+        <div>
+            <strong>Propósito</strong>
+            <span>Psicologia em novos espaços</span>
+        </div>
+
+        <div>
+            <strong>EVA</strong>
+            <span>Evolução, Visão e Ação</span>
+        </div>
+    </div>
+
+    <div class="founders-grid">
+        <article class="founder-card">
+            <div class="founder-photo">MS</div>
+            <h3>Mariana Scelza</h3>
+            <p>
+                Psicóloga, pós-graduada em Terapia Cognitivo-Comportamental e mestre em
+                Addiction Psychology pela Arizona State University. Une saúde mental,
+                ciência do comportamento, pesquisa e tecnologia.
+            </p>
+        </article>
+
+        <article class="founder-card">
+            <div class="founder-photo">JC</div>
+            <h3>Juliana Coelho Netto</h3>
+            <p>
+                Psicóloga, formada também em Administração, com pós-graduação em Psicologia
+                Organizacional e Gestão de Pessoas pela PUC-RS. Atua com desenvolvimento
+                humano pessoal e profissional.
+            </p>
+        </article>
+    </div>
+
+    <div class="about-closing">
+        <strong>Uma visão compartilhada</strong>
+        <p>
+            Da união dessas experiências nasceu a EVA: um ecossistema criado para levar a psicologia
+            para onde ela pode gerar mais impacto — nas empresas, na educação, na tecnologia e nas relações humanas.
+        </p>
+    </div>
+</section>
+
+        <section class="cta-section">
+            <span>Vamos conversar?</span>
+            <h2>Quer entender como a EVA pode apoiar você ou sua empresa?</h2>
+            <div class="hero-actions">
+                <a href="#contact" class="btn btn-primary">Enviar mensagem</a>
+                <a href="#business" class="btn btn-secondary open-business">Ver soluções para empresas</a>
+            </div>
+        </section>
     </main>
 
     <footer id="contact" class="site-footer">
-        <!-- Rodapé e contato -->
+        <p>EVA — Desenvolvimento humano que transforma pessoas, equipes e empresas.</p>
+        <div class="footer-links">
+            <a href="./politica.html">Política de Privacidade</a>
+            <a href="./termos.html">Termos de Uso</a>
+        </div>
     </footer>
 
     <script src="./js/main.js"></script>
