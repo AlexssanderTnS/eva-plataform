@@ -1,26 +1,14 @@
-const flipCards = document.querySelectorAll(".flip-card");
+const openableCards = document.querySelectorAll(".openable-card");
 
-flipCards.forEach((card) => {
-    card.addEventListener("click", (event) => {
-        const clickedLink = event.target.closest("a");
-
-        if (clickedLink) {
-            return;
-        }
-
-        card.classList.toggle("is-flipped");
-    });
-});
-
-function abrirCardAutomaticamente(cardId) {
+function destacarCard(cardId) {
     const card = document.querySelector(cardId);
 
     if (!card) {
         return;
     }
 
-    document.querySelectorAll(".flip-card").forEach((item) => {
-        item.classList.remove("is-flipped", "is-highlighted");
+    openableCards.forEach((item) => {
+        item.classList.remove("is-highlighted");
     });
 
     card.scrollIntoView({
@@ -29,27 +17,43 @@ function abrirCardAutomaticamente(cardId) {
     });
 
     setTimeout(() => {
-        card.classList.add("is-flipped", "is-highlighted");
+        card.classList.add("is-highlighted");
 
         setTimeout(() => {
             card.classList.remove("is-highlighted");
-        }, 900);
-    }, 650);
+        }, 1100);
+    }, 550);
 }
 
-const linksEmpresas = document.querySelectorAll(".open-business");
-const linksPessoal = document.querySelectorAll(".open-personal");
-
-linksEmpresas.forEach((link) => {
+document.querySelectorAll(".open-business").forEach((link) => {
     link.addEventListener("click", (event) => {
         event.preventDefault();
-        abrirCardAutomaticamente("#business");
+        destacarCard("#business");
     });
 });
 
-linksPessoal.forEach((link) => {
+document.querySelectorAll(".open-personal").forEach((link) => {
     link.addEventListener("click", (event) => {
         event.preventDefault();
-        abrirCardAutomaticamente("#for-you");
+        destacarCard("#for-you");
     });
 });
+
+const newsletterForm = document.querySelector(".newsletter-form");
+
+if (newsletterForm) {
+    newsletterForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const input = newsletterForm.querySelector("input");
+        const email = input?.value.trim();
+
+        if (!email) {
+            alert("Digite um e-mail para se inscrever.");
+            return;
+        }
+
+        alert("Inscrição registrada para a demonstração da EVA.");
+        input.value = "";
+    });
+}
