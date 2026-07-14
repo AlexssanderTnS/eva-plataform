@@ -1,16 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@300..700&display=swap");
 
 :root {
-  --color-purple: #6a35ff;
+  --color-purple: #6a3cff;
   --color-purple-dark: #2a1f6f;
-  --color-blue: #168cff;
+  --color-blue: #1f8bff;
   --color-cyan: #00d4ff;
-  --color-coral: #ff5e65;
-  --color-dark: #06112f;
+  --color-coral: #ff5e48;
+  --color-yellow:#ffc857;
+  --color-dark: #030e2e;
   --color-text: #07143f;
   --color-muted: #64708f;
   --color-light: #f7f9ff;
-  --color-white: #fff;
+  --color-white: #f4f4f4;
   --font-title: "Space Grotesk", Arial, sans-serif;
   --font-body: "Inter", Arial, sans-serif;
   --radius-xl: 34px;
@@ -48,9 +49,7 @@ img {
   max-width: 100%;
   display: block;
 }
-/* ===========================
-   HEADER E NAVEGAÇÃO
-=========================== */
+
 
 .site-header {
   position: fixed;
@@ -72,10 +71,10 @@ img {
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.78);
   backdrop-filter: blur(22px);
-  box-shadow: 0 18px 55px rgba(15, 30, 75, 0.1);
+  box-shadow: 0 18px 55px rgba(10, 15, 35, 0.473);
 }
 .navbar-logo {
-  width: 150px;
+  width: 120px;
   display: flex;
   align-items: center;
 }
@@ -114,19 +113,17 @@ img {
 .navbar-cta {
   padding: 13px 22px;
   border-radius: 999px;
-  color: #fff;
+  color: #f2f2f2; 
   font-weight: 900;
-  background: linear-gradient(135deg, var(--color-purple), var(--color-cyan));
-  box-shadow: 0 16px 34px rgba(106, 53, 255, 0.26);
+  background: linear-gradient(160deg, var(--color-coral), #e6620ac4 );
   transition: var(--transition);
 }
 .navbar-cta:hover {
   transform: translateY(-3px);
   box-shadow: 0 22px 44px rgba(22, 140, 255, 0.3);
+  box-shadow: 0 16px 34px rgba(184, 116, 14, 0.507);
 }
-/* ===========================
-   HERO
-=========================== */
+
 
 .hero-section {
   position: relative;
@@ -162,7 +159,7 @@ img {
 .section-tag,
 .section-heading span {
   display: inline-flex;
-  color: var(--color-purple);
+  color: var(--color-coral);
   font-size: 0.78rem;
   font-weight: 900;
   letter-spacing: 0.14em;
@@ -172,7 +169,7 @@ img {
   margin-top: 18px;
   max-width: 720px;
   font-family: var(--font-title);
-  font-size: clamp(1rem, 6.2vw, 5.2rem);
+  font-size: clamp(2rem, 4.2vw, 4.2rem);
   line-height: 0.98;
   letter-spacing: -0.065em;
 }
@@ -217,13 +214,13 @@ img {
 }
 .btn-primary {
   color: #fff;
-  background: linear-gradient(135deg, var(--color-purple), var(--color-cyan));
+   background: linear-gradient(160deg, var(--color-coral), #e6620ac4 );
   box-shadow: 0 18px 44px rgba(106, 53, 255, 0.24);
 }
 .btn-secondary {
-  color: var(--color-purple-dark);
-  background: #fff;
-  border: 1px solid rgba(86, 110, 180, 0.24);
+  color: #ffffff98;
+  background: linear-gradient(135deg, var(--color-purple), var(--color-cyan));
+  border: 1px solid rgba(86, 110, 180, 0.747);
   box-shadow: 0 12px 32px rgba(18, 31, 84, 0.06);
 }
 .btn:hover {
@@ -231,13 +228,13 @@ img {
 }
 .logo-hero {
   position: relative;
-  min-height: 560px;
+  min-height: 400px;
   display: grid;
   place-items: center;
 }
 .logo-orb {
   position: relative;
-  width: min(560px, 42vw);
+  width: min(450px, 42vw);
   aspect-ratio: 1;
   display: grid;
   place-items: center;
@@ -352,13 +349,14 @@ img {
   position: absolute;
   right: -55px;
   bottom: -65px;
+  
   width: 180px;
   height: 180px;
   border-radius: 50%;
   background: linear-gradient(
     135deg,
-    rgba(106, 53, 255, 0.18),
-    rgba(0, 212, 255, 0.22)
+    rgba(255, 94, 72),
+    rgba(255, 200, 87)
   );
 }
 .journey-card:hover,
@@ -385,18 +383,21 @@ img {
 }
 .journey-card p {
   margin-top: 14px;
-  color: rgba(7, 20, 63, 0.68);
+  color: rgb(7, 20, 63);
   line-height: 1.7;
 }
+.journey-card {
+  display: flex;
+  flex-direction: column;
+}
+
 .journey-card a {
-  display: inline-flex;
-  margin-top: 20px;
+  margin-top: auto;
+  padding-top: 24px;
   color: var(--color-purple);
   font-weight: 900;
 }
-/* ===========================
-   ORIGEM DA EVA
-=========================== */
+
 
 .origin-section {
   position: relative;
@@ -444,7 +445,7 @@ img {
   border-radius: 50%;
   background: #fff;
   border: 1px solid rgba(106, 53, 255, 0.16);
-  color: var(--color-purple);
+  color: var(--color-coral);
   font-weight: 900;
   box-shadow: 0 14px 32px rgba(18, 31, 84, 0.08);
 }
@@ -532,9 +533,6 @@ img {
   color: rgba(7, 20, 63, 0.64);
   line-height: 1.55;
 }
-/* ===========================
-   FRENTES DE ATUAÇÃO E FUNDADORAS
-=========================== */
 
 .fronts-section,
 .about-section {
@@ -571,7 +569,11 @@ img {
 .fronts-grid article {
   min-height: 230px;
   padding: 34px;
-  background: rgba(255, 255, 255, 0.88);
+  background: linear-gradient(
+  180deg,
+  rgba(247, 249, 255, 0.96),
+  rgba(239, 244, 255, 0.88)
+);
   border-right: 1px solid rgba(86, 110, 180, 0.1);
 }
 .fronts-grid article:last-child {
@@ -683,7 +685,7 @@ img {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-purple), var(--color-cyan));
+  background: linear-gradient(135deg, var(--color-yellow), var(--color-cyan));
   font-size: 1.7rem;
 }
 .newsletter-section h2 {
@@ -720,7 +722,7 @@ img {
   padding: 0 22px;
   border-radius: 999px;
   color: #fff;
-  background: linear-gradient(135deg, var(--color-purple), var(--color-cyan));
+  background: linear-gradient(105deg, var(--color-yellow), var(--color-cyan));
   font-weight: 900;
   cursor: pointer;
 }
@@ -768,7 +770,7 @@ img {
   line-height: 1.6;
 }
 .footer-column a:hover {
-  color: var(--color-cyan);
+  color: var(--color-yellow);
 }
 .footer-bottom {
   grid-column: 1/-1;
@@ -948,4 +950,14 @@ img {
   .footer-bottom {
     flex-direction: column;
   }
+}
+
+.footer-disabled {
+    color: rgba(255, 255, 255, 0.42);
+    cursor: default;
+}
+
+.navbar-cta[aria-disabled="true"] {
+  pointer-events: none;
+  opacity: 0.72;
 }
