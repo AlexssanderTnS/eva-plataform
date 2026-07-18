@@ -1,8 +1,4 @@
-// ============================================
-// EVA - MAIN.JS (Versão Simplificada)
-// ============================================
 
-// 1. DESTAQUE DE CARDS
 const openableCards = document.querySelectorAll(".openable-card");
 
 function destacarCard(cardId) {

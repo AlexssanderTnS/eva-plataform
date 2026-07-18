@@ -78,6 +78,7 @@ img {
   display: flex;
   align-items: center;
 }
+
 .navbar-menu {
   display: flex;
   align-items: center;
@@ -218,7 +219,7 @@ img {
   box-shadow: 0 18px 44px rgba(106, 53, 255, 0.24);
 }
 .btn-secondary {
-  color: #ffffff98;
+  color: #fff;
   background: linear-gradient(135deg, var(--color-purple), var(--color-cyan));
   border: 1px solid rgba(86, 110, 180, 0.747);
   box-shadow: 0 12px 32px rgba(18, 31, 84, 0.06);
@@ -232,6 +233,7 @@ img {
   display: grid;
   place-items: center;
 }
+
 .logo-orb {
   position: relative;
   width: min(450px, 42vw);
@@ -239,9 +241,13 @@ img {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(22, 140, 255, 0.1), transparent 58%);
-  animation: float 6s ease-in-out infinite;
+  opacity: 0;
+  transform: scale(0.92) translateY(18px);
+  animation:
+    logoEntrance 1s cubic-bezier(0.22, 1, 0.36, 1) forwards,
+    logoFloat 6s ease-in-out 1s infinite;
 }
+
 .logo-orb::before {
   content: "";
   position: absolute;
@@ -250,34 +256,47 @@ img {
   border: 1px solid rgba(22, 140, 255, 0.2);
   box-shadow:
     0 0 80px rgba(22, 140, 255, 0.16),
-    inset 0 0 70px rgba(106, 53, 255, 0.11);
+    inset 0 0 70px rgba(106, 60, 255, 0.11);
 }
+
 .logo-orb::after {
   content: "";
   position: absolute;
   width: 76%;
   height: 76%;
   border-radius: 50%;
-  background: conic-gradient(
-    from 110deg,
-    rgba(106, 53, 255, 0.65),
-    rgba(0, 212, 255, 0.75),
-    rgba(106, 53, 255, 0.65)
-  );
+  background:
+    radial-gradient(
+      circle at 30% 30%,
+      rgba(106, 60, 255, 0.5),
+      transparent 58%
+    ),
+    radial-gradient(
+      circle at 70% 70%,
+      rgba(0, 212, 255, 0.48),
+      transparent 58%
+    );
   filter: blur(48px);
-  opacity: 0.2;
+  opacity: 0.22;
   z-index: -1;
+  animation: logoGlow 5s ease-in-out infinite;
 }
+
 .logo-orb img {
+  position: relative;
+  z-index: 2;
   width: 82%;
-  filter: drop-shadow(0 30px 50px rgba(22, 140, 255, 0.22));
+  filter:
+    drop-shadow(0 24px 42px rgba(22, 140, 255, 0.2))
+    drop-shadow(0 0 24px rgba(106, 60, 255, 0.12));
 }
+
 .orbit-line {
   position: absolute;
   inset: 0;
   border-radius: 50%;
   border: 1px dashed rgba(22, 140, 255, 0.24);
-  animation: rotateOrbit 18s linear infinite;
+  animation: rotateOrbit 35s linear infinite;
 }
 .floating-badge {
   position: absolute;
@@ -319,9 +338,7 @@ img {
   right: 2%;
   animation-delay: 1.7s;
 }
-/* ===========================
-   JORNADA
-=========================== */
+
 
 .journey-section {
   padding: 38px 8vw 90px;
@@ -330,17 +347,17 @@ img {
   max-width: 1180px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 26px;
 }
 .journey-card {
   position: relative;
   overflow: hidden;
   min-height: 235px;
-  padding: 34px;
+  padding: 30px;
   border-radius: var(--radius-xl);
   background: rgba(255, 255, 255, 0.86);
-  border: 1px solid rgba(86, 110, 180, 0.12);
+  border: 3px solid rgba(86, 110, 180, 0.12);
   box-shadow: var(--shadow-soft);
   transition: var(--transition);
 }
@@ -349,7 +366,6 @@ img {
   position: absolute;
   right: -55px;
   bottom: -65px;
-  
   width: 180px;
   height: 180px;
   border-radius: 50%;
@@ -660,9 +676,8 @@ img {
   background: #f4f7ff;
   font-weight: 900;
 }
-/* ===========================
-   NEWSLETTER
-=========================== */
+
+
 
 .newsletter-section {
   max-width: 1180px;
@@ -726,9 +741,7 @@ img {
   font-weight: 900;
   cursor: pointer;
 }
-/* ===========================
-   FOOTER
-=========================== */
+
 
 .site-footer {
   padding: 70px 8vw 30px;
@@ -785,19 +798,44 @@ img {
   display: flex;
   gap: 18px;
 }
-/* ===========================
-   ANIMAÇÕES
-=========================== */
 
-@keyframes float {
+
+@keyframes logoEntrance {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes logoFloat {
   0%,
   100% {
     transform: translateY(0);
   }
+
   50% {
-    transform: translateY(-16px);
+    transform: translateY(-10px);
   }
 }
+
+@keyframes logoGlow {
+  0%,
+  100% {
+    opacity: 0.18;
+    transform: scale(0.96);
+  }
+
+  50% {
+    opacity: 0.34;
+    transform: scale(1.05);
+  }
+}
+
 @keyframes badgeFloat {
   0%,
   100% {
@@ -829,9 +867,7 @@ img {
     0 0 0 4px rgba(0, 212, 255, 0.16),
     var(--shadow-soft);
 }
-/* ===========================
-   RESPONSIVIDADE
-=========================== */
+
 
 @media (max-width: 1060px) {
   .navbar-menu {
@@ -960,4 +996,60 @@ img {
 .navbar-cta[aria-disabled="true"] {
   pointer-events: none;
   opacity: 0.72;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-orb,
+  .logo-orb::after,
+  .orbit-line {
+    animation: none;
+  }
+
+  .logo-orb {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.material-symbols-rounded {
+  display: block;
+  font-size: 32px;
+  line-height: 1;
+  font-weight: normal;
+  font-style: normal;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 500,
+    "GRAD" 0,
+    "opsz" 32;
+}
+
+.timeline-icon .material-symbols-rounded {
+  font-size: 26px;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 500,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+.newsletter-icon .material-symbols-rounded {
+  font-size: 30px;
+}
+
+.journey-icon .material-symbols-rounded,
+.front-icon .material-symbols-rounded {
+  transition: transform 0.3s ease;
+}
+
+.journey-card:hover .material-symbols-rounded,
+.fronts-grid article:hover .material-symbols-rounded {
+  transform: scale(1.08) rotate(-4deg);
 }
