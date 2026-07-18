@@ -3,10 +3,7 @@
   <head>
     <meta charset="UTF-8" />
 
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <meta
       name="description"
@@ -15,11 +12,15 @@
 
     <title>EVA - Evolução Visão Ação</title>
 
-    <link rel="icon" href="/prototype/assets/images/simbolo.svg" type="image/x-icon">
+    <link
+      rel="icon"
+      href="/prototype/assets/images/simbolo.svg"
+      type="image/x-icon"
+    />
     <link rel="stylesheet" href="./css/style.css" />
 
     <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded&icon_names=auto_awesome,business_center,check_circle,diversity_3,flight_takeoff,home,lightbulb,mail,psychology,school,science&display=block"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded&icon_names=auto_awesome,business_center,check_circle,close,diversity_3,flight_takeoff,home,lightbulb,mail,menu,psychology,school,science&display=block"
       rel="stylesheet"
     />
   </head>
@@ -27,74 +28,109 @@
   <body>
     <header class="site-header">
       <nav class="navbar" aria-label="Navegação principal">
-        <a
-          href="#hero"
-          class="navbar-logo"
-          aria-label="Ir para o início"
-        >
-          <img
-            src="./assets/images/eva-logo.svg"
-            alt="Logo EVA"
-          />
+        <a href="#hero" class="navbar-logo" aria-label="Ir para o início">
+          <img src="./assets/images/eva-logo.svg" alt="Logo EVA" />
         </a>
 
         <ul class="navbar-menu">
           <li>
-            <a href="#hero" class="is-active">
-              Página Inicial
-            </a>
+            <a href="#hero" class="is-active"> Página Inicial </a>
           </li>
 
           <li>
-            <a href="#origin">
-              Sobre
-            </a>
+            <a href="#origin"> Sobre </a>
           </li>
 
           <li>
-            <a href="#for-you" class="open-personal">
-              EVA Individual
-            </a>
+            <a href="#for-you" class="open-personal"> EVA Individual </a>
           </li>
 
           <li>
-            <a href="#business" class="open-business">
-              EVA Empresas
-            </a>
+            <a href="#business" class="open-business"> EVA Empresas </a>
           </li>
-
         </ul>
 
-        <a
-          href="#"
-          class="navbar-cta"
-          aria-disabled="true"
-          tabindex="-1"
-        >
+        <a href="#" class="navbar-cta" aria-disabled="true" tabindex="-1">
           Fazer Login
         </a>
+
+        <button
+          class="mobile-menu-toggle"
+          type="button"
+          aria-label="Abrir menu"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+        >
+          <span class="material-symbols-rounded" aria-hidden="true">
+            menu
+          </span>
+        </button>
       </nav>
     </header>
+
+    <div class="mobile-menu-overlay" data-menu-close aria-hidden="true"></div>
+
+    <aside
+      id="mobile-menu"
+      class="mobile-menu-drawer"
+      aria-label="Menu de navegação mobile"
+      aria-hidden="true"
+      inert
+    >
+      <div class="mobile-menu-header">
+        <a
+          href="#hero"
+          class="mobile-menu-logo"
+          aria-label="Ir para o início"
+          data-menu-link
+        >
+          <img src="./assets/images/eva-logo.svg" alt="Logo EVA" />
+        </a>
+
+        <button
+          class="mobile-menu-close"
+          type="button"
+          aria-label="Fechar menu"
+          data-menu-close
+        >
+          <span class="material-symbols-rounded" aria-hidden="true">
+            close
+          </span>
+        </button>
+      </div>
+
+      <nav class="mobile-menu-nav" aria-label="Navegação mobile">
+        <a href="#hero" data-menu-link> Página Inicial </a>
+
+        <a href="#origin" data-menu-link> Sobre </a>
+
+        <a href="#for-you" class="open-personal" data-menu-link>
+          EVA Individual
+        </a>
+
+        <a href="#business" class="open-business" data-menu-link>
+          EVA Empresas
+        </a>
+      </nav>
+
+      <span class="mobile-menu-cta" aria-disabled="true"> Fazer Login </span>
+    </aside>
 
     <main>
       <section id="hero" class="hero-section">
         <div class="hero-content">
-          <span class="hero-eyebrow">
-            Bem-vinda à EVA
-          </span>
+          <span class="hero-eyebrow"> Bem-vinda à EVA </span>
 
           <h1>
             Desenvolvimento humano que transforma
 
-            <strong>
-              pessoas, equipes e empresas.
-            </strong>
+            <strong> pessoas, equipes e empresas. </strong>
           </h1>
 
           <p>
             A EVA une jornadas, treinamentos, experiências e recursos de
-            desenvolvimento para apoiar indivíduos, lideranças e organizações
-            em processos de crescimento, bem-estar e transformação.
+            desenvolvimento para apoiar indivíduos, lideranças e organizações em
+            processos de crescimento, bem-estar e transformação.
           </p>
 
           <div class="hero-actions">
@@ -115,24 +151,16 @@
               alt="EVA - Evolução, Visão e Ação"
             />
 
-            <span
-              class="orbit-line"
-              aria-hidden="true"
-            ></span>
+            <span class="orbit-line" aria-hidden="true"></span>
           </div>
         </div>
       </section>
 
       <section id="journey" class="journey-section">
         <div class="journey-grid">
-          <article
-            id="for-you"
-            class="journey-card openable-card"
-          >
+          <article id="for-you" class="journey-card openable-card">
             <div class="journey-icon" aria-hidden="true">
-              <span class="material-symbols-rounded">
-                psychology
-              </span>
+              <span class="material-symbols-rounded"> psychology </span>
             </div>
 
             <h3>Recursos para Você</h3>
@@ -142,19 +170,12 @@
               habilidades emocionais, relacionais e profissionais.
             </p>
 
-            <a href="./recursos.html">
-              Saiba mais →
-            </a>
+            <a href="./recursos.html"> Saiba mais → </a>
           </article>
 
-          <article
-            id="business"
-            class="journey-card openable-card"
-          >
+          <article id="business" class="journey-card openable-card">
             <div class="journey-icon" aria-hidden="true">
-              <span class="material-symbols-rounded">
-                business_center
-              </span>
+              <span class="material-symbols-rounded"> business_center </span>
             </div>
 
             <h3>Para Empresas</h3>
@@ -164,24 +185,18 @@
               equipes e culturas mais saudáveis, conscientes e sustentáveis.
             </p>
 
-            <a href="./empresas.html">
-              Conhecer soluções →
-            </a>
+            <a href="./empresas.html"> Conhecer soluções → </a>
           </article>
         </div>
       </section>
 
       <section id="origin" class="origin-section">
         <div class="origin-timeline">
-          <span class="section-tag">
-            Como nasceu a EVA
-          </span>
+          <span class="section-tag"> Como nasceu a EVA </span>
 
           <div class="timeline-item">
             <div class="timeline-icon" aria-hidden="true">
-              <span class="material-symbols-rounded">
-                home
-              </span>
+              <span class="material-symbols-rounded"> home </span>
             </div>
 
             <div>
@@ -196,9 +211,7 @@
 
           <div class="timeline-item">
             <div class="timeline-icon" aria-hidden="true">
-              <span class="material-symbols-rounded">
-                flight_takeoff
-              </span>
+              <span class="material-symbols-rounded"> flight_takeoff </span>
             </div>
 
             <div>
@@ -213,26 +226,22 @@
 
           <div class="timeline-item">
             <div class="timeline-icon" aria-hidden="true">
-              <span class="material-symbols-rounded">
-                lightbulb
-              </span>
+              <span class="material-symbols-rounded"> lightbulb </span>
             </div>
 
             <div>
               <h3>Inquietação</h3>
 
               <p>
-                A percepção de que a psicologia ainda não chega a todos de
-                forma prática e acessível.
+                A percepção de que a psicologia ainda não chega a todos de forma
+                prática e acessível.
               </p>
             </div>
           </div>
 
           <div class="timeline-item">
             <div class="timeline-icon" aria-hidden="true">
-              <span class="material-symbols-rounded">
-                auto_awesome
-              </span>
+              <span class="material-symbols-rounded"> auto_awesome </span>
             </div>
 
             <div>
@@ -248,13 +257,9 @@
         </div>
 
         <div class="origin-people">
-          <div
-            class="people-blob"
-            aria-hidden="true"
-          ></div>
+          <div class="people-blob" aria-hidden="true"></div>
 
           <div class="founders-photo-composition">
-            
             <div class="founder-placeholder founder-one">
               <span>JC</span>
             </div>
@@ -270,17 +275,13 @@
         <div class="section-heading">
           <span>O que nos move</span>
 
-          <h2>
-            Ciência, cuidado e prática caminhando juntos.
-          </h2>
+          <h2>Ciência, cuidado e prática caminhando juntos.</h2>
         </div>
 
         <div class="fronts-grid">
           <article>
             <div class="front-icon" aria-hidden="true">
-              <span class="material-symbols-rounded">
-                check_circle
-              </span>
+              <span class="material-symbols-rounded"> check_circle </span>
             </div>
 
             <h3>Aplicabilidade</h3>
@@ -292,9 +293,7 @@
 
           <article>
             <div class="front-icon" aria-hidden="true">
-              <span class="material-symbols-rounded">
-                science
-              </span>
+              <span class="material-symbols-rounded"> science </span>
             </div>
 
             <h3>Base científica</h3>
@@ -307,30 +306,22 @@
 
           <article>
             <div class="front-icon" aria-hidden="true">
-              <span class="material-symbols-rounded">
-                diversity_3
-              </span>
+              <span class="material-symbols-rounded"> diversity_3 </span>
             </div>
 
             <h3>Desenvolvimento humano</h3>
 
-            <p>
-              Acreditamos no potencial único de cada pessoa.
-            </p>
+            <p>Acreditamos no potencial único de cada pessoa.</p>
           </article>
 
           <article>
             <div class="front-icon" aria-hidden="true">
-              <span class="material-symbols-rounded">
-                school
-              </span>
+              <span class="material-symbols-rounded"> school </span>
             </div>
 
             <h3>Experiências de aprendizagem</h3>
 
-            <p>
-              Aprender fazendo, refletindo e compartilhando.
-            </p>
+            <p>Aprender fazendo, refletindo e compartilhando.</p>
           </article>
         </div>
       </section>
@@ -339,9 +330,7 @@
         <div class="section-heading">
           <span>Quem somos</span>
 
-          <h2>
-            Juliana e Mariana, idealizadoras da EVA.
-          </h2>
+          <h2>Juliana e Mariana, idealizadoras da EVA.</h2>
 
           <p>
             A EVA é uma empresa e ecossistema de desenvolvimento humano que atua
@@ -355,18 +344,16 @@
 
         <div class="founders-grid">
           <article class="founder-card">
-            <div class="founder-photo">
-              JC
-            </div>
-  
+            <div class="founder-photo">JC</div>
+
             <h3>Juliana Coelho Netto</h3>
-  
+
             <p>
               Psicóloga, formada também em Administração, com pós-graduação em
               Psicologia Organizacional e Gestão de Pessoas pela PUC-RS. Atua
               com desenvolvimento humano pessoal e profissional.
             </p>
-  
+
             <a
               href="#"
               aria-label="LinkedIn de Juliana Coelho Netto"
@@ -376,45 +363,36 @@
             </a>
           </article>
           <article class="founder-card">
-            <div class="founder-photo">
-              MS
-            </div>
+            <div class="founder-photo">MS</div>
 
             <h3>Mariana Scelza</h3>
 
             <p>
               Psicóloga, pós-graduada em Terapia Cognitivo-Comportamental e
-              mestre em Addiction Psychology pela Arizona State University.
-              Une saúde mental, ciência do comportamento, pesquisa e tecnologia.
+              mestre em Addiction Psychology pela Arizona State University. Une
+              saúde mental, ciência do comportamento, pesquisa e tecnologia.
             </p>
 
             <a
               href="#"
               aria-label="LinkedIn de Mariana Scelza"
               aria-disabled="true"
-              >
+            >
               in
             </a>
           </article>
-
         </div>
       </section>
 
       <section class="newsletter-section">
         <div class="newsletter-icon" aria-hidden="true">
-          <span class="material-symbols-rounded">
-            mail
-          </span>
+          <span class="material-symbols-rounded"> mail </span>
         </div>
 
         <div>
-          <h2>
-            Conteúdo que inspira. Direto para você.
-          </h2>
+          <h2>Conteúdo que inspira. Direto para você.</h2>
 
-          <p>
-            Receba novidades, insights e convites exclusivos da EVA.
-          </p>
+          <p>Receba novidades, insights e convites exclusivos da EVA.</p>
         </div>
 
         <form class="newsletter-form">
@@ -427,19 +405,14 @@
             required
           />
 
-          <button type="submit">
-            Inscrever-se
-          </button>
+          <button type="submit">Inscrever-se</button>
         </form>
       </section>
     </main>
 
     <footer id="contact" class="site-footer">
       <div class="footer-brand">
-        <img
-          src="./assets/images/LogoFinal.svg"
-          alt="Logo EVA"
-        />
+        <img src="./assets/images/LogoFinal.svg" alt="Logo EVA" />
 
         <p>
           Conectamos psicologia, ciência, aprendizagem e tecnologia para
@@ -450,21 +423,13 @@
       <div class="footer-column">
         <h3>Navegação</h3>
 
-        <a href="#hero">
-          Página Inicial
-        </a>
+        <a href="#hero"> Página Inicial </a>
 
-        <a href="#origin">
-          Sobre
-        </a>
+        <a href="#origin"> Sobre </a>
 
-        <a href="#for-you">
-          EVA Individual
-        </a>
+        <a href="#for-you"> EVA Individual </a>
 
-        <a href="#business">
-          EVA Empresas
-        </a>
+        <a href="#business"> EVA Empresas </a>
 
         <span class="footer-disabled">
           Novidades sobre a Comunidade em breve
@@ -482,44 +447,28 @@
           Instagram
         </a>
 
-        <span class="footer-disabled">
-          Novos recursos em breve
-        </span>
+        <span class="footer-disabled"> Novos recursos em breve </span>
 
-        <span class="footer-disabled">
-          Perguntas frequentes em breve
-        </span>
+        <span class="footer-disabled"> Perguntas frequentes em breve </span>
       </div>
 
       <div class="footer-column">
         <h3>Fale conosco</h3>
 
-        <a href="mailto:contato@eva.com.br">
-          contato@eva.com.br
-        </a>
+        <a href="mailto:contato@eva.com.br"> contato@eva.com.br </a>
 
-        <span class="footer-disabled">
-          WhatsApp em breve
-        </span>
+        <span class="footer-disabled"> WhatsApp em breve </span>
 
-        <p>
-          Rio de Janeiro, RJ
-        </p>
+        <p>Rio de Janeiro, RJ</p>
       </div>
 
       <div class="footer-bottom">
-        <p>
-          © 2026 EVA. Todos os direitos reservados.
-        </p>
+        <p>© 2026 EVA. Todos os direitos reservados.</p>
 
         <div>
-          <a href="./politica.html">
-            Política de Privacidade
-          </a>
+          <a href="./politica.html"> Política de Privacidade </a>
 
-          <a href="./termos.html">
-            Termos de Uso
-          </a>
+          <a href="./termos.html"> Termos de Uso </a>
         </div>
       </div>
     </footer>
