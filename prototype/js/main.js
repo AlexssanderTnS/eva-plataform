@@ -1,91 +1,30 @@
+const yearElement = document.querySelector("#current-year");
 
-const openableCards = document.querySelectorAll(".openable-card");
+if (yearElement) {
+  yearElement.textContent = new Date().getFullYear();
+}
 
-function destacarCard(cardId) {
-    const card = document.querySelector(cardId);
-    
-    if (!card) {
-        return;
+const visual = document.querySelector(".hero__visual");
+
+if (visual && window.matchMedia("(pointer: fine)").matches) {
+  visual.addEventListener("pointermove", (event) => {
+    const bounds = visual.getBoundingClientRect();
+    const x = (event.clientX - bounds.left) / bounds.width - 0.5;
+    const y = (event.clientY - bounds.top) / bounds.height - 0.5;
+
+    visual.style.setProperty("--mouse-x", `${x * 8}px`);
+    visual.style.setProperty("--mouse-y", `${y * 8}px`);
+
+    const card = visual.querySelector(".visual-card");
+    if (card) {
+      card.style.transform = `translate(${x * 8}px, ${y * 8}px) rotate(${5 + x * 2}deg)`;
     }
+  });
 
-    // Remove destaque de todos os cards
-    openableCards.forEach((item) => {
-        item.classList.remove("is-highlighted");
-    });
-
-    // Rola até o card
-    card.scrollIntoView({
-        behavior: "smooth",
-        block: "center"
-    });
-
-    // Aplica e remove o destaque
-    setTimeout(() => {
-        card.classList.add("is-highlighted");
-
-        setTimeout(() => {
-            card.classList.remove("is-highlighted");
-        }, 1100);
-    }, 550);
+  visual.addEventListener("pointerleave", () => {
+    const card = visual.querySelector(".visual-card");
+    if (card) {
+      card.style.transform = "rotate(5deg)";
+    }
+  });
 }
-
-// 2. EVENTOS DE NAVEGAÇÃO DOS CARDS
-document.querySelectorAll(".open-business").forEach((link) => {
-    link.addEventListener("click", (event) => {
-        event.preventDefault();
-        destacarCard("#business");
-    });
-});
-
-document.querySelectorAll(".open-personal").forEach((link) => {
-    link.addEventListener("click", (event) => {
-        event.preventDefault();
-        destacarCard("#for-you");
-    });
-});
-
-// 3. NEWSLETTER
-const newsletterForm = document.querySelector(".newsletter-form");
-
-if (newsletterForm) {
-    newsletterForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-
-        const input = newsletterForm.querySelector("input");
-        const email = input?.value.trim();
-
-        if (!email) {
-            alert("Digite um e-mail para se inscrever.");
-            input?.focus();
-            return;
-        }
-
-        alert("Inscrição registrada! Você receberá novidades da EVA em breve.");
-        input.value = "";
-    });
-}
-
-// 4. SCROLL SUAVE PARA TODOS OS LINKS INTERNOS
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener("click", function(e) {
-        // Ignora se for um link especial (business/personal)
-        if (this.classList.contains("open-business") || 
-            this.classList.contains("open-personal")) {
-            return;
-        }
-
-        const targetId = this.getAttribute("href");
-        if (targetId === "#") return;
-
-        const target = document.querySelector(targetId);
-        if (target) {
-            e.preventDefault();
-            target.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-        }
-    });
-});
-
-console.log("🚀 EVA carregada com sucesso!");
