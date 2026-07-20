@@ -1,5 +1,6 @@
 .business-hero {
-  height: 1000px;
+  min-height: 100vh;
+  height: auto;
   padding: 142px 8vw 72px;
   display: grid;
   grid-template-columns: 0.95fr 1.05fr;
@@ -461,6 +462,8 @@
 
 @media (max-width: 1060px) {
   .business-hero {
+    height: auto;
+    min-height: auto;
     grid-template-columns: 1fr;
     padding-top: 130px;
     text-align: center;
@@ -503,7 +506,7 @@
 @media (max-width: 720px) {
   .business-hero {
     min-height: auto;
-    padding: 118px 24px -1px;
+    padding: 118px 24px 64px;
     gap: 42px;
   }
 
