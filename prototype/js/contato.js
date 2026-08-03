@@ -358,3 +358,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
   updateCharacterCounter();
 });
+

@@ -189,19 +189,7 @@ window.addEventListener("resize", () => {
   }
 });
 
-document.querySelectorAll(".open-business").forEach((link) => {
-  link.addEventListener("click", (event) => {
-    event.preventDefault();
-    destacarCard("#business");
-  });
-});
 
-document.querySelectorAll(".open-personal").forEach((link) => {
-  link.addEventListener("click", (event) => {
-    event.preventDefault();
-    destacarCard("#for-you");
-  });
-});
 
 const newsletterForm = document.querySelector(".newsletter-form");
 
@@ -285,3 +273,6 @@ if ("IntersectionObserver" in window) {
 }
 
 console.log("EVA carregada com sucesso!");
+
+
+
