@@ -414,6 +414,118 @@ img {
   font-weight: 900;
 }
 
+.origin-gallery {
+  position: relative;
+  min-height: 560px;
+}
+
+.origin-photo {
+  position: absolute;
+  overflow: hidden;
+  border: 6px solid rgba(255, 255, 255, 0.9);
+  background: #eef2f8;
+  box-shadow: 0 24px 60px rgba(18, 31, 84, 0.14);
+}
+
+.origin-photo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.origin-photo-main {
+  top: 40px;
+  right: 30px;
+  width: min(430px, 75%);
+  height: 430px;
+  border-radius: 42px;
+  transform: rotate(2deg);
+}
+
+.origin-photo-top {
+  top: 0;
+  left: 20px;
+  width: 220px;
+  height: 185px;
+  border-radius: 28px;
+  transform: rotate(-6deg);
+}
+
+.origin-photo-bottom {
+  left: 60px;
+  bottom: 15px;
+  width: 250px;
+  height: 200px;
+  border-radius: 30px;
+  transform: rotate(5deg);
+}
+
+.origin-gallery-caption {
+  position: absolute;
+  right: 0;
+  bottom: 5px;
+  max-width: 290px;
+  padding: 18px 20px;
+  border: 1px solid rgba(106, 60, 255, 0.14);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 18px 40px rgba(18, 31, 84, 0.1);
+  backdrop-filter: blur(16px);
+}
+
+.origin-gallery-caption span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--color-coral);
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.origin-gallery-caption strong {
+  color: var(--color-text);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 900px) {
+  .origin-gallery {
+    min-height: 500px;
+  }
+
+  .origin-photo-main {
+    right: 5%;
+  }
+}
+
+@media (max-width: 620px) {
+  .origin-gallery {
+    min-height: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .origin-photo {
+    position: static;
+    width: 100%;
+    height: 220px;
+    transform: none;
+  }
+
+  .origin-photo-main {
+    grid-column: 1 / -1;
+    height: 300px;
+  }
+
+  .origin-gallery-caption {
+    position: static;
+    grid-column: 1 / -1;
+    max-width: none;
+  }
+}
 
 .origin-section {
   position: relative;

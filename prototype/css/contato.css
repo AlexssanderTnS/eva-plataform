@@ -1,8 +1,4 @@
-/* ==================================================
-   PÁGINA DE CONTATO
-   O header, o menu mobile, o footer, as variáveis e
-   os estilos globais continuam no style.css.
-================================================== */
+
 
 .contact-container {
   width: min(calc(100% - 48px), 1180px);
@@ -32,9 +28,7 @@
   );
 }
 
-/* ==================================================
-   HERO
-================================================== */
+
 
 .contact-hero {
   position: relative;
@@ -251,9 +245,6 @@
   font-size: 0.75rem;
 }
 
-/* ==================================================
-   SEÇÃO DE CONTATO
-================================================== */
 
 .contact-section {
   padding: 110px 0;
@@ -268,7 +259,6 @@
 
 .contact-layout {
   display: grid;
-  grid-template-columns: minmax(280px, 0.78fr) minmax(540px, 1.22fr);
   gap: 70px;
 }
 
@@ -415,9 +405,7 @@ a.contact-item:hover .contact-arrow {
   opacity: 0.55;
 }
 
-/* ==================================================
-   FORMULÁRIO
-================================================== */
+
 
 .contact-form-wrapper {
   padding: clamp(28px, 4vw, 50px);
@@ -806,9 +794,6 @@ a.contact-item:hover .contact-arrow {
   }
 }
 
-/* ==================================================
-   CTA
-================================================== */
 
 .contact-cta {
   padding: 92px 0;
@@ -909,9 +894,7 @@ a.contact-item:hover .contact-arrow {
   height: 310px;
 }
 
-/* ==================================================
-   RESPONSIVO
-================================================== */
+
 
 @media (max-width: 1060px) {
   .contact-hero-grid {

@@ -43,12 +43,12 @@
 }
 
 .business-hero h1 {
-  max-width: 680px;
-  margin: 0;
-  font-size: clamp(3.2rem, 4.7vw, 5.15rem);
-  line-height: 0.96;
-  letter-spacing: -0.058em;
-  color: var(--color-text);
+  margin-top: 18px;
+  max-width: 720px;
+  font-family: var(--font-title);
+  font-size: clamp(2rem, 4.2vw, 4.2rem);
+  line-height: 0.98;
+  letter-spacing: -0.065em;
 }
 
 .business-hero h1 strong {
