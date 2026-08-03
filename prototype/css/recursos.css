@@ -576,7 +576,8 @@
   align-items: center;
   gap: 10px;
   color: #fff;
-  background: var(--color-primary);
+  background: radial-gradient(circle at 100% 0%, rgba(255, 94, 72, 0.22), transparent 34%),
+    linear-gradient(135deg, #17114b, #2a1f6f 58%, #38249a);
 }
 
 .individual-cta-button:hover {

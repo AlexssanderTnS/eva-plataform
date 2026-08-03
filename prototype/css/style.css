@@ -364,10 +364,10 @@ img {
 .journey-card::after {
   content: "";
   position: absolute;
-  right: -55px;
-  bottom: -65px;
-  width: 180px;
-  height: 180px;
+  right: -105px;
+  bottom: -80px;
+  width: 210px;
+  height: 170px;
   border-radius: 50%;
   background: linear-gradient(
     135deg,
@@ -641,19 +641,24 @@ img {
   border: 1px solid rgba(106, 53, 255, 0.16);
   box-shadow: var(--shadow-soft);
   text-align: center;
+
 }
+
 .founder-photo {
-  width: 92px;
-  height: 92px;
-  display: grid;
-  place-items: center;
-  margin: 0 auto 22px;
-  border-radius: 50%;
-  color: #fff;
-  background: linear-gradient(135deg, var(--color-purple), var(--color-coral));
-  font-family: var(--font-title);
-  font-size: 1.25rem;
-  font-weight: 900;
+  width: 100%;
+  aspect-ratio: 5 / 5;
+  overflow: hidden;
+  border-radius: 24px;
+  background: #eee;
+  object-position: center;
+}
+
+.founder-photo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
 }
 .founder-card h3 {
   font-family: var(--font-title);
