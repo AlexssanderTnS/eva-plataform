@@ -324,10 +324,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setLoading(true);
 
     try {
-      /*
-       * Quando o backend estiver pronto, substitua esta
-       * simulação por uma requisição fetch para o endpoint.
-       */
+    
 
       await new Promise((resolve) => {
         setTimeout(resolve, 900);

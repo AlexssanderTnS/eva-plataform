@@ -191,26 +191,6 @@ window.addEventListener("resize", () => {
 
 
 
-const newsletterForm = document.querySelector(".newsletter-form");
-
-if (newsletterForm) {
-  newsletterForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-
-    const input = newsletterForm.querySelector("input");
-    const email = input?.value.trim();
-
-    if (!email) {
-      alert("Digite um e-mail para se inscrever.");
-      input?.focus();
-      return;
-    }
-
-    alert("Formulário em fase de configuração.");
-    input.value = "";
-  });
-}
-
 document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   anchor.addEventListener("click", function (event) {
     if (

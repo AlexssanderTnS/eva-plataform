@@ -796,70 +796,6 @@ img {
 
 
 
-.newsletter-section {
-  max-width: 1180px;
-  margin: 0 auto 80px;
-  padding: 34px;
-  display: grid;
-  grid-template-columns: auto 1fr minmax(320px, 450px);
-  gap: 28px;
-  align-items: center;
-  border-radius: var(--radius-xl);
-  color: #fff;
-  background:
-    radial-gradient(circle at 88% 0%, rgba(0, 212, 255, 0.24), transparent 30%),
-    linear-gradient(135deg, var(--color-purple-dark), var(--color-dark));
-  box-shadow: 0 30px 70px rgba(18, 31, 84, 0.18);
-}
-.newsletter-icon {
-  width: 70px;
-  height: 70px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-yellow), var(--color-cyan));
-  font-size: 1.7rem;
-}
-.newsletter-section h2 {
-  font-family: var(--font-title);
-  font-size: clamp(1.55rem, 2vw, 2.2rem);
-}
-.newsletter-section p {
-  margin-top: 8px;
-  color: rgba(255, 255, 255, 0.75);
-}
-.newsletter-form {
-  display: flex;
-  gap: 10px;
-  padding: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-}
-.newsletter-form input {
-  flex: 1;
-  min-width: 0;
-  border: none;
-  outline: none;
-  padding: 0 16px;
-  color: #fff;
-  background: transparent;
-}
-.newsletter-form input::placeholder {
-  color: rgba(255, 255, 255, 0.55);
-}
-.newsletter-form button {
-  border: none;
-  min-height: 44px;
-  padding: 0 22px;
-  border-radius: 999px;
-  color: #fff;
-  background: linear-gradient(105deg, var(--color-yellow), var(--color-cyan));
-  font-weight: 900;
-  cursor: pointer;
-}
-
-
 .site-footer {
   padding: 70px 8vw 30px;
   display: grid;
@@ -985,12 +921,6 @@ img {
     var(--shadow-soft);
 }
 
-
-
-
-/* ===========================
-   MENU MOBILE
-=========================== */
 
 body.menu-open {
   overflow: hidden;
@@ -1294,7 +1224,7 @@ body.menu-open {
   .journey-grid,
   .fronts-grid,
   .founders-grid,
-  .newsletter-section,
+
   .site-footer {
     grid-template-columns: 1fr;
   }
@@ -1305,10 +1235,7 @@ body.menu-open {
   .fronts-grid article:last-child {
     border-bottom: none;
   }
-  .newsletter-section {
-    margin-left: 24px;
-    margin-right: 24px;
-  }
+
 }
 @media (max-width: 620px) {
   .site-header {
@@ -1344,9 +1271,7 @@ body.menu-open {
   }
   .journey-card,
   .founder-card,
-  .newsletter-section {
-    padding: 24px;
-  }
+
   .origin-people {
     min-height: 430px;
   }
@@ -1363,13 +1288,7 @@ body.menu-open {
     bottom: 20px;
     width: 220px;
   }
-  .newsletter-form {
-    flex-direction: column;
-    border-radius: 24px;
-  }
-  .newsletter-form input {
-    min-height: 44px;
-  }
+
   .footer-bottom {
     flex-direction: column;
   }
@@ -1433,10 +1352,6 @@ body.menu-open {
     "wght" 500,
     "GRAD" 0,
     "opsz" 24;
-}
-
-.newsletter-icon .material-symbols-rounded {
-  font-size: 30px;
 }
 
 .journey-icon .material-symbols-rounded,
