@@ -285,6 +285,13 @@ function applyCarouselNavigationFix() {
       transform: scale(1.08) !important;
     }
 
+    .resources-viewport,
+    .business-courses-viewport {
+      touch-action: pan-y;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
     @media (max-width: 650px) {
       .resources-carousel,
       .business-courses-carousel {
@@ -313,6 +320,88 @@ function applyCarouselNavigationFix() {
   document.head.appendChild(style);
 }
 
+function enableCarouselSwipe() {
+  const carousels = [
+    {
+      viewport: document.querySelector(".resources-viewport"),
+      previousButton: document.querySelector(".resources-arrow-prev"),
+      nextButton: document.querySelector(".resources-arrow-next"),
+    },
+    {
+      viewport: document.querySelector(".business-courses-viewport"),
+      previousButton: document.querySelector(".business-courses-prev"),
+      nextButton: document.querySelector(".business-courses-next"),
+    },
+  ];
+
+  carousels.forEach(({ viewport, previousButton, nextButton }) => {
+    if (!viewport) {
+      return;
+    }
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0;
+    let touchEndY = 0;
+
+    viewport.addEventListener(
+      "touchstart",
+      (event) => {
+        const touch = event.changedTouches[0];
+
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+        touchEndX = touch.clientX;
+        touchEndY = touch.clientY;
+      },
+      { passive: true },
+    );
+
+    viewport.addEventListener(
+      "touchmove",
+      (event) => {
+        const touch = event.changedTouches[0];
+
+        touchEndX = touch.clientX;
+        touchEndY = touch.clientY;
+      },
+      { passive: true },
+    );
+
+    viewport.addEventListener(
+      "touchend",
+      () => {
+        const horizontalDistance = touchEndX - touchStartX;
+        const verticalDistance = touchEndY - touchStartY;
+        const minimumSwipeDistance = 45;
+
+        const isHorizontalSwipe =
+          Math.abs(horizontalDistance) > Math.abs(verticalDistance);
+
+        if (
+          !isHorizontalSwipe ||
+          Math.abs(horizontalDistance) < minimumSwipeDistance
+        ) {
+          return;
+        }
+
+        if (horizontalDistance < 0) {
+          if (!nextButton?.disabled) {
+            nextButton?.click();
+          }
+          return;
+        }
+
+        if (!previousButton?.disabled) {
+          previousButton?.click();
+        }
+      },
+      { passive: true },
+    );
+  });
+}
+
 applyCarouselNavigationFix();
+enableCarouselSwipe();
 
 console.log("EVA carregada com sucesso!");
