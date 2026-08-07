@@ -189,8 +189,6 @@ window.addEventListener("resize", () => {
   }
 });
 
-
-
 document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   anchor.addEventListener("click", function (event) {
     if (
@@ -252,7 +250,69 @@ if ("IntersectionObserver" in window) {
   });
 }
 
+function applyCarouselNavigationFix() {
+  if (document.querySelector("#carousel-navigation-fix")) {
+    return;
+  }
+
+  const style = document.createElement("style");
+  style.id = "carousel-navigation-fix";
+  style.textContent = `
+    .resources-carousel,
+    .business-courses-carousel {
+      padding-bottom: 82px;
+    }
+
+    .resources-arrow,
+    .business-courses-arrow {
+      top: auto !important;
+      bottom: 12px;
+      transform: none !important;
+    }
+
+    .resources-arrow-prev,
+    .business-courses-prev {
+      left: calc(50% - 62px) !important;
+    }
+
+    .resources-arrow-next,
+    .business-courses-next {
+      right: calc(50% - 62px) !important;
+    }
+
+    .resources-arrow:hover:not(:disabled),
+    .business-courses-arrow:hover:not(:disabled) {
+      transform: scale(1.08) !important;
+    }
+
+    @media (max-width: 650px) {
+      .resources-carousel,
+      .business-courses-carousel {
+        padding-bottom: 72px;
+      }
+
+      .resources-arrow,
+      .business-courses-arrow {
+        width: 46px;
+        height: 46px;
+        bottom: 8px;
+      }
+
+      .resources-arrow-prev,
+      .business-courses-prev {
+        left: calc(50% - 56px) !important;
+      }
+
+      .resources-arrow-next,
+      .business-courses-next {
+        right: calc(50% - 56px) !important;
+      }
+    }
+  `;
+
+  document.head.appendChild(style);
+}
+
+applyCarouselNavigationFix();
+
 console.log("EVA carregada com sucesso!");
-
-
-
