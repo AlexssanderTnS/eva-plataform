@@ -113,7 +113,7 @@ const modal = document.querySelector("#individual-course-modal");
 const modalContent = document.querySelector("#individual-course-modal-content");
 
 let currentIndex = 0;
-let lastFocusedElement = null;
+let individualModalLastFocusedElement = null;
 
 function renderCursos() {
   if (!track) return;
@@ -213,7 +213,7 @@ function openModal(courseId) {
   const curso = cursosIndividuais.find((item) => item.id === courseId);
   if (!curso) return;
 
-  lastFocusedElement = document.activeElement;
+  individualModalLastFocusedElement = document.activeElement;
   renderModal(curso);
   modal.classList.add("is-open");
   modal.setAttribute("aria-hidden", "false");
@@ -227,7 +227,7 @@ function closeModal() {
   modal.classList.remove("is-open");
   modal.setAttribute("aria-hidden", "true");
   document.body.classList.remove("course-modal-open");
-  lastFocusedElement?.focus?.();
+  individualModalLastFocusedElement?.focus?.();
 }
 
 function getVisibleCards() {
