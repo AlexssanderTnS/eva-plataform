@@ -9,8 +9,8 @@
   position: relative;
   overflow: hidden;
   background:
-    radial-gradient(circle at 86% 18%,rgba(0, 212, 255, 0.17),transparent 28%),
-    radial-gradient(circle at 13% 78%,rgba(106, 60, 255, 0.12),transparent 31%),
+    radial-gradient(circle at 86% 18%, rgba(0, 212, 255, 0.17), transparent 28%),
+    radial-gradient(circle at 13% 78%, rgba(106, 60, 255, 0.12), transparent 31%),
     linear-gradient(145deg, #f8faff 0%, #f2f6ff 55%, #eef9ff 100%);
 }
 
@@ -89,6 +89,7 @@
 
 .business-intro,
 .solutions-section,
+.business-courses-section,
 .audiences-section,
 .formats-section,
 .method-section,
@@ -171,11 +172,7 @@
   place-items: center;
   margin-bottom: 24px;
   border-radius: 18px;
-  background: linear-gradient(
-    145deg,
-    rgba(106, 60, 255, 0.13),
-    rgba(0, 212, 255, 0.12)
-  );
+  background: linear-gradient(145deg, rgba(106, 60, 255, 0.13), rgba(0, 212, 255, 0.12));
   color: var(--color-primary);
 }
 
@@ -195,6 +192,211 @@
   margin: 0;
   line-height: 1.7;
   color: var(--color-text-soft);
+}
+
+.business-courses-section {
+  padding: 96px 0 118px;
+}
+
+.business-courses-carousel {
+  position: relative;
+  margin-top: 48px;
+}
+
+.business-courses-viewport {
+  overflow: hidden;
+  width: 100%;
+}
+
+.business-courses-track {
+  display: flex;
+  gap: 24px;
+  transition: transform 0.45s ease;
+  will-change: transform;
+}
+
+.business-course-card {
+  flex: 0 0 calc((100% - 48px) / 3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(69, 91, 154, 0.12);
+  border-radius: 28px;
+  background: #fff;
+  box-shadow: 0 18px 44px rgba(18, 31, 84, 0.07);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.business-course-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 28px 60px rgba(18, 31, 84, 0.12);
+}
+
+.business-course-visual {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+  background: #eef2f8;
+}
+
+.business-course-visual img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.45s ease;
+}
+
+.business-course-card:hover .business-course-visual img {
+  transform: scale(1.04);
+}
+
+.business-course-visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(42, 31, 111, 0.04), rgba(42, 31, 111, 0.26));
+  pointer-events: none;
+}
+
+.business-course-type {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 2;
+  padding: 8px 13px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  color: var(--color-primary);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.business-course-content {
+  flex: 1;
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+}
+
+.business-course-content h3 {
+  margin: 0;
+  min-height: 4.5em;
+  font-family: var(--font-title);
+  font-size: 1.28rem;
+  line-height: 1.25;
+  color: var(--color-text);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.business-course-content > p {
+  margin-top: 14px;
+  min-height: 6.8em;
+  line-height: 1.7;
+  color: var(--color-text-soft);
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.business-course-meta {
+  min-height: 44px;
+  margin-top: 20px;
+  padding-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  border-top: 1px solid rgba(69, 91, 154, 0.12);
+  color: var(--color-text-soft);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.business-course-meta .material-symbols-rounded {
+  flex-shrink: 0;
+  color: var(--color-primary);
+  font-size: 19px;
+}
+
+.business-course-button {
+  min-height: 58px;
+  margin-top: 24px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 16px;
+  color: #fff;
+  background: linear-gradient(160deg, var(--color-coral), #e98232);
+  font-weight: 850;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.business-course-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(255, 94, 72, 0.22);
+}
+
+.business-course-button .material-symbols-rounded {
+  font-size: 22px;
+  transition: transform 0.25s ease;
+}
+
+.business-course-button:hover .material-symbols-rounded {
+  transform: translateX(5px);
+}
+
+.business-courses-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 5;
+  width: 50px;
+  height: 50px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 15px 35px rgba(18, 31, 84, 0.14);
+  color: var(--color-primary);
+  font-size: 2rem;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.business-courses-arrow:hover:not(:disabled) {
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 18px 42px rgba(18, 31, 84, 0.18);
+}
+
+.business-courses-arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.business-courses-prev {
+  left: -25px;
+}
+
+.business-courses-next {
+  right: -25px;
 }
 
 .audiences-section {
@@ -273,11 +475,7 @@
   gap: 72px;
   border-radius: 36px;
   background:
-    radial-gradient(
-      circle at 100% 0%,
-      rgba(0, 212, 255, 0.18),
-      transparent 35%
-    ),
+    radial-gradient(circle at 100% 0%, rgba(0, 212, 255, 0.18), transparent 35%),
     linear-gradient(135deg, #17114b, #2a1f6f 58%, #38249a);
   box-shadow: 0 32px 80px rgba(27, 21, 80, 0.2);
 }
@@ -326,11 +524,7 @@
   gap: 50px;
   border-radius: 32px;
   background:
-    radial-gradient(
-      circle at 0 100%,
-      rgba(255, 200, 87, 0.23),
-      transparent 28%
-    ),
+    radial-gradient(circle at 0 100%, rgba(255, 200, 87, 0.23), transparent 28%),
     linear-gradient(120deg, #f3f6ff, #edfaff);
   border: 1px solid rgba(69, 91, 154, 0.12);
 }
@@ -397,6 +591,10 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .business-course-card {
+    flex-basis: calc((100% - 24px) / 2);
+  }
+
   .audiences-section,
   .method-panel {
     grid-template-columns: 1fr;
@@ -447,6 +645,7 @@
 
   .business-intro,
   .solutions-section,
+  .business-courses-section,
   .audiences-section,
   .formats-section,
   .method-section,
@@ -459,6 +658,7 @@
   }
 
   .solutions-section,
+  .business-courses-section,
   .audiences-section,
   .formats-section,
   .method-section {
@@ -473,6 +673,32 @@
   .need-card,
   .format-card {
     padding: 24px;
+  }
+
+  .business-course-card {
+    flex-basis: 100%;
+  }
+
+  .business-course-visual {
+    height: 210px;
+  }
+
+  .business-course-content {
+    padding: 22px;
+  }
+
+  .business-course-content h3,
+  .business-course-content > p {
+    min-height: auto;
+    -webkit-line-clamp: initial;
+  }
+
+  .business-courses-prev {
+    left: 8px;
+  }
+
+  .business-courses-next {
+    right: 8px;
   }
 
   .audiences-section {
