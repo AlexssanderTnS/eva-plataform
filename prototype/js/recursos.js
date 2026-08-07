@@ -128,7 +128,6 @@ function renderCursos() {
               alt="${curso.titulo}"
               loading="lazy"
             />
-
             <span class="resource-type">Curso online</span>
           </div>
 
@@ -144,7 +143,7 @@ function renderCursos() {
             </div>
 
             <button
-              class="resource-details-button"
+              class="resource-button resource-details-button"
               type="button"
               data-course-id="${curso.id}"
             >
@@ -178,21 +177,13 @@ function renderModal(curso) {
         <p class="course-detail-description">${curso.descricaoCompleta}</p>
 
         <div class="course-detail-meta">
-          <span>
-            <span class="material-symbols-rounded" aria-hidden="true">schedule</span>
-            ${curso.duracao}
-          </span>
-          <span>
-            <span class="material-symbols-rounded" aria-hidden="true">devices</span>
-            ${curso.formato}
-          </span>
+          <span><span class="material-symbols-rounded" aria-hidden="true">schedule</span>${curso.duracao}</span>
+          <span><span class="material-symbols-rounded" aria-hidden="true">devices</span>${curso.formato}</span>
         </div>
 
         <div class="course-detail-section">
           <h3>Você vai aprender</h3>
-          <ul>
-            ${curso.aprendizados.map((item) => `<li>${item}</li>`).join("")}
-          </ul>
+          <ul>${curso.aprendizados.map((item) => `<li>${item}</li>`).join("")}</ul>
         </div>
 
         <div class="course-investment-card">
@@ -208,15 +199,8 @@ function renderModal(curso) {
         </div>
 
         <div class="course-detail-actions">
-          <a href="./contato.html?curso=${encodeURIComponent(curso.id)}" class="course-detail-primary">
-            Tenho interesse
-          </a>
-          <a
-            href="mailto:contato@evaglobal.com.br?subject=${encodeURIComponent(`Interesse no curso ${curso.titulo}`)}"
-            class="course-detail-secondary"
-          >
-            Enviar e-mail
-          </a>
+          <a href="./contato.html?curso=${encodeURIComponent(curso.id)}" class="course-detail-primary">Tenho interesse</a>
+          <a href="mailto:contato@evaglobal.com.br?subject=${encodeURIComponent(`Interesse no curso ${curso.titulo}`)}" class="course-detail-secondary">Enviar e-mail</a>
         </div>
       </div>
     </div>
@@ -247,14 +231,8 @@ function closeModal() {
 }
 
 function getVisibleCards() {
-  if (window.innerWidth <= 650) {
-    return 1;
-  }
-
-  if (window.innerWidth <= 1000) {
-    return 2;
-  }
-
+  if (window.innerWidth <= 650) return 1;
+  if (window.innerWidth <= 1000) return 2;
   return 3;
 }
 
@@ -270,45 +248,29 @@ function updateCarousel() {
   const maximumIndex = Math.max(0, cards.length - visibleCards);
 
   currentIndex = Math.min(currentIndex, maximumIndex);
+  track.style.transform = `translateX(-${currentIndex * (cardWidth + gap)}px)`;
 
-  const offset = currentIndex * (cardWidth + gap);
-  track.style.transform = `translateX(-${offset}px)`;
-
-  if (prevButton) {
-    prevButton.disabled = currentIndex === 0;
-  }
-
-  if (nextButton) {
-    nextButton.disabled = currentIndex >= maximumIndex;
-  }
+  if (prevButton) prevButton.disabled = currentIndex === 0;
+  if (nextButton) nextButton.disabled = currentIndex >= maximumIndex;
 }
 
 track?.addEventListener("click", (event) => {
   const detailsButton = event.target.closest("[data-course-id]");
   if (!detailsButton) return;
-
   openModal(detailsButton.dataset.courseId);
 });
 
 modal?.addEventListener("click", (event) => {
-  if (event.target.closest("[data-course-close]")) {
-    closeModal();
-  }
+  if (event.target.closest("[data-course-close]")) closeModal();
 });
 
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && modal?.classList.contains("is-open")) {
-    closeModal();
-  }
+  if (event.key === "Escape" && modal?.classList.contains("is-open")) closeModal();
 });
 
 prevButton?.addEventListener("click", () => {
   currentIndex--;
-
-  if (currentIndex < 0) {
-    currentIndex = 0;
-  }
-
+  if (currentIndex < 0) currentIndex = 0;
   updateCarousel();
 });
 
@@ -317,11 +279,7 @@ nextButton?.addEventListener("click", () => {
   const maximumIndex = Math.max(0, cursosIndividuais.length - visibleCards);
 
   currentIndex++;
-
-  if (currentIndex > maximumIndex) {
-    currentIndex = maximumIndex;
-  }
-
+  if (currentIndex > maximumIndex) currentIndex = maximumIndex;
   updateCarousel();
 });
 
