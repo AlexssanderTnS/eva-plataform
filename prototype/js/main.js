@@ -54,7 +54,6 @@ function openMobileMenu() {
   }
 
   lastFocusedElement = document.activeElement;
-
   menuDrawer.inert = false;
 
   menuToggle.setAttribute("aria-expanded", "true");
@@ -66,10 +65,8 @@ function openMobileMenu() {
 
   menuDrawer.setAttribute("aria-hidden", "false");
   menuOverlay.setAttribute("aria-hidden", "false");
-
   menuDrawer.classList.add("is-open");
   menuOverlay.classList.add("is-open");
-
   document.body.classList.add("menu-open");
 
   const focusableElements = getFocusableMenuElements();
@@ -88,7 +85,6 @@ function closeMobileMenu(restoreFocus = true) {
   }
 
   menuDrawer.inert = true;
-
   menuToggle.setAttribute("aria-expanded", "false");
   menuToggle.setAttribute("aria-label", "Abrir menu");
 
@@ -98,10 +94,8 @@ function closeMobileMenu(restoreFocus = true) {
 
   menuDrawer.setAttribute("aria-hidden", "true");
   menuOverlay.setAttribute("aria-hidden", "true");
-
   menuDrawer.classList.remove("is-open");
   menuOverlay.classList.remove("is-open");
-
   document.body.classList.remove("menu-open");
 
   if (restoreFocus && lastFocusedElement instanceof HTMLElement) {
@@ -127,19 +121,50 @@ function trapFocus(event) {
   const firstElement = focusableElements[0];
   const lastElement = focusableElements[focusableElements.length - 1];
 
-  if (
-    event.shiftKey &&
-    document.activeElement === firstElement
-  ) {
+  if (event.shiftKey && document.activeElement === firstElement) {
     event.preventDefault();
     lastElement.focus();
     return;
   }
 
-  if (
-    !event.shiftKey &&
-    document.activeElement === lastElement
-  ) {
+  if (!event.shiftKey && document.activeElement === lastElement) {
+    event.preventDefault();
+    firstElement.focus();
+  }
+}
+
+function trapOpenCourseModalFocus(event) {
+  if (event.key !== "Tab") {
+    return;
+  }
+
+  const openModal = document.querySelector(".course-modal.is-open");
+
+  if (!openModal) {
+    return;
+  }
+
+  const focusableElements = Array.from(
+    openModal.querySelectorAll(
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    ),
+  ).filter((element) => !element.hasAttribute("hidden"));
+
+  if (!focusableElements.length) {
+    event.preventDefault();
+    return;
+  }
+
+  const firstElement = focusableElements[0];
+  const lastElement = focusableElements[focusableElements.length - 1];
+
+  if (event.shiftKey && document.activeElement === firstElement) {
+    event.preventDefault();
+    lastElement.focus();
+    return;
+  }
+
+  if (!event.shiftKey && document.activeElement === lastElement) {
     event.preventDefault();
     firstElement.focus();
   }
@@ -177,6 +202,7 @@ document.addEventListener("keydown", (event) => {
     return;
   }
 
+  trapOpenCourseModalFocus(event);
   trapFocus(event);
 });
 
@@ -250,74 +276,20 @@ if ("IntersectionObserver" in window) {
   });
 }
 
-function applyCarouselNavigationFix() {
-  if (document.querySelector("#carousel-navigation-fix")) {
+function loadCourseUiStyles() {
+  const hasCourseUi = document.querySelector(
+    ".resources-carousel, .business-courses-carousel, .course-modal",
+  );
+
+  if (!hasCourseUi || document.querySelector('link[data-course-ui="true"]')) {
     return;
   }
 
-  const style = document.createElement("style");
-  style.id = "carousel-navigation-fix";
-  style.textContent = `
-    .resources-carousel,
-    .business-courses-carousel {
-      padding-bottom: 82px;
-    }
-
-    .resources-arrow,
-    .business-courses-arrow {
-      top: auto !important;
-      bottom: 12px;
-      transform: none !important;
-    }
-
-    .resources-arrow-prev,
-    .business-courses-prev {
-      left: calc(50% - 62px) !important;
-    }
-
-    .resources-arrow-next,
-    .business-courses-next {
-      right: calc(50% - 62px) !important;
-    }
-
-    .resources-arrow:hover:not(:disabled),
-    .business-courses-arrow:hover:not(:disabled) {
-      transform: scale(1.08) !important;
-    }
-
-    .resources-viewport,
-    .business-courses-viewport {
-      touch-action: pan-y;
-      -webkit-user-select: none;
-      user-select: none;
-    }
-
-    @media (max-width: 650px) {
-      .resources-carousel,
-      .business-courses-carousel {
-        padding-bottom: 72px;
-      }
-
-      .resources-arrow,
-      .business-courses-arrow {
-        width: 46px;
-        height: 46px;
-        bottom: 8px;
-      }
-
-      .resources-arrow-prev,
-      .business-courses-prev {
-        left: calc(50% - 56px) !important;
-      }
-
-      .resources-arrow-next,
-      .business-courses-next {
-        right: calc(50% - 56px) !important;
-      }
-    }
-  `;
-
-  document.head.appendChild(style);
+  const stylesheet = document.createElement("link");
+  stylesheet.rel = "stylesheet";
+  stylesheet.href = "./css/course-ui.css";
+  stylesheet.dataset.courseUi = "true";
+  document.head.appendChild(stylesheet);
 }
 
 function enableCarouselSwipe() {
@@ -374,7 +346,6 @@ function enableCarouselSwipe() {
         const horizontalDistance = touchEndX - touchStartX;
         const verticalDistance = touchEndY - touchStartY;
         const minimumSwipeDistance = 45;
-
         const isHorizontalSwipe =
           Math.abs(horizontalDistance) > Math.abs(verticalDistance);
 
@@ -401,7 +372,7 @@ function enableCarouselSwipe() {
   });
 }
 
-applyCarouselNavigationFix();
+loadCourseUiStyles();
 enableCarouselSwipe();
 
 console.log("EVA carregada com sucesso!");
