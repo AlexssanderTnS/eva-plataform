@@ -8,16 +8,12 @@
       content="Cursos, jornadas e recursos da EVA para desenvolvimento emocional, relacional, humano e profissional."
     />
     <title>Recursos para Você | EVA</title>
-    <link
-      rel="icon"
-      href="./assets/images/simbolo.svg"
-      type="image/x-icon"
-    />
+    <link rel="icon" href="./assets/images/simbolo.svg" type="image/x-icon" />
     <link rel="stylesheet" href="./css/style.css" />
     <link rel="stylesheet" href="./css/recursos.css" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded&icon_names=arrow_forward,auto_awesome,book_2,check_circle,close,devices,download,menu,psychology,school,self_improvement,stacks&display=block"
-      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded&icon_names=arrow_forward,auto_awesome,book_2,check_circle,close,devices,download,menu,psychology,schedule,school,self_improvement,stacks&display=block"
+      rel="stylesheet"/>
     />
   </head>
   <body>
@@ -79,11 +75,7 @@
         <a href="#recursos-hero" data-menu-link>EVA Individual</a>
         <a href="./empresas.html" data-menu-link>EVA Empresas</a>
       </nav>
-      <a
-        href="./contato.html"
-        class="mobile-menu-cta"
-        data-menu-link
-      >
+      <a href="./contato.html" class="mobile-menu-cta" data-menu-link>
         Fale com a EVA
       </a>
     </aside>
@@ -152,7 +144,9 @@
         <div class="learning-paths-grid">
           <article class="learning-path-card reveal reveal-up reveal-delay-1">
             <div class="learning-path-icon">
-              <span class="material-symbols-rounded" aria-hidden="true">stacks</span>
+              <span class="material-symbols-rounded" aria-hidden="true"
+                >stacks</span
+              >
             </div>
             <span class="learning-path-number">01</span>
             <h3>Jornadas</h3>
@@ -163,7 +157,9 @@
           </article>
           <article class="learning-path-card reveal reveal-up reveal-delay-2">
             <div class="learning-path-icon">
-              <span class="material-symbols-rounded" aria-hidden="true">school</span>
+              <span class="material-symbols-rounded" aria-hidden="true"
+                >school</span
+              >
             </div>
             <span class="learning-path-number">02</span>
             <h3>Cursos online</h3>
@@ -174,7 +170,9 @@
           </article>
           <article class="learning-path-card reveal reveal-up reveal-delay-3">
             <div class="learning-path-icon">
-              <span class="material-symbols-rounded" aria-hidden="true">book_2</span>
+              <span class="material-symbols-rounded" aria-hidden="true"
+                >book_2</span
+              >
             </div>
             <span class="learning-path-number">03</span>
             <h3>Recursos digitais</h3>
@@ -191,93 +189,32 @@
           <span>Recursos disponíveis</span>
           <h2>Encontre um próximo passo para o seu desenvolvimento.</h2>
           <p>
-            Cursos, jornadas e materiais reunidos em uma experiência simples
-            para ajudar você a encontrar o recurso mais adequado ao seu momento.
+            Cursos e conteúdos práticos para apoiar seu desenvolvimento
+            emocional, relacional, profissional e financeiro.
           </p>
         </div>
 
-        <div class="resources-grid">
-          <article class="resource-card reveal reveal-up reveal-delay-1">
-            <div class="resource-card-visual resource-card-visual-purple">
-              <span class="resource-type">Jornada</span>
-              <span class="material-symbols-rounded" aria-hidden="true">stacks</span>
-            </div>
-            <div class="resource-card-content">
-              <h3>Jornada de Comunicação e Relações</h3>
-              <p>
-                Uma experiência de aprendizagem voltada ao desenvolvimento da
-                comunicação, escuta, consciência emocional e relações mais
-                saudáveis.
-              </p>
-              <div class="resource-meta">
-                <span class="material-symbols-rounded" aria-hidden="true">devices</span>
-                <span>Online • Moodle</span>
-              </div>
-              <a
-                href="mailto:contato@evaglobal.com.br?subject=Interesse na Jornada de Comunicação e Relações"
-                class="resource-button"
-              >
-                Tenho interesse
-                <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span>
-              </a>
-            </div>
-          </article>
+        <div class="resources-carousel">
+          <button
+            class="resources-arrow resources-arrow-prev"
+            type="button"
+            aria-label="Ver cursos anteriores"
+          >
+            ‹
+          </button>
 
-          <article class="resource-card reveal reveal-up reveal-delay-2">
-            <div class="resource-card-visual resource-card-visual-coral">
-              <span class="resource-type">Jornada</span>
-              <span class="material-symbols-rounded" aria-hidden="true">psychology</span>
-            </div>
-            <div class="resource-card-content">
-              <h3>Jornada de Desenvolvimento Emocional</h3>
-              <p>
-                Conteúdos e práticas para apoiar autoconhecimento, regulação
-                emocional, bem-estar e desenvolvimento pessoal.
-              </p>
-              <div class="resource-meta">
-                <span class="material-symbols-rounded" aria-hidden="true">devices</span>
-                <span>Online • Moodle</span>
-              </div>
-              <a
-                href="mailto:contato@evaglobal.com.br?subject=Interesse na Jornada de Desenvolvimento Emocional"
-                class="resource-button"
-              >
-                Tenho interesse
-                <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span>
-              </a>
-            </div>
-          </article>
+          <div class="resources-viewport">
+            <div class="resources-track" id="resources-track"></div>
+          </div>
 
-          <article class="resource-card reveal reveal-up reveal-delay-3">
-            <div class="resource-card-visual resource-card-visual-blue">
-              <span class="resource-type">Recurso digital</span>
-              <span class="material-symbols-rounded" aria-hidden="true">download</span>
-            </div>
-            <div class="resource-card-content">
-              <h3>Recursos Práticos de Desenvolvimento</h3>
-              <p>
-                Materiais, guias e conteúdos digitais para apoiar reflexões e
-                práticas no cotidiano de forma simples e aplicável.
-              </p>
-              <div class="resource-meta">
-                <span class="material-symbols-rounded" aria-hidden="true">devices</span>
-                <span>Formato digital</span>
-              </div>
-              <a
-                href="mailto:contato@evaglobal.com.br?subject=Interesse nos Recursos Práticos de Desenvolvimento"
-                class="resource-button"
-              >
-                Tenho interesse
-                <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span>
-              </a>
-            </div>
-          </article>
+          <button
+            class="resources-arrow resources-arrow-next"
+            type="button"
+            aria-label="Ver próximos cursos"
+          >
+            ›
+          </button>
         </div>
-
-        <p class="resources-note reveal reveal-up">
-          Novos cursos, jornadas e recursos serão adicionados conforme o
-          catálogo da EVA for ampliado.
-        </p>
       </section>
 
       <section class="individual-process-section">
@@ -336,7 +273,9 @@
         </div>
         <a href="./contato.html" class="btn individual-cta-button">
           Falar com a EVA
-          <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span>
+          <span class="material-symbols-rounded" aria-hidden="true"
+            >arrow_forward</span
+          >
         </a>
       </section>
     </main>
@@ -382,7 +321,7 @@
         </div>
       </div>
     </footer>
-
+    <script src="./js/recursos.js"></script>
     <script src="./js/main.js"></script>
   </body>
 </html>
