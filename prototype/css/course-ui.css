@@ -1,0 +1,274 @@
+.resources-carousel,
+.business-courses-carousel {
+  padding-bottom: 82px;
+}
+
+.resources-arrow,
+.business-courses-arrow {
+  top: auto;
+  bottom: 12px;
+  transform: none;
+}
+
+.resources-arrow-prev,
+.business-courses-prev {
+  left: calc(50% - 62px);
+}
+
+.resources-arrow-next,
+.business-courses-next {
+  right: calc(50% - 62px);
+}
+
+.resources-arrow:hover:not(:disabled),
+.business-courses-arrow:hover:not(:disabled) {
+  transform: scale(1.08);
+}
+
+.resources-viewport,
+.business-courses-viewport {
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.course-modal {
+  padding: 20px;
+}
+
+.course-modal-dialog {
+  width: min(860px, calc(100% - 16px));
+  max-height: 88vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-radius: 26px;
+}
+
+.course-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  float: none;
+  margin: 0;
+  width: 42px;
+  height: 42px;
+}
+
+.course-detail-layout {
+  grid-template-columns: minmax(240px, 0.72fr) minmax(0, 1.28fr);
+  min-height: 0;
+}
+
+.course-detail-visual {
+  min-height: 0;
+}
+
+.course-detail-visual img {
+  min-height: 0;
+  height: 100%;
+  max-height: 700px;
+}
+
+.course-detail-main {
+  padding: 32px 32px 28px;
+}
+
+.course-detail-main h2 {
+  margin-top: 14px;
+  font-size: clamp(1.7rem, 2.6vw, 2.45rem);
+  line-height: 1.08;
+}
+
+.course-detail-description {
+  margin-top: 14px;
+  line-height: 1.62;
+}
+
+.course-detail-meta {
+  gap: 10px 16px;
+  margin-top: 18px;
+  padding-bottom: 18px;
+}
+
+.course-detail-section {
+  margin-top: 20px;
+}
+
+.course-detail-section h3 {
+  margin-bottom: 10px;
+}
+
+.course-detail-section ul {
+  gap: 7px;
+}
+
+.course-detail-section li {
+  padding-left: 23px;
+  line-height: 1.45;
+}
+
+.course-investment-card,
+.course-proposal-card {
+  margin-top: 20px;
+  padding: 17px 18px;
+  border-radius: 17px;
+}
+
+.course-investment-card strong {
+  font-size: 1.65rem;
+}
+
+.course-proposal-card strong {
+  font-size: 1.3rem;
+}
+
+.course-detail-benefits {
+  margin-top: 15px;
+  gap: 6px;
+  font-size: 0.86rem;
+}
+
+.course-detail-actions {
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.course-detail-primary,
+.course-detail-secondary {
+  min-height: 48px;
+}
+
+@media (max-width: 760px) {
+  .resources-carousel,
+  .business-courses-carousel {
+    padding-bottom: 72px;
+  }
+
+  .resources-arrow,
+  .business-courses-arrow {
+    width: 46px;
+    height: 46px;
+    bottom: 8px;
+  }
+
+  .resources-arrow-prev,
+  .business-courses-prev {
+    left: calc(50% - 56px);
+  }
+
+  .resources-arrow-next,
+  .business-courses-next {
+    right: calc(50% - 56px);
+  }
+
+  .course-modal {
+    padding: 10px;
+  }
+
+  .course-modal-dialog {
+    width: 100%;
+    max-height: 92dvh;
+    border-radius: 22px;
+  }
+
+  .course-modal-close {
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .course-detail-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .course-detail-visual img {
+    width: 100%;
+    height: 170px;
+    max-height: 170px;
+  }
+
+  .course-detail-main {
+    padding: 20px 18px 20px;
+  }
+
+  .course-detail-type {
+    padding: 6px 10px;
+    font-size: 0.69rem;
+  }
+
+  .course-detail-main h2 {
+    margin-top: 11px;
+    padding-right: 30px;
+    font-size: clamp(1.45rem, 7vw, 1.9rem);
+  }
+
+  .course-detail-description {
+    margin-top: 11px;
+    font-size: 0.94rem;
+    line-height: 1.55;
+  }
+
+  .course-detail-meta {
+    margin-top: 14px;
+    padding-bottom: 14px;
+    font-size: 0.88rem;
+  }
+
+  .course-detail-section {
+    margin-top: 16px;
+  }
+
+  .course-detail-section h3 {
+    font-size: 1rem;
+  }
+
+  .course-detail-section li {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .course-investment-card,
+  .course-proposal-card {
+    margin-top: 16px;
+    padding: 14px 15px;
+  }
+
+  .course-detail-benefits {
+    font-size: 0.82rem;
+  }
+
+  .course-detail-actions {
+    margin-top: 16px;
+  }
+}
+
+@media (max-width: 420px) {
+  .course-detail-visual img {
+    height: 145px;
+    max-height: 145px;
+  }
+
+  .course-detail-main {
+    padding: 17px 15px 18px;
+  }
+
+  .course-detail-main h2 {
+    font-size: 1.4rem;
+  }
+
+  .course-detail-primary,
+  .course-detail-secondary {
+    min-height: 46px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resources-track,
+  .business-courses-track,
+  .resources-arrow,
+  .business-courses-arrow {
+    transition: none;
+  }
+}
