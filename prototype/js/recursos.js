@@ -16,13 +16,11 @@ const cursosIndividuais = [
       "Criar hábitos financeiros mais saudáveis",
       "Tomar decisões financeiras com mais segurança",
     ],
-    preco: "R$ 49,90",
-    acesso: "90 dias",
-    certificado: "Certificado ao finalizar o curso",
   },
   {
     id: "micro-habitos-pessoais",
-    titulo: "Micro-Hábitos Pessoais: Construindo Mudanças Sustentáveis no Dia a Dia",
+    titulo:
+      "Micro-Hábitos Pessoais: Construindo Mudanças Sustentáveis no Dia a Dia",
     duracao: "45 minutos",
     formato: "Online • Moodle",
     imagem: "./assets/images/microPessoais.png",
@@ -37,13 +35,11 @@ const cursosIndividuais = [
       "Lidar melhor com interrupções e recaídas",
       "Acompanhar seu progresso de forma prática",
     ],
-    preco: "R$ 49,90",
-    acesso: "90 dias",
-    certificado: "Certificado ao finalizar o curso",
   },
   {
     id: "comunicacao-nao-violenta",
-    titulo: "Comunicação Não Violenta na Prática: Transformando Relações Pessoais e Profissionais",
+    titulo:
+      "Comunicação Não Violenta na Prática: Transformando Relações Pessoais e Profissionais",
     duracao: "45 minutos",
     formato: "Online • Moodle",
     imagem: "./assets/images/comunicacaoNviolenta.png",
@@ -58,9 +54,6 @@ const cursosIndividuais = [
       "Escutar com mais empatia",
       "Conduzir conflitos de forma mais consciente",
     ],
-    preco: "R$ 49,90",
-    acesso: "90 dias",
-    certificado: "Certificado ao finalizar o curso",
   },
   {
     id: "regulacao-emocional",
@@ -79,9 +72,6 @@ const cursosIndividuais = [
       "Lidar melhor com situações de estresse",
       "Tomar decisões com mais consciência",
     ],
-    preco: "R$ 49,90",
-    acesso: "90 dias",
-    certificado: "Certificado ao finalizar o curso",
   },
   {
     id: "comunicacao-empatica",
@@ -100,9 +90,6 @@ const cursosIndividuais = [
       "Desenvolver respostas mais empáticas",
       "Reduzir ruídos e conflitos nas relações",
     ],
-    preco: "R$ 49,90",
-    acesso: "90 dias",
-    certificado: "Certificado ao finalizar o curso",
   },
 ];
 
@@ -146,15 +133,12 @@ function renderCursos() {
               class="resource-button resource-details-button"
               type="button"
               data-course-id="${curso.id}"
+              aria-haspopup="dialog"
+              aria-controls="individual-course-modal"
             >
               Ver detalhes
               <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span>
             </button>
-
-            <a href="./contato.html?curso=${encodeURIComponent(curso.id)}" class="resource-button">
-              Tenho interesse
-              <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span>
-            </a>
           </div>
         </article>
       `,
@@ -188,14 +172,8 @@ function renderModal(curso) {
 
         <div class="course-investment-card">
           <span>Investimento</span>
-          <strong>${curso.preco}</strong>
-          <small>Pagamento único • acesso por ${curso.acesso}</small>
-        </div>
-
-        <div class="course-detail-benefits">
-          <span>${curso.certificado}</span>
-          <span>Acesso por ${curso.acesso}</span>
-          <span>Ambiente de aprendizagem pelo Moodle</span>
+          <strong>Valor em definição</strong>
+          <small>O valor final será exibido aqui assim que o catálogo comercial da EVA for confirmado.</small>
         </div>
 
         <div class="course-detail-actions">
@@ -265,27 +243,27 @@ modal?.addEventListener("click", (event) => {
 });
 
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && modal?.classList.contains("is-open")) closeModal();
+  if (event.key === "Escape" && modal?.classList.contains("is-open")) {
+    closeModal();
+  }
 });
 
 prevButton?.addEventListener("click", () => {
-  currentIndex--;
-  if (currentIndex < 0) currentIndex = 0;
+  currentIndex = Math.max(0, currentIndex - 1);
   updateCarousel();
 });
 
 nextButton?.addEventListener("click", () => {
-  const visibleCards = getVisibleCards();
-  const maximumIndex = Math.max(0, cursosIndividuais.length - visibleCards);
+  const maximumIndex = Math.max(
+    0,
+    cursosIndividuais.length - getVisibleCards(),
+  );
 
-  currentIndex++;
-  if (currentIndex > maximumIndex) currentIndex = maximumIndex;
+  currentIndex = Math.min(maximumIndex, currentIndex + 1);
   updateCarousel();
 });
 
-window.addEventListener("resize", () => {
-  updateCarousel();
-});
+window.addEventListener("resize", updateCarousel);
 
 renderCursos();
 updateCarousel();
