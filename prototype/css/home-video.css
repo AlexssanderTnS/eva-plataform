@@ -33,7 +33,7 @@
 .eva-video-copy h2 {
   margin-top: 16px;
   font-family: var(--font-title);
-  font-size: clamp(2.3rem, 4.2vw, 4.25rem);
+  font-size: clamp(2.1rem, 3.2vw, 3.25rem);
   line-height: 1.02;
   letter-spacing: -0.055em;
   color: var(--color-text);
@@ -46,15 +46,7 @@
   line-height: 1.78;
 }
 
-.eva-video-note {
-  margin-top: 26px;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.88rem;
-  font-weight: 800;
-  color: var(--color-purple-dark);
-}
+
 
 .eva-video-note::before {
   content: "";
@@ -117,7 +109,7 @@
   color: #fff;
   background:
     linear-gradient(rgba(3, 14, 46, 0.58), rgba(3, 14, 46, 0.72)),
-    url("../assets/images/Colorado2.JPG") center / cover no-repeat;
+    url("../assets/images/contato.jpg") center / cover no-repeat;
 }
 
 .eva-video-fallback.is-visible {
