@@ -243,7 +243,6 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   });
 });
 
-
 const revealElements = document.querySelectorAll(".reveal");
 
 function showElement(element) {
@@ -373,7 +372,36 @@ function enableCarouselSwipe() {
   });
 }
 
+function restoreMobileCtaColors() {
+  if (document.querySelector("#mobile-cta-visual-fix")) {
+    return;
+  }
+
+  const style = document.createElement("style");
+  style.id = "mobile-cta-visual-fix";
+  style.textContent = `
+    .mobile-menu-cta {
+      cursor: pointer;
+      box-shadow: 0 14px 34px rgba(255, 94, 72, 0.2);
+    }
+
+    .mobile-menu-drawer.is-open .mobile-menu-cta {
+      opacity: 1;
+    }
+
+    .mobile-menu-cta:hover,
+    .mobile-menu-cta:focus-visible {
+      color: #fff;
+      background: linear-gradient(160deg, #ff5e48, #f28322);
+      box-shadow: 0 18px 38px rgba(255, 94, 72, 0.28);
+    }
+  `;
+
+  document.head.appendChild(style);
+}
+
 loadCourseUiStyles();
 enableCarouselSwipe();
+restoreMobileCtaColors();
 
 console.log("EVA carregada com sucesso!");
