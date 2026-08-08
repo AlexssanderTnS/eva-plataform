@@ -243,6 +243,89 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   });
 });
 
+function loadHomeVideoStyles() {
+  const isHomePage = document.querySelector("#hero") && document.querySelector("#origin");
+
+  if (!isHomePage || document.querySelector('link[data-home-video="true"]')) {
+    return;
+  }
+
+  const stylesheet = document.createElement("link");
+  stylesheet.rel = "stylesheet";
+  stylesheet.href = "./css/home-video.css";
+  stylesheet.dataset.homeVideo = "true";
+  document.head.appendChild(stylesheet);
+}
+
+function createHomeVideoSection() {
+  const originSection = document.querySelector("#origin");
+  const frontsSection = document.querySelector(".fronts-section");
+
+  if (!originSection || !frontsSection || document.querySelector("#eva-video")) {
+    return;
+  }
+
+  const section = document.createElement("section");
+  section.id = "eva-video";
+  section.className = "eva-video-section";
+  section.setAttribute("aria-labelledby", "eva-video-title");
+
+  section.innerHTML = `
+    <div class="eva-video-container">
+      <div class="eva-video-copy reveal reveal-left">
+        <span class="eva-video-tag">Conheça a EVA</span>
+        <h2 id="eva-video-title">Uma conversa sobre o que queremos transformar.</h2>
+        <p>
+          Juliana e Mariana apresentam a essência da EVA, o propósito por trás do projeto
+          e a forma como psicologia, ciência e desenvolvimento humano se transformam em
+          experiências aplicáveis à vida e ao trabalho.
+        </p>
+        <div class="eva-video-note">Vídeo institucional da EVA</div>
+      </div>
+
+      <div class="eva-video-card reveal reveal-right">
+        <div class="eva-video-frame" data-video-provider="local">
+          <video
+            controls
+            playsinline
+            preload="metadata"
+            poster="./assets/images/Colorado2.JPG"
+            aria-label="Vídeo institucional da EVA"
+          >
+            <source src="./assets/videos/eva-institucional.mp4" type="video/mp4" />
+            Seu navegador não oferece suporte à reprodução de vídeo.
+          </video>
+
+          <div class="eva-video-fallback" aria-live="polite">
+            <div>
+              <strong>Vídeo institucional em preparação</strong>
+              <span>
+                Assim que o arquivo final for adicionado, ele será exibido neste espaço.
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  frontsSection.before(section);
+
+  const video = section.querySelector("video");
+  const fallback = section.querySelector(".eva-video-fallback");
+
+  video?.addEventListener("error", () => {
+    fallback?.classList.add("is-visible");
+  });
+
+  video?.querySelector("source")?.addEventListener("error", () => {
+    fallback?.classList.add("is-visible");
+  });
+}
+
+loadHomeVideoStyles();
+createHomeVideoSection();
+
 const revealElements = document.querySelectorAll(".reveal");
 
 function showElement(element) {
