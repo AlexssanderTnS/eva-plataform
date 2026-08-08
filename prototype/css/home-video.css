@@ -1,0 +1,226 @@
+.eva-video-section {
+  position: relative;
+  padding: 112px 8vw;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 12% 20%, rgba(106, 60, 255, 0.1), transparent 28%),
+    radial-gradient(circle at 88% 80%, rgba(0, 212, 255, 0.1), transparent 28%),
+    linear-gradient(180deg, #ffffff 0%, #f6f8ff 100%);
+}
+
+.eva-video-container {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(520px, 1.18fr);
+  gap: clamp(48px, 6vw, 84px);
+  align-items: center;
+}
+
+.eva-video-copy {
+  max-width: 520px;
+}
+
+.eva-video-tag {
+  display: inline-flex;
+  color: var(--color-coral);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eva-video-copy h2 {
+  margin-top: 16px;
+  font-family: var(--font-title);
+  font-size: clamp(2.3rem, 4.2vw, 4.25rem);
+  line-height: 1.02;
+  letter-spacing: -0.055em;
+  color: var(--color-text);
+}
+
+.eva-video-copy p {
+  margin-top: 22px;
+  color: rgba(7, 20, 63, 0.68);
+  font-size: 1.04rem;
+  line-height: 1.78;
+}
+
+.eva-video-note {
+  margin-top: 26px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--color-purple-dark);
+}
+
+.eva-video-note::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-purple), var(--color-cyan));
+  box-shadow: 0 0 0 6px rgba(106, 60, 255, 0.08);
+}
+
+.eva-video-card {
+  position: relative;
+  padding: 12px;
+  border: 1px solid rgba(86, 110, 180, 0.12);
+  border-radius: 34px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 28px 80px rgba(18, 31, 84, 0.12);
+}
+
+.eva-video-card::before {
+  content: "";
+  position: absolute;
+  inset: -18px;
+  z-index: -1;
+  border-radius: 46px;
+  background: linear-gradient(135deg, rgba(106, 60, 255, 0.11), rgba(0, 212, 255, 0.08));
+  filter: blur(24px);
+}
+
+.eva-video-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 25px;
+  background: #07143f;
+}
+
+.eva-video-frame video,
+.eva-video-frame iframe {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 0;
+}
+
+.eva-video-frame video {
+  object-fit: cover;
+  background: #07143f;
+}
+
+.eva-video-fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: none;
+  place-items: center;
+  padding: 28px;
+  text-align: center;
+  color: #fff;
+  background:
+    linear-gradient(rgba(3, 14, 46, 0.58), rgba(3, 14, 46, 0.72)),
+    url("../assets/images/Colorado2.JPG") center / cover no-repeat;
+}
+
+.eva-video-fallback.is-visible {
+  display: grid;
+}
+
+.eva-video-fallback strong {
+  display: block;
+  font-family: var(--font-title);
+  font-size: 1.35rem;
+}
+
+.eva-video-fallback span {
+  display: block;
+  max-width: 420px;
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.6;
+}
+
+@media (max-width: 1040px) {
+  .eva-video-section {
+    padding-block: 96px;
+  }
+
+  .eva-video-container {
+    grid-template-columns: 1fr;
+    gap: 42px;
+  }
+
+  .eva-video-copy {
+    max-width: 760px;
+    text-align: center;
+    margin-inline: auto;
+  }
+
+  .eva-video-note {
+    justify-content: center;
+  }
+
+  .eva-video-card {
+    width: min(820px, 100%);
+    margin-inline: auto;
+  }
+}
+
+@media (max-width: 720px) {
+  .eva-video-section {
+    padding: 78px 20px;
+  }
+
+  .eva-video-container {
+    gap: 34px;
+  }
+
+  .eva-video-copy h2 {
+    font-size: clamp(2.2rem, 11vw, 3.25rem);
+  }
+
+  .eva-video-copy p {
+    margin-top: 18px;
+    font-size: 0.98rem;
+    line-height: 1.68;
+  }
+
+  .eva-video-note {
+    margin-top: 20px;
+    font-size: 0.82rem;
+  }
+
+  .eva-video-card {
+    padding: 8px;
+    border-radius: 25px;
+  }
+
+  .eva-video-frame {
+    border-radius: 19px;
+  }
+}
+
+@media (max-width: 430px) {
+  .eva-video-section {
+    padding-inline: 16px;
+  }
+
+  .eva-video-copy h2 {
+    font-size: 2.15rem;
+  }
+
+  .eva-video-frame {
+    aspect-ratio: 9 / 16;
+    max-height: 68vh;
+  }
+
+  .eva-video-frame video,
+  .eva-video-frame iframe {
+    object-fit: cover;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eva-video-card,
+  .eva-video-copy {
+    transition: none;
+  }
+}
