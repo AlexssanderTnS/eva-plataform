@@ -31,16 +31,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (numbers.length <= 10) {
-      return `(${numbers.slice(0, 2)}) ${numbers.slice(
-        2,
-        6
-      )}-${numbers.slice(6)}`;
+      return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 6)}-${numbers.slice(6)}`;
     }
 
-    return `(${numbers.slice(0, 2)}) ${numbers.slice(
-      2,
-      7
-    )}-${numbers.slice(7)}`;
+    return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7)}`;
   }
 
   function updateCharacterCounter() {
@@ -48,10 +42,8 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const currentLength = messageField.value.length;
-
     characterCounter.textContent =
-      `${currentLength} / ${MAX_MESSAGE_LENGTH}`;
+      `${messageField.value.length} / ${MAX_MESSAGE_LENGTH}`;
   }
 
   function getFormGroup(field) {
@@ -108,29 +100,13 @@ document.addEventListener("DOMContentLoaded", () => {
       return false;
     }
 
-    if (
-      field.type === "email" &&
-      value &&
-      !isValidEmail(value)
-    ) {
-      showFieldError(
-        field,
-        "Digite um endereço de e-mail válido."
-      );
-
+    if (field.type === "email" && value && !isValidEmail(value)) {
+      showFieldError(field, "Digite um endereço de e-mail válido.");
       return false;
     }
 
-    if (
-      field.id === "name" &&
-      value.length > 0 &&
-      value.length < 3
-    ) {
-      showFieldError(
-        field,
-        "Digite seu nome completo."
-      );
-
+    if (field.id === "name" && value.length > 0 && value.length < 3) {
+      showFieldError(field, "Digite seu nome completo.");
       return false;
     }
 
@@ -139,11 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
       value &&
       value.replace(/\D/g, "").length < 10
     ) {
-      showFieldError(
-        field,
-        "Digite um telefone válido com DDD."
-      );
-
+      showFieldError(field, "Digite um telefone válido com DDD.");
       return false;
     }
 
@@ -156,7 +128,6 @@ document.addEventListener("DOMContentLoaded", () => {
         field,
         "Escreva uma mensagem com pelo menos 20 caracteres."
       );
-
       return false;
     }
 
@@ -186,11 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function validateForm() {
     const fields = form.querySelectorAll(
-      `
-        input:not([type="radio"]):not([type="checkbox"]),
-        select,
-        textarea
-      `
+      'input:not([type="radio"]):not([type="checkbox"]), select, textarea'
     );
 
     let isValid = true;
@@ -215,6 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     formMessage.className = `form-message ${type}`;
     formMessage.textContent = message;
+    formMessage.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
   function clearFormMessage() {
@@ -232,46 +200,53 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     submitButton.disabled = isLoading;
-    submitButton.classList.toggle(
-      "loading",
-      isLoading
-    );
+    submitButton.classList.toggle("loading", isLoading);
   }
 
   function clearValidationState() {
-    form
-      .querySelectorAll(".form-group")
-      .forEach((group) => {
-        group.classList.remove("has-error");
-      });
+    form.querySelectorAll(".form-group").forEach((group) => {
+      group.classList.remove("has-error");
+    });
 
-    form
-      .querySelectorAll(".field-error")
-      .forEach((error) => {
-        error.textContent = "";
-      });
+    form.querySelectorAll(".field-error").forEach((error) => {
+      error.textContent = "";
+    });
 
-    form
-      .querySelectorAll('[aria-invalid="true"]')
-      .forEach((field) => {
-        field.removeAttribute("aria-invalid");
-      });
+    form.querySelectorAll('[aria-invalid="true"]').forEach((field) => {
+      field.removeAttribute("aria-invalid");
+    });
 
     if (privacyError) {
       privacyError.textContent = "";
     }
   }
 
+  function applyServerErrors(errors) {
+    if (!errors || typeof errors !== "object") {
+      return;
+    }
+
+    Object.entries(errors).forEach(([fieldName, message]) => {
+      if (fieldName === "privacy") {
+        if (privacyError) {
+          privacyError.textContent = String(message);
+        }
+        return;
+      }
+
+      const field = form.elements.namedItem(fieldName);
+
+      if (field instanceof HTMLElement && "value" in field) {
+        showFieldError(field, String(message));
+      }
+    });
+  }
+
   phoneField?.addEventListener("input", (event) => {
-    event.target.value = formatPhone(
-      event.target.value
-    );
+    event.target.value = formatPhone(event.target.value);
   });
 
-  messageField?.addEventListener(
-    "input",
-    updateCharacterCounter
-  );
+  messageField?.addEventListener("input", updateCharacterCounter);
 
   privacyField?.addEventListener("change", () => {
     if (privacyField.checked && privacyError) {
@@ -279,32 +254,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  form
-    .querySelectorAll("input, select, textarea")
-    .forEach((field) => {
-      if (
-        field.type === "radio" ||
-        field.type === "checkbox"
-      ) {
-        return;
-      }
+  form.querySelectorAll("input, select, textarea").forEach((field) => {
+    if (field.type === "radio" || field.type === "checkbox") {
+      return;
+    }
 
-      field.addEventListener("blur", () => {
-        validateField(field);
-      });
-
-      field.addEventListener("input", () => {
-        const group = getFormGroup(field);
-
-        if (group?.classList.contains("has-error")) {
-          validateField(field);
-        }
-      });
+    field.addEventListener("blur", () => {
+      validateField(field);
     });
+
+    field.addEventListener("input", () => {
+      const group = getFormGroup(field);
+
+      if (group?.classList.contains("has-error")) {
+        validateField(field);
+      }
+    });
+  });
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
-
     clearFormMessage();
 
     if (!validateForm()) {
@@ -313,40 +282,70 @@ document.addEventListener("DOMContentLoaded", () => {
         "Verifique os campos destacados antes de continuar."
       );
 
-      const firstInvalidField =
-        form.querySelector('[aria-invalid="true"]');
-
+      const firstInvalidField = form.querySelector('[aria-invalid="true"]');
       firstInvalidField?.focus();
-
       return;
     }
 
     setLoading(true);
 
     try {
-    
+      const formData = new FormData(form);
+      const profileField = form.querySelector('input[name="profile"]:checked');
 
-      await new Promise((resolve) => {
-        setTimeout(resolve, 900);
+      const payload = {
+        name: String(formData.get("name") || "").trim(),
+        email: String(formData.get("email") || "").trim(),
+        phone: String(formData.get("phone") || "").trim(),
+        company: String(formData.get("company") || "").trim(),
+        profile: profileField?.value || "",
+        subject: String(formData.get("subject") || "").trim(),
+        message: String(formData.get("message") || "").trim(),
+        privacy: Boolean(privacyField?.checked),
+        website: ""
+      };
+
+      const response = await fetch("./api/contato.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        },
+        body: JSON.stringify(payload)
       });
+
+      let result = null;
+
+      try {
+        result = await response.json();
+      } catch {
+        throw new Error("O servidor retornou uma resposta inválida.");
+      }
+
+      if (!response.ok || !result?.success) {
+        applyServerErrors(result?.errors);
+        throw new Error(
+          result?.message || "Não foi possível enviar sua mensagem."
+        );
+      }
 
       showFormMessage(
         "success",
-        "Formulário validado. O envio de mensagens será disponibilizado em breve."
+        result.message ||
+          "Mensagem enviada com sucesso. A equipe da EVA entrará em contato em breve."
       );
 
       form.reset();
       clearValidationState();
       updateCharacterCounter();
     } catch (error) {
-      console.error(
-        "Erro ao processar o formulário:",
-        error
-      );
+      console.error("Erro ao enviar formulário:", error);
 
       showFormMessage(
         "error",
-        "Não foi possível processar o formulário. Tente novamente."
+        error instanceof Error
+          ? error.message
+          : "Não foi possível enviar sua mensagem. Tente novamente."
       );
     } finally {
       setLoading(false);
@@ -355,4 +354,3 @@ document.addEventListener("DOMContentLoaded", () => {
 
   updateCharacterCounter();
 });
-
