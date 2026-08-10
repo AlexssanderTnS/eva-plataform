@@ -272,85 +272,129 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    clearFormMessage();
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
 
-    if (!validateForm()) {
-      showFormMessage(
-        "error",
-        "Verifique os campos destacados antes de continuar."
-      );
+  clearFormMessage();
 
-      const firstInvalidField = form.querySelector('[aria-invalid="true"]');
-      firstInvalidField?.focus();
-      return;
-    }
+  if (!validateForm()) {
+    showFormMessage(
+      "error",
+      "Verifique os campos destacados antes de continuar."
+    );
 
-    setLoading(true);
+    const firstInvalidField =
+      form.querySelector('[aria-invalid="true"]');
 
-    try {
-      const formData = new FormData(form);
-      const profileField = form.querySelector('input[name="profile"]:checked');
+    firstInvalidField?.focus();
 
-      const payload = {
-        name: String(formData.get("name") || "").trim(),
-        email: String(formData.get("email") || "").trim(),
-        phone: String(formData.get("phone") || "").trim(),
-        company: String(formData.get("company") || "").trim(),
-        profile: profileField?.value || "",
-        subject: String(formData.get("subject") || "").trim(),
-        message: String(formData.get("message") || "").trim(),
-        privacy: Boolean(privacyField?.checked),
-        website: ""
-      };
+    return;
+  }
 
-      const response = await fetch("./api/contato.php", {
+  setLoading(true);
+
+  try {
+    const formData = new FormData(form);
+
+    const profileField = form.querySelector(
+      'input[name="profile"]:checked'
+    );
+
+    const payload = {
+      name: String(
+        formData.get("name") || ""
+      ).trim(),
+
+      email: String(
+        formData.get("email") || ""
+      ).trim(),
+
+      phone: String(
+        formData.get("phone") || ""
+      ).trim(),
+
+      company: String(
+        formData.get("company") || ""
+      ).trim(),
+
+      profile: profileField?.value || "",
+
+      subject: String(
+        formData.get("subject") || ""
+      ).trim(),
+
+      message: String(
+        formData.get("message") || ""
+      ).trim(),
+
+      privacy: Boolean(
+        privacyField?.checked
+      ),
+
+      website: ""
+    };
+
+    const response = await fetch(
+      "./api/contato.php",
+      {
         method: "POST",
+
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json"
         },
+
         body: JSON.stringify(payload)
-      });
-
-      let result = null;
-
-      try {
-        result = await response.json();
-      } catch {
-        throw new Error("O servidor retornou uma resposta inválida.");
       }
+    );
 
-      if (!response.ok || !result?.success) {
-        applyServerErrors(result?.errors);
-        throw new Error(
-          result?.message || "Não foi possível enviar sua mensagem."
-        );
-      }
+    let result;
 
-      showFormMessage(
-        "success",
-        result.message ||
-          "Mensagem enviada com sucesso. A equipe da EVA entrará em contato em breve."
+    try {
+      result = await response.json();
+    } catch {
+      throw new Error(
+        "O servidor retornou uma resposta inválida."
       );
-
-      form.reset();
-      clearValidationState();
-      updateCharacterCounter();
-    } catch (error) {
-      console.error("Erro ao enviar formulário:", error);
-
-      showFormMessage(
-        "error",
-        error instanceof Error
-          ? error.message
-          : "Não foi possível enviar sua mensagem. Tente novamente."
-      );
-    } finally {
-      setLoading(false);
     }
-  });
+
+    if (!response.ok || !result?.success) {
+      applyServerErrors(result?.errors);
+
+      throw new Error(
+        result?.message ||
+        "Não foi possível enviar sua mensagem."
+      );
+    }
+
+    showFormMessage(
+      "success",
+      result.message ||
+      "Mensagem enviada com sucesso. A equipe da EVA entrará em contato em breve."
+    );
+
+    form.reset();
+
+    clearValidationState();
+    updateCharacterCounter();
+
+  } catch (error) {
+    console.error(
+      "Erro ao enviar formulário:",
+      error
+    );
+
+    showFormMessage(
+      "error",
+      error instanceof Error
+        ? error.message
+        : "Não foi possível enviar sua mensagem. Tente novamente."
+    );
+
+  } finally {
+    setLoading(false);
+  }
+});
 
   updateCharacterCounter();
 });

@@ -200,13 +200,11 @@
   }
 
   .eva-video-frame {
-    aspect-ratio: 9 / 16;
-    max-height: 68vh;
+    aspect-ratio: 16 / 9;
   }
 
-  .eva-video-frame video,
-  .eva-video-frame iframe {
-    object-fit: cover;
+  .eva-video-frame video {
+    object-fit: contain;
   }
 }
 

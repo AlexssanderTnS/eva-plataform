@@ -454,6 +454,14 @@ a.contact-item:hover .contact-arrow {
   margin-top: 36px;
 }
 
+.website-field {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 .form-message {
   display: none;
   margin-bottom: 24px;
