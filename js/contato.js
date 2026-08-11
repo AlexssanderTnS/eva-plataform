@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const privacyError = document.querySelector("#privacy-error");
 
   const MAX_MESSAGE_LENGTH = 1000;
+  const formStartedAt = Date.now();
 
   function formatPhone(value) {
     const numbers = value.replace(/\D/g, "").slice(0, 11);
@@ -331,7 +332,11 @@ form.addEventListener("submit", async (event) => {
         privacyField?.checked
       ),
 
-      website: ""
+      website: String(
+        formData.get("website") || ""
+      ).trim(),
+
+      form_started_at: formStartedAt
     };
 
     const response = await fetch(

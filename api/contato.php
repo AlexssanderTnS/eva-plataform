@@ -9,6 +9,76 @@ use PHPMailer\PHPMailer\Exception;
 
 header('Content-Type: application/json; charset=UTF-8');
 
+const MIN_FORM_FILL_SECONDS = 3;
+const RATE_LIMIT_WINDOW_SECONDS = 600;
+const RATE_LIMIT_MAX_REQUESTS = 3;
+
+function sendJsonResponse(int $status, array $payload): void
+{
+    http_response_code($status);
+    echo json_encode($payload, JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+function applyRateLimit(string $clientIp): void
+{
+    $rateLimitDirectory = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'eva-contact-rate-limit';
+
+    if (!is_dir($rateLimitDirectory) && !mkdir($rateLimitDirectory, 0700, true) && !is_dir($rateLimitDirectory)) {
+        error_log('EVA contact rate limit: não foi possível criar o diretório temporário.');
+        sendJsonResponse(503, [
+            'success' => false,
+            'message' => 'Serviço temporariamente indisponível. Tente novamente mais tarde.'
+        ]);
+    }
+
+    $clientKey = hash('sha256', $clientIp);
+    $rateLimitFile = $rateLimitDirectory . DIRECTORY_SEPARATOR . $clientKey . '.json';
+    $handle = fopen($rateLimitFile, 'c+');
+
+    if ($handle === false || !flock($handle, LOCK_EX)) {
+        if (is_resource($handle)) {
+            fclose($handle);
+        }
+
+        error_log('EVA contact rate limit: não foi possível bloquear o arquivo temporário.');
+        sendJsonResponse(503, [
+            'success' => false,
+            'message' => 'Serviço temporariamente indisponível. Tente novamente mais tarde.'
+        ]);
+    }
+
+    $now = time();
+    $contents = stream_get_contents($handle);
+    $timestamps = json_decode($contents !== false ? $contents : '', true);
+    $timestamps = is_array($timestamps) ? $timestamps : [];
+    $timestamps = array_values(array_filter(
+        $timestamps,
+        static function ($timestamp) use ($now): bool {
+            return is_int($timestamp) && $timestamp > $now - RATE_LIMIT_WINDOW_SECONDS;
+        }
+    ));
+
+    if (count($timestamps) >= RATE_LIMIT_MAX_REQUESTS) {
+        $retryAfter = max(1, RATE_LIMIT_WINDOW_SECONDS - ($now - $timestamps[0]));
+        flock($handle, LOCK_UN);
+        fclose($handle);
+        header('Retry-After: ' . $retryAfter);
+        sendJsonResponse(429, [
+            'success' => false,
+            'message' => 'Muitas tentativas. Aguarde alguns minutos antes de tentar novamente.'
+        ]);
+    }
+
+    $timestamps[] = $now;
+    rewind($handle);
+    ftruncate($handle, 0);
+    fwrite($handle, json_encode($timestamps));
+    fflush($handle);
+    flock($handle, LOCK_UN);
+    fclose($handle);
+}
+
 
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -48,12 +118,39 @@ $company = trim((string) ($input['company'] ?? ''));
 $profile = trim((string) ($input['profile'] ?? ''));
 $subject = trim((string) ($input['subject'] ?? ''));
 $message = trim((string) ($input['message'] ?? ''));
+$website = trim((string) ($input['website'] ?? ''));
+$formStartedAt = filter_var(
+    $input['form_started_at'] ?? null,
+    FILTER_VALIDATE_INT
+);
 
 $privacy = filter_var(
     $input['privacy'] ?? false,
     FILTER_VALIDATE_BOOLEAN
 );
 
+
+if ($website !== '') {
+    sendJsonResponse(200, [
+        'success' => true,
+        'message' => 'Mensagem enviada com sucesso.'
+    ]);
+}
+
+$nowInMilliseconds = (int) floor(microtime(true) * 1000);
+$minimumFillTime = MIN_FORM_FILL_SECONDS * 1000;
+
+if (
+    $formStartedAt === false ||
+    $formStartedAt <= 0 ||
+    $formStartedAt > $nowInMilliseconds ||
+    ($nowInMilliseconds - $formStartedAt) < $minimumFillTime
+) {
+    sendJsonResponse(400, [
+        'success' => false,
+        'message' => 'Não foi possível validar o envio. Recarregue a página e tente novamente.'
+    ]);
+}
 
 $allowedProfiles = [
     'empresa',
@@ -144,6 +241,8 @@ if ($errors !== []) {
 
     exit;
 }
+
+applyRateLimit((string) ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
 
 
 $configPath = __DIR__ . '/../config/mail.local.php';

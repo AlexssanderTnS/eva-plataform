@@ -72,6 +72,7 @@ Ao responder o e-mail recebido, o cliente de e-mail deve usar o endereço inform
 - escape do conteúdo antes de gerar o HTML do e-mail;
 - assuntos e perfis aceitos por lista fechada;
 - limite de 1000 caracteres na mensagem;
-- rate limit básico por IP;
-- honeypot preparado no payload;
+- rate limit de 3 tentativas a cada 10 minutos por IP (armazenado como hash);
+- honeypot validado no backend com resposta neutra para bots;
+- bloqueio de envios feitos em menos de 3 segundos;
 - erros internos do Resend não são expostos ao visitante.
