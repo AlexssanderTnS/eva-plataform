@@ -34,3 +34,5 @@ php.ini
 
 # Testes locais que possam conter credenciais
 api/teste-smtp.php
+api/test-database.php
+api/test-users.php
