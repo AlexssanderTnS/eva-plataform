@@ -2,7 +2,7 @@ const cursosIndividuais = [
   {
     id: "gestao-financeira-pessoal",
     titulo: "Gestão Financeira Pessoal",
-    duracao: "45 minutos",
+    duracao: "1 Hora",
     formato: "Online • Moodle",
     imagem: "./assets/images/gestaoFinanceira.png",
     descricao:
@@ -21,7 +21,7 @@ const cursosIndividuais = [
     id: "micro-habitos-pessoais",
     titulo:
       "Micro-Hábitos Pessoais: Construindo Mudanças Sustentáveis no Dia a Dia",
-    duracao: "45 minutos",
+    duracao: "1 Hora",
     formato: "Online • Moodle",
     imagem: "./assets/images/microPessoais.png",
     descricao:
@@ -40,7 +40,7 @@ const cursosIndividuais = [
     id: "comunicacao-nao-violenta",
     titulo:
       "Comunicação Não Violenta na Prática: Transformando Relações Pessoais e Profissionais",
-    duracao: "45 minutos",
+    duracao: "1 Hora",
     formato: "Online • Moodle",
     imagem: "./assets/images/comunicacaoNviolenta.png",
     descricao:
@@ -58,7 +58,7 @@ const cursosIndividuais = [
   {
     id: "regulacao-emocional",
     titulo: "Regulação Emocional",
-    duracao: "45 minutos",
+    duracao: "1 Hora",
     formato: "Online • Moodle",
     imagem: "./assets/images/regulacaoEmocional.png",
     descricao:
@@ -76,7 +76,7 @@ const cursosIndividuais = [
   {
     id: "comunicacao-empatica",
     titulo: "Comunicação Empática e Escuta Ativa",
-    duracao: "45 minutos",
+    duracao: "1 Hora",
     formato: "Online • Moodle",
     imagem: "./assets/images/comunicacaoEmpatica.png",
     descricao:
@@ -172,8 +172,7 @@ function renderModal(curso) {
 
         <div class="course-investment-card">
           <span>Investimento</span>
-          <strong>Valor em definição</strong>
-          <small>O valor final será exibido aqui assim que o catálogo comercial da EVA for confirmado.</small>
+          <strong>R$69,90</strong>
         </div>
 
         <div class="course-detail-actions">

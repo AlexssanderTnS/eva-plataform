@@ -2,7 +2,7 @@ const cursosEmpresas = [
   {
     id: "comunicacao-empatica-empresas",
     titulo: "Comunicação Empática e Escuta Ativa",
-    duracao: "45 minutos",
+    duracao: "1 Hora",
     formato: "Online • Moodle",
     imagem: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=900&q=80",
     descricao:
@@ -20,7 +20,7 @@ const cursosEmpresas = [
   {
     id: "inteligencia-regulacao-emocional",
     titulo: "Inteligência e Regulação Emocional",
-    duracao: "35 minutos",
+    duracao: "45 Minutos",
     formato: "Online • Moodle",
     imagem: "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=80",
     descricao:
@@ -38,7 +38,7 @@ const cursosEmpresas = [
   {
     id: "cnv-empresas",
     titulo: "Comunicação Não Violenta na Prática",
-    duracao: "45 minutos",
+    duracao: "1 Hora",
     formato: "Online • Moodle",
     imagem: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=900&q=80",
     descricao:
@@ -56,7 +56,7 @@ const cursosEmpresas = [
   {
     id: "habitos-saudaveis-trabalho",
     titulo: "Construção de Hábitos Saudáveis no Trabalho",
-    duracao: "45 minutos",
+    duracao: "1 Hora",
     formato: "Online • Moodle",
     imagem: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=900&q=80",
     descricao:
@@ -74,7 +74,7 @@ const cursosEmpresas = [
   {
     id: "respeito-em-acao",
     titulo: "Respeito em Ação: Prevenção e Enfrentamento do Assédio no Trabalho",
-    duracao: "45 minutos",
+    duracao: "1 Hora",
     formato: "Online • Moodle",
     imagem: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=900&q=80",
     descricao:
@@ -92,7 +92,7 @@ const cursosEmpresas = [
   {
     id: "atendimento-excelencia",
     titulo: "Atendimento de Excelência: Estratégias Práticas para Profissionais Modernos",
-    duracao: "45 minutos",
+    duracao: "1 Hora",
     formato: "Online • Moodle",
     imagem: "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=900&q=80",
     descricao:
@@ -110,7 +110,7 @@ const cursosEmpresas = [
   {
     id: "lideranca-consciente",
     titulo: "Liderança Consciente: Influência e Desenvolvimento de Equipes",
-    duracao: "45 minutos",
+    duracao: "1 Hora",
     formato: "Online • Moodle",
     imagem: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=900&q=80",
     descricao:
@@ -128,7 +128,7 @@ const cursosEmpresas = [
   {
     id: "consciencia-financeira",
     titulo: "Consciência Financeira: Construindo Hábitos Sustentáveis para o Bem-Estar",
-    duracao: "35 minutos",
+    duracao: "45 Minutos",
     formato: "Online • Moodle",
     imagem: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=900&q=80",
     descricao:
