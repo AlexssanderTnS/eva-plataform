@@ -36,3 +36,4 @@ php.ini
 api/teste-smtp.php
 api/test-database.php
 api/test-users.php
+teste-register.http
