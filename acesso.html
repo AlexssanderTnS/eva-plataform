@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Acesse ou crie sua conta na plataforma EVA." />
+    <title>Acesso | EVA</title>
+    <link rel="icon" href="./assets/images/simbolo.svg" type="image/x-icon" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/auth.css" />
+  </head>
+  <body class="auth-page">
+    <header class="auth-header">
+      <a href="./index.html" class="auth-brand" aria-label="Voltar para a página inicial">
+        <img src="./assets/images/eva-logo.svg" alt="Logo EVA" />
+      </a>
+      <a href="./index.html" class="auth-back">Voltar ao site</a>
+    </header>
+
+    <main class="auth-shell">
+      <section class="auth-intro" aria-labelledby="auth-title">
+        <span class="auth-eyebrow">Sua jornada na EVA</span>
+        <h1 id="auth-title">Acesse sua conta ou comece agora.</h1>
+        <p>
+          Entre para acessar seus recursos e cursos. Se ainda não possui conta,
+          faça seu cadastro e confirme o e-mail para concluir o acesso.
+        </p>
+      </section>
+
+      <section class="auth-card" aria-label="Acesso à conta EVA">
+        <div class="auth-tabs" role="tablist" aria-label="Escolha entre entrar ou criar conta">
+          <button class="auth-tab is-active" type="button" role="tab" aria-selected="true" data-auth-tab="login">
+            Entrar
+          </button>
+          <button class="auth-tab" type="button" role="tab" aria-selected="false" data-auth-tab="register">
+            Criar conta
+          </button>
+        </div>
+
+        <div class="auth-panel is-active" data-auth-panel="login">
+          <form id="login-form" class="auth-form" novalidate>
+            <div class="auth-field">
+              <label for="login-email">E-mail</label>
+              <input id="login-email" name="email" type="email" autocomplete="email" required />
+            </div>
+
+            <div class="auth-field">
+              <label for="login-password">Senha</label>
+              <input id="login-password" name="password" type="password" autocomplete="current-password" required />
+            </div>
+
+            <div class="auth-message" data-login-message aria-live="polite"></div>
+
+            <button class="auth-submit" type="submit">Entrar</button>
+          </form>
+
+          <div class="auth-resend" data-resend-box hidden>
+            <p>Seu e-mail ainda não foi confirmado.</p>
+            <button type="button" data-resend-verification>Reenviar e-mail de confirmação</button>
+            <div class="auth-message" data-resend-message aria-live="polite"></div>
+          </div>
+        </div>
+
+        <div class="auth-panel" data-auth-panel="register" hidden>
+          <form id="register-form" class="auth-form" novalidate>
+            <div class="auth-grid">
+              <div class="auth-field">
+                <label for="register-first-name">Nome</label>
+                <input id="register-first-name" name="first_name" type="text" autocomplete="given-name" maxlength="80" required />
+              </div>
+
+              <div class="auth-field">
+                <label for="register-last-name">Sobrenome</label>
+                <input id="register-last-name" name="last_name" type="text" autocomplete="family-name" maxlength="120" required />
+              </div>
+            </div>
+
+            <div class="auth-field">
+              <label for="register-email">E-mail</label>
+              <input id="register-email" name="email" type="email" autocomplete="email" maxlength="254" required />
+            </div>
+
+            <div class="auth-field">
+              <label for="register-password">Senha</label>
+              <input id="register-password" name="password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required />
+              <small>Use pelo menos 8 caracteres.</small>
+            </div>
+
+            <label class="auth-consent">
+              <input type="checkbox" name="privacy" required />
+              <span>
+                Li e concordo com a <a href="./politica.html" target="_blank">Política de Privacidade</a>
+                e com os <a href="./termos.html" target="_blank">Termos de Uso</a>.
+              </span>
+            </label>
+
+            <div class="auth-message" data-register-message aria-live="polite"></div>
+
+            <button class="auth-submit" type="submit">Criar minha conta</button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <script src="./js/auth.js"></script>
+  </body>
+</html>
