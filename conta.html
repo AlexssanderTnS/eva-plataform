@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minha Conta | EVA</title>
+  <link rel="stylesheet" href="./css/style.css" />
+  <link rel="stylesheet" href="./css/auth.css" />
+</head>
+<body class="account-page">
+  <header class="auth-header">
+    <a href="./index.html" class="auth-brand"><img src="./assets/images/eva-logo.svg" alt="Logo EVA" /></a>
+    <button type="button" class="auth-logout" data-logout>Sair</button>
+  </header>
+  <main class="account-shell" data-account-root hidden>
+    <section class="account-hero">
+      <span class="auth-eyebrow">Minha conta</span>
+      <h1>Olá, <span data-account-name>usuário</span>.</h1>
+    </section>
+    <div class="account-grid">
+      <section class="account-card">
+        <h2>Dados pessoais</h2>
+        <form id="profile-form" class="auth-form">
+          <div class="auth-field"><label for="profile-first-name">Nome</label><input id="profile-first-name" name="first_name" required /></div>
+          <div class="auth-field"><label for="profile-last-name">Sobrenome</label><input id="profile-last-name" name="last_name" required /></div>
+          <div class="auth-field"><label for="profile-email">E-mail</label><input id="profile-email" type="email" disabled /></div>
+          <div class="auth-message" data-profile-message></div>
+          <button class="auth-submit" type="submit">Salvar alterações</button>
+        </form>
+      </section>
+      <section class="account-card">
+        <h2>Alterar senha</h2>
+        <form id="change-password-form" class="auth-form">
+          <div class="auth-field"><label for="current-password">Senha atual</label><input id="current-password" name="current_password" type="password" required /></div>
+          <div class="auth-field"><label for="new-password">Nova senha</label><input id="new-password" name="new_password" type="password" minlength="8" required /></div>
+          <div class="auth-field"><label for="new-password-confirmation">Confirmar senha</label><input id="new-password-confirmation" name="new_password_confirmation" type="password" minlength="8" required /></div>
+          <div class="auth-message" data-password-message></div>
+          <button class="auth-submit" type="submit">Alterar senha</button>
+        </form>
+      </section>
+      <section class="account-card account-card-wide">
+        <h2>Meus dados</h2>
+        <button type="button" class="account-secondary-button" data-export-data>Exportar meus dados</button>
+        <div class="auth-message" data-account-message></div>
+      </section>
+    </div>
+  </main>
+  <div class="account-loading" data-account-loading>Carregando sua conta...</div>
+  <script src="./js/auth.js"></script>
+</body>
+</html>
