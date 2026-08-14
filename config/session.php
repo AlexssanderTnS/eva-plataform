@@ -1,0 +1,95 @@
+<?php
+
+declare(strict_types=1);
+
+function evaStartSecureSession(): void
+{
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        return;
+    }
+
+    $documentRoot = realpath(
+        (string) ($_SERVER['DOCUMENT_ROOT'] ?? '')
+    );
+
+    $projectRoot = realpath(dirname(__DIR__));
+
+    if ($documentRoot !== false) {
+        $sessionBase = dirname($documentRoot);
+    } elseif ($projectRoot !== false) {
+        $sessionBase = dirname($projectRoot);
+    } else {
+        $sessionBase = sys_get_temp_dir();
+    }
+
+    $sessionPath =
+        $sessionBase . DIRECTORY_SEPARATOR . 'eva_sessions';
+
+    if (
+        !is_dir($sessionPath) &&
+        !mkdir($sessionPath, 0700, true) &&
+        !is_dir($sessionPath)
+    ) {
+        throw new RuntimeException(
+            'Não foi possível inicializar o armazenamento de sessão.'
+        );
+    }
+
+    @chmod($sessionPath, 0700);
+
+    if (!is_writable($sessionPath)) {
+        throw new RuntimeException(
+            'O diretório de sessão não possui permissão de escrita.'
+        );
+    }
+
+    session_save_path($sessionPath);
+
+    ini_set('session.use_strict_mode', '1');
+    ini_set('session.use_only_cookies', '1');
+    ini_set('session.cookie_httponly', '1');
+    ini_set('session.cookie_secure', '1');
+    ini_set('session.cookie_samesite', 'Lax');
+
+    session_name('EVA_SESSION');
+
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'secure' => true,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+
+    session_start();
+}
+
+function evaDestroySession(): void
+{
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        return;
+    }
+
+    $_SESSION = [];
+
+    if (ini_get('session.use_cookies')) {
+        $params = session_get_cookie_params();
+
+        setcookie(
+            session_name(),
+            '',
+            [
+                'expires' => time() - 42000,
+                'path' => $params['path'],
+                'domain' => $params['domain'],
+                'secure' => $params['secure'],
+                'httponly' => $params['httponly'],
+                'samesite' => $params['samesite'] ?? 'Lax',
+            ]
+        );
+    }
+
+    session_destroy();
+}
+
+evaStartSecureSession();
