@@ -1,0 +1,49 @@
+name: Security checks
+
+on:
+  push:
+    branches:
+      - security/auth-hardening
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Runtime versions
+        run: |
+          php -v
+          composer --version
+          node --version
+
+      - name: Validate Composer files
+        run: composer validate --strict
+
+      - name: Audit Composer dependencies
+        run: composer audit --locked --no-interaction
+
+      - name: PHP syntax
+        run: find api config -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      - name: JavaScript syntax
+        run: node --check js/auth.js
+
+      - name: Ensure local secrets are not tracked
+        run: |
+          test ! -f config/database.local.php
+          test ! -f config/mail.local.php
+          test ! -f .env
+
+      - name: Ensure session debug logs are absent
+        run: |
+          if grep -R -n -E 'EVA SESSION ID|session_id\(\).*error_log|error_log\(.*session_id' api config; then
+            echo 'Session debug logging found.'
+            exit 1
+          fi
