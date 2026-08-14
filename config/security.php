@@ -27,6 +27,7 @@ function evaApplyApiSecurityHeaders(): void
     header('X-Content-Type-Options: nosniff');
     header('X-Frame-Options: DENY');
     header('Referrer-Policy: no-referrer');
+    header('Cross-Origin-Resource-Policy: same-origin');
     header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
     header('Pragma: no-cache');
     header("Content-Security-Policy: default-src 'none'; frame-ancestors 'none'; base-uri 'none'");
@@ -34,14 +35,12 @@ function evaApplyApiSecurityHeaders(): void
 
 function evaEnforceJsonRequest(int $maxBodyBytes = 16384): void
 {
-    $contentType = strtolower(
-        trim((string) ($_SERVER['CONTENT_TYPE'] ?? ''))
+    $contentType = trim((string) ($_SERVER['CONTENT_TYPE'] ?? ''));
+    $mediaType = strtolower(
+        trim(explode(';', $contentType, 2)[0])
     );
 
-    if (
-        $contentType === '' ||
-        !str_starts_with($contentType, 'application/json')
-    ) {
+    if ($mediaType !== 'application/json') {
         evaSecurityJsonResponse(
             415,
             'Formato da requisição não suportado.'
