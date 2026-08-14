@@ -1,51 +1,300 @@
 <!doctype html>
 <html lang="pt-br">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Minha Conta | EVA</title>
-  <link rel="stylesheet" href="./css/style.css" />
-  <link rel="stylesheet" href="./css/auth.css" />
-</head>
-<body class="account-page">
-  <header class="auth-header">
-    <a href="./index.html" class="auth-brand"><img src="./assets/images/eva-logo.svg" alt="Logo EVA" /></a>
-    <button type="button" class="auth-logout" data-logout>Sair</button>
-  </header>
-  <main class="account-shell" data-account-root hidden>
-    <section class="account-hero">
-      <span class="auth-eyebrow">Minha conta</span>
-      <h1>Olá, <span data-account-name>usuário</span>.</h1>
-    </section>
-    <div class="account-grid">
-      <section class="account-card">
-        <h2>Dados pessoais</h2>
-        <form id="profile-form" class="auth-form">
-          <div class="auth-field"><label for="profile-first-name">Nome</label><input id="profile-first-name" name="first_name" required /></div>
-          <div class="auth-field"><label for="profile-last-name">Sobrenome</label><input id="profile-last-name" name="last_name" required /></div>
-          <div class="auth-field"><label for="profile-email">E-mail</label><input id="profile-email" type="email" disabled /></div>
-          <div class="auth-message" data-profile-message></div>
-          <button class="auth-submit" type="submit">Salvar alterações</button>
-        </form>
-      </section>
-      <section class="account-card">
-        <h2>Alterar senha</h2>
-        <form id="change-password-form" class="auth-form">
-          <div class="auth-field"><label for="current-password">Senha atual</label><input id="current-password" name="current_password" type="password" required /></div>
-          <div class="auth-field"><label for="new-password">Nova senha</label><input id="new-password" name="new_password" type="password" minlength="8" required /></div>
-          <div class="auth-field"><label for="new-password-confirmation">Confirmar senha</label><input id="new-password-confirmation" name="new_password_confirmation" type="password" minlength="8" required /></div>
-          <div class="auth-message" data-password-message></div>
-          <button class="auth-submit" type="submit">Alterar senha</button>
-        </form>
-      </section>
-      <section class="account-card account-card-wide">
-        <h2>Meus dados</h2>
-        <button type="button" class="account-secondary-button" data-export-data>Exportar meus dados</button>
-        <div class="auth-message" data-account-message></div>
-      </section>
-    </div>
-  </main>
-  <div class="account-loading" data-account-loading>Carregando sua conta...</div>
-  <script src="./js/auth.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Gerencie sua conta, seus dados e acessos na plataforma EVA."
+    />
+    <title>Minha Conta | EVA</title>
+    <link rel="icon" href="./assets/images/simbolo.svg" type="image/x-icon" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/auth.css" />
+    <link rel="stylesheet" href="./css/account.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded&icon_names=arrow_forward,check_circle,close,database,download,lock,logout,menu,person,school,shield,verified_user&display=block"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="account-page">
+    <header class="site-header">
+      <nav class="navbar" aria-label="Navegação principal">
+        <a
+          href="./index.html"
+          class="navbar-logo"
+          aria-label="Ir para a página inicial"
+        >
+          <img src="./assets/images/eva-logo.svg" alt="Logo EVA" />
+        </a>
+
+        <ul class="navbar-menu">
+          <li><a href="./index.html">Página Inicial</a></li>
+          <li><a href="./recursos.html">EVA Individual</a></li>
+          <li><a href="./empresas.html">EVA Empresas</a></li>
+        </ul>
+
+        <a href="./contato.html" class="navbar-cta">Fale com a EVA</a>
+
+        <button
+          class="mobile-menu-toggle"
+          type="button"
+          aria-label="Abrir menu"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+        >
+          <span class="material-symbols-rounded" aria-hidden="true">menu</span>
+        </button>
+      </nav>
+    </header>
+
+    <div class="mobile-menu-overlay" data-menu-close aria-hidden="true"></div>
+
+    <aside
+      id="mobile-menu"
+      class="mobile-menu-drawer"
+      aria-label="Menu de navegação mobile"
+      aria-hidden="true"
+      inert
+    >
+      <div class="mobile-menu-header">
+        <a
+          href="./index.html"
+          class="mobile-menu-logo"
+          aria-label="Ir para a página inicial"
+          data-menu-link
+        >
+          <img src="./assets/images/eva-logo.svg" alt="Logo EVA" />
+        </a>
+
+        <button
+          class="mobile-menu-close"
+          type="button"
+          aria-label="Fechar menu"
+          data-menu-close
+        >
+          <span class="material-symbols-rounded" aria-hidden="true">close</span>
+        </button>
+      </div>
+
+      <nav class="mobile-menu-nav" aria-label="Navegação mobile">
+        <a href="./index.html" data-menu-link>Página Inicial</a>
+        <a href="./recursos.html" data-menu-link>EVA Individual</a>
+        <a href="./empresas.html" data-menu-link>EVA Empresas</a>
+      </nav>
+
+      <a href="./contato.html" class="mobile-menu-cta" data-menu-link>
+        Fale com a EVA
+      </a>
+    </aside>
+
+    <main class="account-main">
+      <div class="account-shell" data-account-root hidden>
+        <section class="account-hero" aria-labelledby="account-title">
+          <div class="account-hero-content">
+            <span class="account-kicker">
+              <span class="material-symbols-rounded" aria-hidden="true">verified_user</span>
+              Área do aluno
+            </span>
+
+            <h1 id="account-title">
+              Olá, <span data-account-name>usuário</span>.
+            </h1>
+
+            <p>
+              Este é o seu espaço na EVA. Gerencie seus dados, cuide da segurança
+              da sua conta e acompanhe os acessos da sua jornada de desenvolvimento.
+            </p>
+          </div>
+
+          <div class="account-hero-actions">
+            <button class="account-logout-button" type="button" data-logout>
+              <span class="material-symbols-rounded" aria-hidden="true">logout</span>
+              <span>Sair</span>
+            </button>
+          </div>
+        </section>
+
+        <div class="account-dashboard">
+          <div class="account-column">
+            <section class="account-card">
+              <div class="account-card-header">
+                <span class="account-card-icon material-symbols-rounded" aria-hidden="true">person</span>
+                <div class="account-card-title">
+                  <h2>Dados pessoais</h2>
+                  <p>Mantenha suas informações de perfil sempre atualizadas.</p>
+                </div>
+              </div>
+
+              <div class="account-card-body">
+                <form id="profile-form" class="auth-form">
+                  <div class="account-profile-grid">
+                    <div class="auth-field">
+                      <label for="profile-first-name">Nome</label>
+                      <input id="profile-first-name" name="first_name" required />
+                    </div>
+
+                    <div class="auth-field">
+                      <label for="profile-last-name">Sobrenome</label>
+                      <input id="profile-last-name" name="last_name" required />
+                    </div>
+
+                    <div class="auth-field account-field-wide">
+                      <label for="profile-email">E-mail</label>
+                      <input id="profile-email" type="email" disabled />
+                    </div>
+                  </div>
+
+                  <div class="auth-message" data-profile-message aria-live="polite"></div>
+
+                  <button class="auth-submit" type="submit">
+                    <span>Salvar alterações</span>
+                    <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span>
+                  </button>
+                </form>
+              </div>
+            </section>
+
+            <section class="account-card">
+              <div class="account-card-header">
+                <span class="account-card-icon material-symbols-rounded" aria-hidden="true">lock</span>
+                <div class="account-card-title">
+                  <h2>Alterar senha</h2>
+                  <p>Use uma senha exclusiva para manter sua conta protegida.</p>
+                </div>
+              </div>
+
+              <div class="account-card-body">
+                <form id="change-password-form" class="auth-form">
+                  <div class="auth-field">
+                    <label for="current-password">Senha atual</label>
+                    <input
+                      id="current-password"
+                      name="current_password"
+                      type="password"
+                      autocomplete="current-password"
+                      required
+                    />
+                  </div>
+
+                  <div class="account-profile-grid">
+                    <div class="auth-field">
+                      <label for="new-password">Nova senha</label>
+                      <input
+                        id="new-password"
+                        name="new_password"
+                        type="password"
+                        autocomplete="new-password"
+                        minlength="8"
+                        required
+                      />
+                    </div>
+
+                    <div class="auth-field">
+                      <label for="new-password-confirmation">Confirmar senha</label>
+                      <input
+                        id="new-password-confirmation"
+                        name="new_password_confirmation"
+                        type="password"
+                        autocomplete="new-password"
+                        minlength="8"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="auth-message" data-password-message aria-live="polite"></div>
+
+                  <button class="auth-submit" type="submit">
+                    <span>Alterar senha</span>
+                    <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span>
+                  </button>
+                </form>
+              </div>
+            </section>
+          </div>
+
+          <div class="account-column account-column-secondary">
+            <section class="account-card account-courses">
+              <div>
+                <div class="account-card-header">
+                  <span class="account-card-icon material-symbols-rounded" aria-hidden="true">school</span>
+                  <div class="account-card-title">
+                    <h2>Meus cursos</h2>
+                    <p>Sua jornada de aprendizagem aparecerá aqui.</p>
+                  </div>
+                </div>
+
+                <div class="account-courses-empty">
+                  <strong>Seu espaço de aprendizagem está pronto.</strong>
+                  <p>
+                    Quando seus cursos forem liberados, você poderá acessá-los
+                    diretamente por esta área.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <section class="account-card">
+              <div class="account-card-header">
+                <span class="account-card-icon material-symbols-rounded" aria-hidden="true">database</span>
+                <div class="account-card-title">
+                  <h2>Meus dados</h2>
+                  <p>Transparência e controle sobre as informações da sua conta.</p>
+                </div>
+              </div>
+
+              <div class="account-card-body">
+                <p class="account-data-note">
+                  Você pode solicitar uma cópia dos dados associados à sua conta EVA.
+                </p>
+
+                <button type="button" class="account-secondary-button" data-export-data>
+                  <span class="material-symbols-rounded" aria-hidden="true">download</span>
+                  <span>Exportar meus dados</span>
+                </button>
+
+                <div class="auth-message" data-account-message aria-live="polite"></div>
+              </div>
+            </section>
+
+            <section class="account-card">
+              <div class="account-card-header">
+                <span class="account-card-icon material-symbols-rounded" aria-hidden="true">shield</span>
+                <div class="account-card-title">
+                  <h2>Segurança da conta</h2>
+                  <p>Algumas práticas que ajudam a proteger seu acesso.</p>
+                </div>
+              </div>
+
+              <div class="account-card-body">
+                <ul class="account-security-list">
+                  <li>
+                    <span class="material-symbols-rounded" aria-hidden="true">check_circle</span>
+                    <span>Sua sessão utiliza cookies protegidos no navegador.</span>
+                  </li>
+                  <li>
+                    <span class="material-symbols-rounded" aria-hidden="true">check_circle</span>
+                    <span>Seu e-mail é a identificação principal da sua conta.</span>
+                  </li>
+                  <li>
+                    <span class="material-symbols-rounded" aria-hidden="true">check_circle</span>
+                    <span>Evite reutilizar sua senha da EVA em outros serviços.</span>
+                  </li>
+                </ul>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+
+      <div class="account-loading" data-account-loading>
+        Carregando sua conta...
+      </div>
+    </main>
+
+    <script src="./js/main.js"></script>
+    <script src="./js/auth.js"></script>
+  </body>
 </html>
