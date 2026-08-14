@@ -8,38 +8,22 @@
     <link rel="icon" href="./assets/images/simbolo.svg" type="image/x-icon" />
     <link rel="stylesheet" href="./css/style.css" />
     <link rel="stylesheet" href="./css/auth.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded&icon_names=arrow_forward,check_circle,close,lock,menu,school,verified_user&display=block"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded&icon_names=arrow_forward,check_circle,close,lock,menu,school,verified_user&display=block" rel="stylesheet" />
   </head>
 
   <body class="auth-page">
     <header class="site-header">
       <nav class="navbar" aria-label="Navegação principal">
-        <a
-          href="./index.html"
-          class="navbar-logo"
-          aria-label="Ir para a página inicial"
-        >
+        <a href="./index.html" class="navbar-logo" aria-label="Ir para a página inicial">
           <img src="./assets/images/eva-logo.svg" alt="Logo EVA" />
         </a>
-
         <ul class="navbar-menu">
           <li><a href="./index.html">Página Inicial</a></li>
           <li><a href="./recursos.html">EVA Individual</a></li>
           <li><a href="./empresas.html">EVA Empresas</a></li>
         </ul>
-
         <a href="./contato.html" class="navbar-cta">Fale com a EVA</a>
-
-        <button
-          class="mobile-menu-toggle"
-          type="button"
-          aria-label="Abrir menu"
-          aria-expanded="false"
-          aria-controls="mobile-menu"
-        >
+        <button class="mobile-menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu">
           <span class="material-symbols-rounded" aria-hidden="true">menu</span>
         </button>
       </nav>
@@ -47,42 +31,21 @@
 
     <div class="mobile-menu-overlay" data-menu-close aria-hidden="true"></div>
 
-    <aside
-      id="mobile-menu"
-      class="mobile-menu-drawer"
-      aria-label="Menu de navegação mobile"
-      aria-hidden="true"
-      inert
-    >
+    <aside id="mobile-menu" class="mobile-menu-drawer" aria-label="Menu de navegação mobile" aria-hidden="true" inert>
       <div class="mobile-menu-header">
-        <a
-          href="./index.html"
-          class="mobile-menu-logo"
-          aria-label="Ir para a página inicial"
-          data-menu-link
-        >
+        <a href="./index.html" class="mobile-menu-logo" aria-label="Ir para a página inicial" data-menu-link>
           <img src="./assets/images/eva-logo.svg" alt="Logo EVA" />
         </a>
-
-        <button
-          class="mobile-menu-close"
-          type="button"
-          aria-label="Fechar menu"
-          data-menu-close
-        >
+        <button class="mobile-menu-close" type="button" aria-label="Fechar menu" data-menu-close>
           <span class="material-symbols-rounded" aria-hidden="true">close</span>
         </button>
       </div>
-
       <nav class="mobile-menu-nav" aria-label="Navegação mobile">
         <a href="./index.html" data-menu-link>Página Inicial</a>
         <a href="./recursos.html" data-menu-link>EVA Individual</a>
         <a href="./empresas.html" data-menu-link>EVA Empresas</a>
       </nav>
-
-      <a href="./contato.html" class="mobile-menu-cta" data-menu-link>
-        Fale com a EVA
-      </a>
+      <a href="./contato.html" class="mobile-menu-cta" data-menu-link>Fale com a EVA</a>
     </aside>
 
     <main class="auth-main">
@@ -90,19 +53,14 @@
         <div class="auth-experience" aria-labelledby="auth-title">
           <div class="auth-glow auth-glow-one" aria-hidden="true"></div>
           <div class="auth-glow auth-glow-two" aria-hidden="true"></div>
-
           <div class="auth-experience-content">
             <span class="auth-eyebrow">Sua jornada na EVA</span>
-            <h1 id="auth-title">
-              Desenvolvimento que continua
-              <strong>com você.</strong>
-            </h1>
+            <h1 id="auth-title">Desenvolvimento que continua <strong>com você.</strong></h1>
             <p>
               Entre para acessar sua conta, acompanhar seus cursos e continuar
               aprendendo no seu ritmo. Se esta é sua primeira vez, criar uma conta
               leva só alguns instantes.
             </p>
-
             <div class="auth-benefits" aria-label="Benefícios da conta EVA">
               <div class="auth-benefit">
                 <span class="material-symbols-rounded" aria-hidden="true">school</span>
@@ -111,7 +69,6 @@
                   <span>Acesse sua jornada sempre que precisar.</span>
                 </div>
               </div>
-
               <div class="auth-benefit">
                 <span class="material-symbols-rounded" aria-hidden="true">verified_user</span>
                 <div>
@@ -120,7 +77,6 @@
                 </div>
               </div>
             </div>
-
             <div class="auth-brand-mark" aria-hidden="true">
               <img src="./assets/images/LogoVertical.svg" alt="" />
             </div>
@@ -137,54 +93,21 @@
           </div>
 
           <div class="auth-tabs" role="tablist" aria-label="Escolha entre entrar ou criar conta">
-            <button
-              class="auth-tab is-active"
-              type="button"
-              role="tab"
-              aria-selected="true"
-              data-auth-tab="login"
-            >
-              Entrar
-            </button>
-            <button
-              class="auth-tab"
-              type="button"
-              role="tab"
-              aria-selected="false"
-              data-auth-tab="register"
-            >
-              Criar conta
-            </button>
+            <button class="auth-tab is-active" type="button" role="tab" aria-selected="true" data-auth-tab="login">Entrar</button>
+            <button class="auth-tab" type="button" role="tab" aria-selected="false" data-auth-tab="register">Criar conta</button>
           </div>
 
           <div class="auth-panel is-active" data-auth-panel="login">
-            <form id="login-form" class="auth-form" novalidate>
+            <form id="login-form" class="auth-form" method="post" action="./api/auth/login.php" novalidate>
               <div class="auth-field">
                 <label for="login-email">E-mail</label>
-                <input
-                  id="login-email"
-                  name="email"
-                  type="email"
-                  autocomplete="email"
-                  placeholder="seuemail@exemplo.com"
-                  required
-                />
+                <input id="login-email" name="email" type="email" autocomplete="email" maxlength="254" placeholder="seuemail@exemplo.com" required />
               </div>
-
               <div class="auth-field">
                 <label for="login-password">Senha</label>
-                <input
-                  id="login-password"
-                  name="password"
-                  type="password"
-                  autocomplete="current-password"
-                  placeholder="Digite sua senha"
-                  required
-                />
+                <input id="login-password" name="password" type="password" autocomplete="current-password" maxlength="128" placeholder="Digite sua senha" required />
               </div>
-
               <div class="auth-message" data-login-message aria-live="polite"></div>
-
               <button class="auth-submit" type="submit">
                 <span>Entrar na minha conta</span>
                 <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span>
@@ -193,9 +116,7 @@
 
             <div class="auth-resend" data-resend-box hidden>
               <p>Seu e-mail ainda não foi confirmado.</p>
-              <button type="button" data-resend-verification>
-                Reenviar e-mail de confirmação
-              </button>
+              <button type="button" data-resend-verification>Reenviar e-mail de confirmação</button>
               <div class="auth-message" data-resend-message aria-live="polite"></div>
             </div>
 
@@ -206,74 +127,35 @@
           </div>
 
           <div class="auth-panel" data-auth-panel="register" hidden>
-            <form id="register-form" class="auth-form" novalidate>
+            <form id="register-form" class="auth-form" method="post" action="./api/auth/register.php" novalidate>
               <div class="auth-grid">
                 <div class="auth-field">
                   <label for="register-first-name">Nome</label>
-                  <input
-                    id="register-first-name"
-                    name="first_name"
-                    type="text"
-                    autocomplete="given-name"
-                    maxlength="80"
-                    placeholder="Seu nome"
-                    required
-                  />
+                  <input id="register-first-name" name="first_name" type="text" autocomplete="given-name" maxlength="80" placeholder="Seu nome" required />
                 </div>
-
                 <div class="auth-field">
                   <label for="register-last-name">Sobrenome</label>
-                  <input
-                    id="register-last-name"
-                    name="last_name"
-                    type="text"
-                    autocomplete="family-name"
-                    maxlength="120"
-                    placeholder="Seu sobrenome"
-                    required
-                  />
+                  <input id="register-last-name" name="last_name" type="text" autocomplete="family-name" maxlength="120" placeholder="Seu sobrenome" required />
                 </div>
               </div>
-
               <div class="auth-field">
                 <label for="register-email">E-mail</label>
-                <input
-                  id="register-email"
-                  name="email"
-                  type="email"
-                  autocomplete="email"
-                  maxlength="254"
-                  placeholder="seuemail@exemplo.com"
-                  required
-                />
+                <input id="register-email" name="email" type="email" autocomplete="email" maxlength="254" placeholder="seuemail@exemplo.com" required />
               </div>
-
               <div class="auth-field">
                 <label for="register-password">Senha</label>
-                <input
-                  id="register-password"
-                  name="password"
-                  type="password"
-                  autocomplete="new-password"
-                  minlength="8"
-                  maxlength="128"
-                  placeholder="Crie uma senha segura"
-                  required
-                />
+                <input id="register-password" name="password" type="password" autocomplete="new-password" minlength="8" maxlength="128" placeholder="Crie uma senha segura" required />
                 <small>Use pelo menos 8 caracteres.</small>
               </div>
-
               <label class="auth-consent">
                 <input type="checkbox" name="privacy" required />
                 <span>
                   Li e concordo com a
-                  <a href="./politica.html" target="_blank">Política de Privacidade</a>
-                  e com os <a href="./termos.html" target="_blank">Termos de Uso</a>.
+                  <a href="./politica.html" target="_blank" rel="noopener noreferrer">Política de Privacidade</a>
+                  e com os <a href="./termos.html" target="_blank" rel="noopener noreferrer">Termos de Uso</a>.
                 </span>
               </label>
-
               <div class="auth-message" data-register-message aria-live="polite"></div>
-
               <button class="auth-submit" type="submit">
                 <span>Criar minha conta</span>
                 <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span>
