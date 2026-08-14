@@ -2,101 +2,67 @@
 
 declare(strict_types=1);
 
-$sessionPath = __DIR__ . '/../../tmp/sessions';
+require __DIR__ . '/../../config/security.php';
 
-if (!is_dir($sessionPath)) {
-    mkdir($sessionPath, 0700, true);
+evaApplyApiSecurityHeaders();
+
+try {
+    require __DIR__ . '/../../config/session.php';
+} catch (Throwable $error) {
+    error_log('EVA Auth: falha ao iniciar sessão: ' . $error->getMessage());
+    evaSecurityJsonResponse(500, 'Não foi possível exportar seus dados.');
 }
-
-session_save_path($sessionPath);
-
-session_set_cookie_params([
-    'lifetime' => 0,
-    'path' => '/',
-    'secure' => true,
-    'httponly' => true,
-    'samesite' => 'Lax'
-]);
-
-session_start();
 
 header('Content-Type: application/json; charset=UTF-8');
 
-function sendJsonResponse(int $status, array $payload): void
+function sendJsonResponse(int $status, array $payload): never
 {
     http_response_code($status);
-
-    echo json_encode(
-        $payload,
-        JSON_UNESCAPED_UNICODE |
-        JSON_PRETTY_PRINT
-    );
-
+    echo json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-    sendJsonResponse(405, [
-        'success' => false,
-        'message' => 'Método não permitido.'
-    ]);
+    sendJsonResponse(405, ['success' => false, 'message' => 'Método não permitido.']);
 }
 
 $userId = $_SESSION['user_id'] ?? null;
 
 if (!is_int($userId) && !ctype_digit((string) $userId)) {
-    sendJsonResponse(401, [
-        'success' => false,
-        'message' => 'Não autenticado.'
-    ]);
+    sendJsonResponse(401, ['success' => false, 'message' => 'Não autenticado.']);
 }
 
-$pdo = require __DIR__ . '/../../config/database.php';
-
-$statement = $pdo->prepare(
-    'SELECT
-        id,
-        first_name,
-        last_name,
-        email,
-        email_verified_at,
-        moodle_user_id,
-        status,
-        created_at,
-        updated_at
-     FROM users
-     WHERE id = :id
-     LIMIT 1'
-);
-
-$statement->execute([
-    'id' => (int) $userId
-]);
-
-$user = $statement->fetch();
+try {
+    $pdo = require __DIR__ . '/../../config/database.php';
+    $statement = $pdo->prepare(
+        'SELECT first_name, last_name, email, email_verified_at, status, created_at, updated_at FROM users WHERE id = :id LIMIT 1'
+    );
+    $statement->execute(['id' => (int) $userId]);
+    $user = $statement->fetch();
+} catch (Throwable $error) {
+    error_log('EVA LGPD: erro ao exportar dados: ' . $error->getMessage());
+    sendJsonResponse(500, ['success' => false, 'message' => 'Não foi possível exportar seus dados.']);
+}
 
 if ($user === false) {
-    sendJsonResponse(404, [
-        'success' => false,
-        'message' => 'Usuário não encontrado.'
-    ]);
+    evaDestroySession();
+    sendJsonResponse(401, ['success' => false, 'message' => 'Não autenticado.']);
+}
+
+if ($user['status'] !== 'active' || $user['email_verified_at'] === null) {
+    evaDestroySession();
+    sendJsonResponse(403, ['success' => false, 'message' => 'Esta conta não está disponível para exportação.']);
 }
 
 sendJsonResponse(200, [
     'success' => true,
-    'generated_at' => date(DATE_ATOM),
+    'generated_at' => gmdate(DATE_ATOM),
     'data' => [
         'account' => [
-            'id' => (int) $user['id'],
             'first_name' => $user['first_name'],
             'last_name' => $user['last_name'],
             'email' => $user['email'],
-            'email_verified_at' =>
-                $user['email_verified_at'],
-            'moodle_user_id' =>
-                $user['moodle_user_id'] !== null
-                    ? (int) $user['moodle_user_id']
-                    : null,
+            'email_verified_at' => $user['email_verified_at'],
             'status' => $user['status'],
             'created_at' => $user['created_at'],
             'updated_at' => $user['updated_at']
