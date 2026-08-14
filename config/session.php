@@ -116,6 +116,7 @@ function evaDestroySession(): void
     }
 
     session_destroy();
+    session_id('');
 }
 
 evaStartSecureSession();
