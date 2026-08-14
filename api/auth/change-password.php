@@ -90,29 +90,34 @@ try {
     );
     $statement->execute(['id' => (int) $userId]);
     $user = $statement->fetch();
+} catch (Throwable $error) {
+    error_log('EVA Auth: erro ao consultar conta para troca de senha: ' . $error->getMessage());
+    sendJsonResponse(500, ['success' => false, 'message' => 'Não foi possível alterar sua senha.']);
+}
 
-    if ($user === false) {
-        evaDestroySession();
-        sendJsonResponse(401, ['success' => false, 'message' => 'Não autenticado.']);
-    }
+if ($user === false) {
+    evaDestroySession();
+    sendJsonResponse(401, ['success' => false, 'message' => 'Não autenticado.']);
+}
 
-    if ($user['status'] !== 'active' || $user['email_verified_at'] === null) {
-        evaDestroySession();
-        sendJsonResponse(403, ['success' => false, 'message' => 'Esta conta não está disponível para alteração.']);
-    }
+if ($user['status'] !== 'active' || $user['email_verified_at'] === null) {
+    evaDestroySession();
+    sendJsonResponse(403, ['success' => false, 'message' => 'Esta conta não está disponível para alteração.']);
+}
 
-    if (!password_verify($currentPassword, (string) $user['password_hash'])) {
-        evaRecordRateLimitHit('change-password-user', $userRateKey, $rateLimitWindow);
-        evaRecordRateLimitHit('change-password-ip', $clientIp, $rateLimitWindow);
-        sendJsonResponse(401, ['success' => false, 'message' => 'Senha atual incorreta.']);
-    }
+if (!password_verify($currentPassword, (string) $user['password_hash'])) {
+    evaRecordRateLimitHit('change-password-user', $userRateKey, $rateLimitWindow);
+    evaRecordRateLimitHit('change-password-ip', $clientIp, $rateLimitWindow);
+    sendJsonResponse(401, ['success' => false, 'message' => 'Senha atual incorreta.']);
+}
 
-    $newPasswordHash = password_hash($newPassword, PASSWORD_DEFAULT);
+$newPasswordHash = password_hash($newPassword, PASSWORD_DEFAULT);
 
-    if ($newPasswordHash === false) {
-        throw new RuntimeException('Falha ao gerar hash da nova senha.');
-    }
+if ($newPasswordHash === false) {
+    sendJsonResponse(500, ['success' => false, 'message' => 'Não foi possível alterar sua senha.']);
+}
 
+try {
     $statement = $pdo->prepare(
         'UPDATE users SET password_hash = :password_hash WHERE id = :id'
     );
@@ -124,10 +129,6 @@ try {
     evaClearRateLimit('change-password-user', $userRateKey);
     session_regenerate_id(true);
 } catch (Throwable $error) {
-    if (http_response_code() >= 400 && http_response_code() < 500) {
-        throw $error;
-    }
-
     error_log('EVA Auth: erro ao alterar senha: ' . $error->getMessage());
     sendJsonResponse(500, ['success' => false, 'message' => 'Não foi possível alterar sua senha.']);
 }

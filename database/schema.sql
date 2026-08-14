@@ -26,7 +26,9 @@ CREATE TABLE IF NOT EXISTS email_verification_tokens (
     CONSTRAINT fk_email_verification_user
         FOREIGN KEY (user_id)
         REFERENCES users(id)
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
+
+    UNIQUE KEY uq_email_verification_user (user_id)
 ) ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_unicode_ci;
