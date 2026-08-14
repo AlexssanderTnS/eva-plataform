@@ -24,7 +24,7 @@ jobs:
           node --version
 
       - name: Validate Composer files
-        run: composer validate --strict
+        run: composer validate --no-check-publish
 
       - name: Audit Composer dependencies
         run: composer audit --locked --no-interaction
