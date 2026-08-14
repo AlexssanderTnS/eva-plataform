@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+const EVA_SESSION_IDLE_TIMEOUT = 7200;
+const EVA_SESSION_ABSOLUTE_TIMEOUT = 43200;
+
 function evaStartSecureSession(): void
 {
     if (session_status() === PHP_SESSION_ACTIVE) {
@@ -50,6 +53,7 @@ function evaStartSecureSession(): void
     ini_set('session.cookie_httponly', '1');
     ini_set('session.cookie_secure', '1');
     ini_set('session.cookie_samesite', 'Lax');
+    ini_set('session.gc_maxlifetime', (string) EVA_SESSION_ABSOLUTE_TIMEOUT);
 
     session_name('EVA_SESSION');
 
@@ -62,6 +66,28 @@ function evaStartSecureSession(): void
     ]);
 
     session_start();
+
+    $now = time();
+    $createdAt = isset($_SESSION['created_at'])
+        ? (int) $_SESSION['created_at']
+        : $now;
+    $lastActivity = isset($_SESSION['last_activity'])
+        ? (int) $_SESSION['last_activity']
+        : $now;
+
+    $expiredByIdle =
+        ($now - $lastActivity) > EVA_SESSION_IDLE_TIMEOUT;
+    $expiredByAge =
+        ($now - $createdAt) > EVA_SESSION_ABSOLUTE_TIMEOUT;
+
+    if ($expiredByIdle || $expiredByAge) {
+        evaDestroySession();
+        session_start();
+        $createdAt = $now;
+    }
+
+    $_SESSION['created_at'] = $createdAt;
+    $_SESSION['last_activity'] = $now;
 }
 
 function evaDestroySession(): void
