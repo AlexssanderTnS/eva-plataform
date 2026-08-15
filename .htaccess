@@ -1,0 +1,16 @@
+Options -Indexes
+
+# Bloqueia arquivos de configuração, metadados e artefatos sensíveis.
+<FilesMatch "(?i)^(?:\.env(?:\..*)?|\.gitignore|\.gitattributes|composer\.(?:json|lock)|package(?:-lock)?\.json|yarn\.lock|pnpm-lock\.yaml|phpunit\.xml(?:\.dist)?|error_log|.*\.(?:sql|log|ini|bak|backup|old|orig|save|swp))$">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Nega dotfiles/dotdirs sem quebrar o ACME/AutoSSL em .well-known.
+    RewriteRule "(^|/)\.(?!well-known(?:/|$))" - [F,L]
+
+    # Diretórios internos nunca devem ser servidos diretamente.
+    RewriteRule "(^|/)(?:config|database|deployment|tmp|vendor)(?:/|$)" - [F,L,NC]
+</IfModule>
