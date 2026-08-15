@@ -65,7 +65,7 @@ evaAssertRateLimit('login-account', $accountKey, 8, $rateLimitWindow);
 try {
     $pdo = require __DIR__ . '/../../config/database.php';
     $statement = $pdo->prepare(
-        'SELECT id, password_hash, email_verified_at, status FROM users WHERE email = :email LIMIT 1'
+        'SELECT id, password_hash, email_verified_at, status, session_version FROM users WHERE email = :email LIMIT 1'
     );
     $statement->execute(['email' => $email]);
     $user = $statement->fetch();
@@ -100,5 +100,6 @@ if ($user['email_verified_at'] === null) {
 
 session_regenerate_id(true);
 $_SESSION['user_id'] = (int) $user['id'];
+$_SESSION['session_version'] = (int) $user['session_version'];
 
 sendJsonResponse(200, ['success' => true, 'message' => 'Login realizado com sucesso.']);
