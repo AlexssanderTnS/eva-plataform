@@ -30,8 +30,12 @@ evaEnforceTrustedOrigin();
 evaEnforceJsonRequest(4096);
 
 $userId = $_SESSION['user_id'] ?? null;
+$sessionVersion = $_SESSION['session_version'] ?? null;
 
-if (!is_int($userId) && !ctype_digit((string) $userId)) {
+if (
+    (!is_int($userId) && !ctype_digit((string) $userId)) ||
+    (!is_int($sessionVersion) && !ctype_digit((string) $sessionVersion))
+) {
     sendJsonResponse(401, ['success' => false, 'message' => 'Não autenticado.']);
 }
 
@@ -86,7 +90,7 @@ evaAssertRateLimit('change-password-ip', $clientIp, 20, $rateLimitWindow);
 try {
     $pdo = require __DIR__ . '/../../config/database.php';
     $statement = $pdo->prepare(
-        'SELECT id, password_hash, email_verified_at, status FROM users WHERE id = :id LIMIT 1'
+        'SELECT id, password_hash, email_verified_at, status, session_version FROM users WHERE id = :id LIMIT 1'
     );
     $statement->execute(['id' => (int) $userId]);
     $user = $statement->fetch();
@@ -96,6 +100,11 @@ try {
 }
 
 if ($user === false) {
+    evaDestroySession();
+    sendJsonResponse(401, ['success' => false, 'message' => 'Não autenticado.']);
+}
+
+if ((int) $user['session_version'] !== (int) $sessionVersion) {
     evaDestroySession();
     sendJsonResponse(401, ['success' => false, 'message' => 'Não autenticado.']);
 }
@@ -119,14 +128,24 @@ if ($newPasswordHash === false) {
 
 try {
     $statement = $pdo->prepare(
-        'UPDATE users SET password_hash = :password_hash WHERE id = :id'
+        'UPDATE users
+         SET password_hash = :password_hash,
+             session_version = session_version + 1
+         WHERE id = :id AND session_version = :session_version'
     );
     $statement->execute([
         'password_hash' => $newPasswordHash,
-        'id' => (int) $userId
+        'id' => (int) $userId,
+        'session_version' => (int) $sessionVersion
     ]);
 
+    if ($statement->rowCount() !== 1) {
+        evaDestroySession();
+        sendJsonResponse(401, ['success' => false, 'message' => 'Não autenticado.']);
+    }
+
     evaClearRateLimit('change-password-user', $userRateKey);
+    $_SESSION['session_version'] = (int) $sessionVersion + 1;
     session_regenerate_id(true);
 } catch (Throwable $error) {
     error_log('EVA Auth: erro ao alterar senha: ' . $error->getMessage());
