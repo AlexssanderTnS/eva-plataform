@@ -119,4 +119,38 @@ function evaDestroySession(): void
     session_id('');
 }
 
+function evaValidateAuthenticatedSessionVersion(): void
+{
+    $userId = $_SESSION['user_id'] ?? null;
+
+    if ($userId === null) {
+        return;
+    }
+
+    $sessionVersion = $_SESSION['session_version'] ?? null;
+
+    if (
+        (!is_int($userId) && !ctype_digit((string) $userId)) ||
+        (!is_int($sessionVersion) && !ctype_digit((string) $sessionVersion))
+    ) {
+        evaDestroySession();
+        return;
+    }
+
+    $pdo = require __DIR__ . '/database.php';
+    $statement = $pdo->prepare(
+        'SELECT session_version FROM users WHERE id = :id LIMIT 1'
+    );
+    $statement->execute(['id' => (int) $userId]);
+    $account = $statement->fetch();
+
+    if (
+        $account === false ||
+        (int) $account['session_version'] !== (int) $sessionVersion
+    ) {
+        evaDestroySession();
+    }
+}
+
 evaStartSecureSession();
+evaValidateAuthenticatedSessionVersion();
