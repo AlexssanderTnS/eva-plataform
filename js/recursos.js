@@ -93,6 +93,68 @@ const cursosIndividuais = [
   },
 ];
 
+const COURSES_API = "./api/courses.php";
+
+const currencyFormatter = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL",
+});
+
+function formatCoursePrice(course) {
+  if (typeof course.price !== "string" || course.price.trim() === "") {
+    return "Preço indisponível";
+  }
+
+  const value = Number(course.price);
+
+  if (!Number.isFinite(value)) {
+    return "Preço indisponível";
+  }
+
+  return currencyFormatter.format(value);
+}
+
+async function loadCommercialCatalog() {
+  const response = await fetch(COURSES_API, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+    },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Não foi possível carregar o catálogo. HTTP ${response.status}`,
+    );
+  }
+
+  const data = await response.json();
+
+  if (data?.success !== true || !Array.isArray(data.courses)) {
+    throw new Error("Resposta inválida da API de cursos.");
+  }
+
+  const commercialCourses = new Map(
+    data.courses.map((course) => [course.slug, course]),
+  );
+
+  cursosIndividuais.forEach((course) => {
+    const commercialCourse = commercialCourses.get(course.id);
+
+    if (!commercialCourse) {
+      course.price = null;
+      course.currency = null;
+      course.available = false;
+      return;
+    }
+
+    course.price = commercialCourse.price;
+    course.currency = commercialCourse.currency;
+    course.available = true;
+  });
+}
+
 const track = document.querySelector("#resources-track");
 const prevButton = document.querySelector(".resources-arrow-prev");
 const nextButton = document.querySelector(".resources-arrow-next");
@@ -125,6 +187,7 @@ function renderCursos() {
             <div class="resource-meta">
               <span class="material-symbols-rounded" aria-hidden="true">schedule</span>
               <span>${curso.duracao}</span>
+
               <span class="material-symbols-rounded" aria-hidden="true">devices</span>
               <span>${curso.formato}</span>
             </div>
@@ -137,7 +200,12 @@ function renderCursos() {
               aria-controls="individual-course-modal"
             >
               Ver detalhes
-              <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span>
+              <span
+                class="material-symbols-rounded"
+                aria-hidden="true"
+              >
+                arrow_forward
+              </span>
             </button>
           </div>
         </article>
@@ -152,32 +220,96 @@ function renderModal(curso) {
   modalContent.innerHTML = `
     <div class="course-detail-layout">
       <div class="course-detail-visual">
-        <img src="${curso.imagem}" alt="${curso.titulo}" />
+        <img
+          src="${curso.imagem}"
+          alt="${curso.titulo}"
+        />
       </div>
 
       <div class="course-detail-main">
-        <span class="course-detail-type">Curso online</span>
-        <h2 id="individual-course-modal-title">${curso.titulo}</h2>
-        <p class="course-detail-description">${curso.descricaoCompleta}</p>
+        <span class="course-detail-type">
+          Curso online
+        </span>
+
+        <h2 id="individual-course-modal-title">
+          ${curso.titulo}
+        </h2>
+
+        <p class="course-detail-description">
+          ${curso.descricaoCompleta}
+        </p>
 
         <div class="course-detail-meta">
-          <span><span class="material-symbols-rounded" aria-hidden="true">schedule</span>${curso.duracao}</span>
-          <span><span class="material-symbols-rounded" aria-hidden="true">devices</span>${curso.formato}</span>
+          <span>
+            <span
+              class="material-symbols-rounded"
+              aria-hidden="true"
+            >
+              schedule
+            </span>
+
+            ${curso.duracao}
+          </span>
+
+          <span>
+            <span
+              class="material-symbols-rounded"
+              aria-hidden="true"
+            >
+              devices
+            </span>
+
+            ${curso.formato}
+          </span>
         </div>
 
         <div class="course-detail-section">
           <h3>Você vai aprender</h3>
-          <ul>${curso.aprendizados.map((item) => `<li>${item}</li>`).join("")}</ul>
+
+          <ul>
+            ${curso.aprendizados
+              .map((item) => `<li>${item}</li>`)
+              .join("")}
+          </ul>
         </div>
 
         <div class="course-investment-card">
           <span>Investimento</span>
-          <strong>R$69,90</strong>
+          <strong>${formatCoursePrice(curso)}</strong>
         </div>
 
         <div class="course-detail-actions">
-          <a href="./contato.html?curso=${encodeURIComponent(curso.id)}" class="course-detail-primary">Tenho interesse</a>
-          <a href="mailto:contato@evaglobal.com.br?subject=${encodeURIComponent(`Interesse no curso ${curso.titulo}`)}" class="course-detail-secondary">Enviar e-mail</a>
+          ${
+            curso.available
+              ? `
+                <button
+                  class="course-detail-primary"
+                  type="button"
+                  data-course-buy="${curso.id}"
+                >
+                  Comprar curso
+                </button>
+              `
+              : `
+                <button
+                  class="course-detail-primary"
+                  type="button"
+                  disabled
+                  aria-disabled="true"
+                >
+                  Indisponível no momento
+                </button>
+              `
+          }
+
+          <a
+            href="mailto:contato@evaglobal.com.br?subject=${encodeURIComponent(
+              `Interesse no curso ${curso.titulo}`,
+            )}"
+            class="course-detail-secondary"
+          >
+            Enviar e-mail
+          </a>
         </div>
       </div>
     </div>
@@ -187,82 +319,201 @@ function renderModal(curso) {
 function openModal(courseId) {
   if (!modal) return;
 
-  const curso = cursosIndividuais.find((item) => item.id === courseId);
+  const curso = cursosIndividuais.find(
+    (item) => item.id === courseId,
+  );
+
   if (!curso) return;
 
-  individualModalLastFocusedElement = document.activeElement;
+  individualModalLastFocusedElement =
+    document.activeElement;
+
   renderModal(curso);
+
   modal.classList.add("is-open");
-  modal.setAttribute("aria-hidden", "false");
-  document.body.classList.add("course-modal-open");
-  modal.querySelector(".course-modal-close")?.focus();
+
+  modal.setAttribute(
+    "aria-hidden",
+    "false",
+  );
+
+  document.body.classList.add(
+    "course-modal-open",
+  );
+
+  modal
+    .querySelector(".course-modal-close")
+    ?.focus();
 }
 
 function closeModal() {
   if (!modal) return;
 
   modal.classList.remove("is-open");
-  modal.setAttribute("aria-hidden", "true");
-  document.body.classList.remove("course-modal-open");
-  individualModalLastFocusedElement?.focus?.();
+
+  modal.setAttribute(
+    "aria-hidden",
+    "true",
+  );
+
+  document.body.classList.remove(
+    "course-modal-open",
+  );
+
+  individualModalLastFocusedElement
+    ?.focus?.();
 }
 
 function getVisibleCards() {
-  if (window.innerWidth <= 650) return 1;
-  if (window.innerWidth <= 1000) return 2;
+  if (window.innerWidth <= 650) {
+    return 1;
+  }
+
+  if (window.innerWidth <= 1000) {
+    return 2;
+  }
+
   return 3;
 }
 
 function updateCarousel() {
   if (!track) return;
 
-  const cards = track.querySelectorAll(".resource-card");
+  const cards =
+    track.querySelectorAll(".resource-card");
+
   if (!cards.length) return;
 
-  const visibleCards = getVisibleCards();
-  const cardWidth = cards[0].getBoundingClientRect().width;
+  const visibleCards =
+    getVisibleCards();
+
+  const cardWidth =
+    cards[0].getBoundingClientRect().width;
+
   const gap = 24;
-  const maximumIndex = Math.max(0, cards.length - visibleCards);
 
-  currentIndex = Math.min(currentIndex, maximumIndex);
-  track.style.transform = `translateX(-${currentIndex * (cardWidth + gap)}px)`;
-
-  if (prevButton) prevButton.disabled = currentIndex === 0;
-  if (nextButton) nextButton.disabled = currentIndex >= maximumIndex;
-}
-
-track?.addEventListener("click", (event) => {
-  const detailsButton = event.target.closest("[data-course-id]");
-  if (!detailsButton) return;
-  openModal(detailsButton.dataset.courseId);
-});
-
-modal?.addEventListener("click", (event) => {
-  if (event.target.closest("[data-course-close]")) closeModal();
-});
-
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && modal?.classList.contains("is-open")) {
-    closeModal();
-  }
-});
-
-prevButton?.addEventListener("click", () => {
-  currentIndex = Math.max(0, currentIndex - 1);
-  updateCarousel();
-});
-
-nextButton?.addEventListener("click", () => {
   const maximumIndex = Math.max(
     0,
-    cursosIndividuais.length - getVisibleCards(),
+    cards.length - visibleCards,
   );
 
-  currentIndex = Math.min(maximumIndex, currentIndex + 1);
+  currentIndex = Math.min(
+    currentIndex,
+    maximumIndex,
+  );
+
+  track.style.transform =
+    `translateX(-${
+      currentIndex * (cardWidth + gap)
+    }px)`;
+
+  if (prevButton) {
+    prevButton.disabled =
+      currentIndex === 0;
+  }
+
+  if (nextButton) {
+    nextButton.disabled =
+      currentIndex >= maximumIndex;
+  }
+}
+
+track?.addEventListener(
+  "click",
+  (event) => {
+    const detailsButton =
+      event.target.closest(
+        "[data-course-id]",
+      );
+
+    if (!detailsButton) return;
+
+    openModal(
+      detailsButton.dataset.courseId,
+    );
+  },
+);
+
+modal?.addEventListener(
+  "click",
+  (event) => {
+    if (
+      event.target.closest(
+        "[data-course-close]",
+      )
+    ) {
+      closeModal();
+    }
+  },
+);
+
+document.addEventListener(
+  "keydown",
+  (event) => {
+    if (
+      event.key === "Escape" &&
+      modal?.classList.contains("is-open")
+    ) {
+      closeModal();
+    }
+  },
+);
+
+prevButton?.addEventListener(
+  "click",
+  () => {
+    currentIndex = Math.max(
+      0,
+      currentIndex - 1,
+    );
+
+    updateCarousel();
+  },
+);
+
+nextButton?.addEventListener(
+  "click",
+  () => {
+    const maximumIndex = Math.max(
+      0,
+      cursosIndividuais.length -
+        getVisibleCards(),
+    );
+
+    currentIndex = Math.min(
+      maximumIndex,
+      currentIndex + 1,
+    );
+
+    updateCarousel();
+  },
+);
+
+window.addEventListener(
+  "resize",
+  updateCarousel,
+);
+
+async function initializeCourses() {
+  try {
+    await loadCommercialCatalog();
+  } catch (error) {
+    console.error(
+      "Não foi possível carregar o catálogo comercial:",
+      error,
+    );
+
+    cursosIndividuais.forEach(
+      (course) => {
+        course.price = null;
+        course.currency = null;
+        course.available = false;
+      },
+    );
+  }
+
+  renderCursos();
   updateCarousel();
-});
+}
 
-window.addEventListener("resize", updateCarousel);
-
-renderCursos();
-updateCarousel();
+initializeCourses();
