@@ -94,6 +94,7 @@ const cursosIndividuais = [
 ];
 
 const COURSES_API = "./api/courses.php";
+const CREATE_ORDER_API = "./api/orders/create.php";
 
 const currencyFormatter = new Intl.NumberFormat("pt-BR", {
   style: "currency",
@@ -106,27 +107,20 @@ function formatCoursePrice(course) {
   }
 
   const value = Number(course.price);
-
-  if (!Number.isFinite(value)) {
-    return "Preço indisponível";
-  }
-
-  return currencyFormatter.format(value);
+  return Number.isFinite(value)
+    ? currencyFormatter.format(value)
+    : "Preço indisponível";
 }
 
 async function loadCommercialCatalog() {
   const response = await fetch(COURSES_API, {
     method: "GET",
-    headers: {
-      Accept: "application/json",
-    },
+    headers: { Accept: "application/json" },
     cache: "no-store",
   });
 
   if (!response.ok) {
-    throw new Error(
-      `Não foi possível carregar o catálogo. HTTP ${response.status}`,
-    );
+    throw new Error(`Não foi possível carregar o catálogo. HTTP ${response.status}`);
   }
 
   const data = await response.json();
@@ -163,6 +157,7 @@ const modalContent = document.querySelector("#individual-course-modal-content");
 
 let currentIndex = 0;
 let individualModalLastFocusedElement = null;
+let checkoutInProgress = false;
 
 function renderCursos() {
   if (!track) return;
@@ -172,26 +167,18 @@ function renderCursos() {
       (curso) => `
         <article class="resource-card">
           <div class="resource-card-visual">
-            <img
-              src="${curso.imagem}"
-              alt="${curso.titulo}"
-              loading="lazy"
-            />
+            <img src="${curso.imagem}" alt="${curso.titulo}" loading="lazy" />
             <span class="resource-type">Curso online</span>
           </div>
-
           <div class="resource-card-content">
             <h3>${curso.titulo}</h3>
             <p>${curso.descricao}</p>
-
             <div class="resource-meta">
               <span class="material-symbols-rounded" aria-hidden="true">schedule</span>
               <span>${curso.duracao}</span>
-
               <span class="material-symbols-rounded" aria-hidden="true">devices</span>
               <span>${curso.formato}</span>
             </div>
-
             <button
               class="resource-button resource-details-button"
               type="button"
@@ -200,12 +187,7 @@ function renderCursos() {
               aria-controls="individual-course-modal"
             >
               Ver detalhes
-              <span
-                class="material-symbols-rounded"
-                aria-hidden="true"
-              >
-                arrow_forward
-              </span>
+              <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span>
             </button>
           </div>
         </article>
@@ -220,296 +202,192 @@ function renderModal(curso) {
   modalContent.innerHTML = `
     <div class="course-detail-layout">
       <div class="course-detail-visual">
-        <img
-          src="${curso.imagem}"
-          alt="${curso.titulo}"
-        />
+        <img src="${curso.imagem}" alt="${curso.titulo}" />
       </div>
-
       <div class="course-detail-main">
-        <span class="course-detail-type">
-          Curso online
-        </span>
-
-        <h2 id="individual-course-modal-title">
-          ${curso.titulo}
-        </h2>
-
-        <p class="course-detail-description">
-          ${curso.descricaoCompleta}
-        </p>
-
+        <span class="course-detail-type">Curso online</span>
+        <h2 id="individual-course-modal-title">${curso.titulo}</h2>
+        <p class="course-detail-description">${curso.descricaoCompleta}</p>
         <div class="course-detail-meta">
-          <span>
-            <span
-              class="material-symbols-rounded"
-              aria-hidden="true"
-            >
-              schedule
-            </span>
-
-            ${curso.duracao}
-          </span>
-
-          <span>
-            <span
-              class="material-symbols-rounded"
-              aria-hidden="true"
-            >
-              devices
-            </span>
-
-            ${curso.formato}
-          </span>
+          <span><span class="material-symbols-rounded" aria-hidden="true">schedule</span>${curso.duracao}</span>
+          <span><span class="material-symbols-rounded" aria-hidden="true">devices</span>${curso.formato}</span>
         </div>
-
         <div class="course-detail-section">
           <h3>Você vai aprender</h3>
-
-          <ul>
-            ${curso.aprendizados
-              .map((item) => `<li>${item}</li>`)
-              .join("")}
-          </ul>
+          <ul>${curso.aprendizados.map((item) => `<li>${item}</li>`).join("")}</ul>
         </div>
-
         <div class="course-investment-card">
           <span>Investimento</span>
           <strong>${formatCoursePrice(curso)}</strong>
         </div>
-
         <div class="course-detail-actions">
           ${
             curso.available
-              ? `
-                <button
-                  class="course-detail-primary"
-                  type="button"
-                  data-course-buy="${curso.id}"
-                >
-                  Comprar curso
-                </button>
-              `
-              : `
-                <button
-                  class="course-detail-primary"
-                  type="button"
-                  disabled
-                  aria-disabled="true"
-                >
-                  Indisponível no momento
-                </button>
-              `
+              ? `<button class="course-detail-primary" type="button" data-course-buy="${curso.id}">Comprar curso</button>`
+              : `<button class="course-detail-primary" type="button" disabled aria-disabled="true">Indisponível no momento</button>`
           }
-
           <a
-            href="mailto:contato@evaglobal.com.br?subject=${encodeURIComponent(
-              `Interesse no curso ${curso.titulo}`,
-            )}"
+            href="mailto:contato@evaglobal.com.br?subject=${encodeURIComponent(`Interesse no curso ${curso.titulo}`)}"
             class="course-detail-secondary"
-          >
-            Enviar e-mail
-          </a>
+          >Enviar e-mail</a>
         </div>
       </div>
     </div>
   `;
 }
 
+async function startCheckout(courseId, button) {
+  if (checkoutInProgress) return;
+
+  checkoutInProgress = true;
+  const originalLabel = button.textContent;
+  button.disabled = true;
+  button.textContent = "Abrindo checkout...";
+
+  try {
+    const response = await fetch(CREATE_ORDER_API, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ course: courseId }),
+    });
+
+    const data = await response.json().catch(() => null);
+
+    if (response.status === 401) {
+      sessionStorage.setItem("eva_pending_course", courseId);
+      window.location.assign("./acesso.html");
+      return;
+    }
+
+    if (!response.ok || data?.success !== true) {
+      throw new Error(
+        data?.message || "Não foi possível iniciar o pagamento.",
+      );
+    }
+
+    if (
+      typeof data.checkout_url !== "string" ||
+      !data.checkout_url.startsWith("https://")
+    ) {
+      throw new Error("O checkout retornou uma URL inválida.");
+    }
+
+    window.location.assign(data.checkout_url);
+  } catch (error) {
+    console.error("Falha ao iniciar Checkout Pro:", error);
+    window.alert(
+      error instanceof Error
+        ? error.message
+        : "Não foi possível iniciar o pagamento.",
+    );
+    button.disabled = false;
+    button.textContent = originalLabel;
+    checkoutInProgress = false;
+  }
+}
+
 function openModal(courseId) {
   if (!modal) return;
 
-  const curso = cursosIndividuais.find(
-    (item) => item.id === courseId,
-  );
-
+  const curso = cursosIndividuais.find((item) => item.id === courseId);
   if (!curso) return;
 
-  individualModalLastFocusedElement =
-    document.activeElement;
-
+  individualModalLastFocusedElement = document.activeElement;
   renderModal(curso);
-
   modal.classList.add("is-open");
-
-  modal.setAttribute(
-    "aria-hidden",
-    "false",
-  );
-
-  document.body.classList.add(
-    "course-modal-open",
-  );
-
-  modal
-    .querySelector(".course-modal-close")
-    ?.focus();
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("course-modal-open");
+  modal.querySelector(".course-modal-close")?.focus();
 }
 
 function closeModal() {
-  if (!modal) return;
+  if (!modal || checkoutInProgress) return;
 
   modal.classList.remove("is-open");
-
-  modal.setAttribute(
-    "aria-hidden",
-    "true",
-  );
-
-  document.body.classList.remove(
-    "course-modal-open",
-  );
-
-  individualModalLastFocusedElement
-    ?.focus?.();
+  modal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("course-modal-open");
+  individualModalLastFocusedElement?.focus?.();
 }
 
 function getVisibleCards() {
-  if (window.innerWidth <= 650) {
-    return 1;
-  }
-
-  if (window.innerWidth <= 1000) {
-    return 2;
-  }
-
+  if (window.innerWidth <= 650) return 1;
+  if (window.innerWidth <= 1000) return 2;
   return 3;
 }
 
 function updateCarousel() {
   if (!track) return;
 
-  const cards =
-    track.querySelectorAll(".resource-card");
-
+  const cards = track.querySelectorAll(".resource-card");
   if (!cards.length) return;
 
-  const visibleCards =
-    getVisibleCards();
-
-  const cardWidth =
-    cards[0].getBoundingClientRect().width;
-
+  const visibleCards = getVisibleCards();
+  const cardWidth = cards[0].getBoundingClientRect().width;
   const gap = 24;
+  const maximumIndex = Math.max(0, cards.length - visibleCards);
 
-  const maximumIndex = Math.max(
-    0,
-    cards.length - visibleCards,
-  );
+  currentIndex = Math.min(currentIndex, maximumIndex);
+  track.style.transform = `translateX(-${currentIndex * (cardWidth + gap)}px)`;
 
-  currentIndex = Math.min(
-    currentIndex,
-    maximumIndex,
-  );
-
-  track.style.transform =
-    `translateX(-${
-      currentIndex * (cardWidth + gap)
-    }px)`;
-
-  if (prevButton) {
-    prevButton.disabled =
-      currentIndex === 0;
-  }
-
-  if (nextButton) {
-    nextButton.disabled =
-      currentIndex >= maximumIndex;
-  }
+  if (prevButton) prevButton.disabled = currentIndex === 0;
+  if (nextButton) nextButton.disabled = currentIndex >= maximumIndex;
 }
 
-track?.addEventListener(
-  "click",
-  (event) => {
-    const detailsButton =
-      event.target.closest(
-        "[data-course-id]",
-      );
+track?.addEventListener("click", (event) => {
+  const detailsButton = event.target.closest("[data-course-id]");
+  if (!detailsButton) return;
+  openModal(detailsButton.dataset.courseId);
+});
 
-    if (!detailsButton) return;
+modal?.addEventListener("click", (event) => {
+  const buyButton = event.target.closest("[data-course-buy]");
 
-    openModal(
-      detailsButton.dataset.courseId,
-    );
-  },
-);
+  if (buyButton) {
+    startCheckout(buyButton.dataset.courseBuy, buyButton);
+    return;
+  }
 
-modal?.addEventListener(
-  "click",
-  (event) => {
-    if (
-      event.target.closest(
-        "[data-course-close]",
-      )
-    ) {
-      closeModal();
-    }
-  },
-);
+  if (event.target.closest("[data-course-close]")) {
+    closeModal();
+  }
+});
 
-document.addEventListener(
-  "keydown",
-  (event) => {
-    if (
-      event.key === "Escape" &&
-      modal?.classList.contains("is-open")
-    ) {
-      closeModal();
-    }
-  },
-);
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && modal?.classList.contains("is-open")) {
+    closeModal();
+  }
+});
 
-prevButton?.addEventListener(
-  "click",
-  () => {
-    currentIndex = Math.max(
-      0,
-      currentIndex - 1,
-    );
+prevButton?.addEventListener("click", () => {
+  currentIndex = Math.max(0, currentIndex - 1);
+  updateCarousel();
+});
 
-    updateCarousel();
-  },
-);
+nextButton?.addEventListener("click", () => {
+  const maximumIndex = Math.max(
+    0,
+    cursosIndividuais.length - getVisibleCards(),
+  );
+  currentIndex = Math.min(maximumIndex, currentIndex + 1);
+  updateCarousel();
+});
 
-nextButton?.addEventListener(
-  "click",
-  () => {
-    const maximumIndex = Math.max(
-      0,
-      cursosIndividuais.length -
-        getVisibleCards(),
-    );
-
-    currentIndex = Math.min(
-      maximumIndex,
-      currentIndex + 1,
-    );
-
-    updateCarousel();
-  },
-);
-
-window.addEventListener(
-  "resize",
-  updateCarousel,
-);
+window.addEventListener("resize", updateCarousel);
 
 async function initializeCourses() {
   try {
     await loadCommercialCatalog();
   } catch (error) {
-    console.error(
-      "Não foi possível carregar o catálogo comercial:",
-      error,
-    );
+    console.error("Não foi possível carregar o catálogo comercial:", error);
 
-    cursosIndividuais.forEach(
-      (course) => {
-        course.price = null;
-        course.currency = null;
-        course.available = false;
-      },
-    );
+    cursosIndividuais.forEach((course) => {
+      course.price = null;
+      course.currency = null;
+      course.available = false;
+    });
   }
 
   renderCursos();
