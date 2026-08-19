@@ -201,7 +201,9 @@ function evaSyncMercadoPagoPayment(
         try {
             $approvedAt = (new DateTimeImmutable(
                 (string) $payment['date_approved']
-            ))->format('Y-m-d H:i:s');
+            ))
+                ->setTimezone(new DateTimeZone('America/Sao_Paulo'))
+                ->format('Y-m-d H:i:s');
         } catch (Throwable) {
             $approvedAt = null;
         }
