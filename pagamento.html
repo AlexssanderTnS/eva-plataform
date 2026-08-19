@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Status do pagamento | EVA</title>
+    <link rel="icon" href="./assets/images/simbolo.svg" type="image/x-icon" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/pagamento.css" />
+  </head>
+  <body class="payment-page">
+    <header class="site-header">
+      <nav class="navbar" aria-label="Navegação principal">
+        <a href="./index.html" class="navbar-logo" aria-label="Ir para a página inicial">
+          <img src="./assets/images/eva-logo.svg" alt="Logo EVA" />
+        </a>
+        <ul class="navbar-menu">
+          <li><a href="./index.html">Página Inicial</a></li>
+          <li><a href="./recursos.html">EVA Individual</a></li>
+          <li><a href="./empresas.html">EVA Empresas</a></li>
+        </ul>
+        <a href="./conta.html" class="navbar-cta">Minha conta</a>
+      </nav>
+    </header>
+
+    <main class="payment-main">
+      <section class="payment-card" aria-live="polite" aria-busy="true" id="payment-status-card">
+        <div class="payment-status-icon" id="payment-status-icon" aria-hidden="true">…</div>
+        <p class="payment-eyebrow">Pagamento EVA</p>
+        <h1 id="payment-status-title">Confirmando seu pagamento</h1>
+        <p id="payment-status-message">
+          Estamos consultando o pedido de forma segura. Isso pode levar alguns instantes.
+        </p>
+
+        <dl class="payment-details" id="payment-details" hidden>
+          <div>
+            <dt>Curso</dt>
+            <dd id="payment-course">—</dd>
+          </div>
+          <div>
+            <dt>Valor</dt>
+            <dd id="payment-amount">—</dd>
+          </div>
+          <div>
+            <dt>Pedido</dt>
+            <dd id="payment-reference">—</dd>
+          </div>
+        </dl>
+
+        <div class="payment-actions">
+          <a href="./conta.html" class="btn btn-primary">Ir para minha conta</a>
+          <a href="./recursos.html" class="btn btn-secondary">Voltar aos cursos</a>
+        </div>
+      </section>
+    </main>
+
+    <script src="./js/pagamento.js"></script>
+  </body>
+</html>
