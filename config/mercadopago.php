@@ -18,7 +18,10 @@ if (!is_array($config)) {
     );
 }
 
-$requiredFields = ['environment','public_key','access_token','currency',
+$requiredFields = [
+    'environment',
+    'access_token',
+    'currency',
 ];
 
 foreach ($requiredFields as $field) {
@@ -52,19 +55,32 @@ if ($currency !== 'BRL') {
     );
 }
 
+$defaultBaseUrl = $environment === 'test'
+    ? 'https://staging.evaglobal.com.br'
+    : 'https://evaglobal.com.br';
+
+$baseUrl = isset($config['base_url'])
+    ? rtrim(trim((string) $config['base_url']), '/')
+    : $defaultBaseUrl;
+
+if (
+    !filter_var($baseUrl, FILTER_VALIDATE_URL) ||
+    strtolower((string) parse_url($baseUrl, PHP_URL_SCHEME)) !== 'https'
+) {
+    throw new RuntimeException(
+        'URL base configurada para o Mercado Pago é inválida.'
+    );
+}
+
 return [
     'environment' => $environment,
-
- 
-    'public_key' => trim($config['public_key']),
-
-   
+    'public_key' => isset($config['public_key'])
+        ? trim((string) $config['public_key'])
+        : '',
     'access_token' => trim($config['access_token']),
-
- 
     'webhook_secret' => isset($config['webhook_secret'])
         ? trim((string) $config['webhook_secret'])
         : '',
-
     'currency' => $currency,
+    'base_url' => $baseUrl,
 ];
