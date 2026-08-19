@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - security/auth-hardening
+      - integration/mercado-pago
   pull_request:
 
 permissions:
@@ -33,12 +34,16 @@ jobs:
         run: find api config -type f -name '*.php' -print0 | xargs -0 -n1 php -l
 
       - name: JavaScript syntax
-        run: node --check js/auth.js
+        run: |
+          node --check js/auth.js
+          node --check js/recursos.js
+          node --check js/pagamento.js
 
       - name: Ensure local secrets are not tracked
         run: |
           test ! -f config/database.local.php
           test ! -f config/mail.local.php
+          test ! -f config/mercadopago.local.php
           test ! -f .env
 
       - name: Ensure session debug logs are absent
