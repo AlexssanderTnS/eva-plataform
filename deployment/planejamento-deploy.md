@@ -2,13 +2,16 @@
 
 ## Estado atual
 
-O bloco de **autenticação e conta** está funcionalmente concluído na branch `security/auth-hardening`.
+Os blocos de **autenticação e conta** e de **Mercado Pago Checkout Pro** estão funcionalmente implementados na linha de desenvolvimento que culmina na branch `integration/mercado-pago`.
 
-A homologação final será executada depois que os próximos blocos da plataforma estiverem implementados, para que o teste ponta a ponta seja feito sobre a versão que realmente irá para produção.
+A autenticação já foi validada em staging. A integração de pagamento está pronta para a homologação de Checkout Pro no staging, após aplicação da migration e configuração do webhook/segredos de teste.
+
+A homologação final de segurança e do fluxo ponta a ponta continuará sendo executada sobre a versão que realmente irá para produção.
 
 Documentação detalhada:
 
-- `deployment/authentication-account.md` — arquitetura, fluxos, banco, segurança, staging e estado de fechamento.
+- `deployment/authentication-account.md` — arquitetura, fluxos, banco, segurança, staging e estado da autenticação.
+- `deployment/mercado-pago-checkout-pro.md` — arquitetura do Checkout Pro, configuração, webhook e roteiro de homologação.
 - `deployment/security-hardening.md` — checklist de segurança e deploy.
 
 ## Estratégia adotada
@@ -43,36 +46,65 @@ Entregue:
 
 A bateria de segurança completa permanece pendente para o fechamento geral da plataforma.
 
-## Próximo bloco
+## Bloco implementado: Mercado Pago Checkout Pro
 
-**Mercado Pago + liberação de curso.**
+Entregue no código:
 
-Fluxo alvo:
+- catálogo comercial com preço vindo do banco;
+- criação e reutilização segura de pedido interno;
+- criação e reutilização de Preference do Checkout Pro;
+- redirecionamento para o checkout hospedado do Mercado Pago;
+- URLs de retorno de sucesso, pendência e falha;
+- página única de retorno do pagamento;
+- consulta autenticada do status do pedido;
+- webhook de pagamentos com validação de assinatura;
+- confirmação do pagamento por consulta à API do Mercado Pago;
+- persistência de pedidos, pagamentos e eventos de webhook;
+- criação de `course_access` como `pending` após pagamento aprovado;
+- migration específica para adaptação ao Checkout Pro;
+- documentação e CI atualizados.
 
-`usuário autenticado → escolha do curso → pagamento → webhook/confirmacão → liberação/matrícula → curso exibido na área da conta`.
+Fluxo implementado:
 
-Depois desse bloco, integrar Moodle/SSO conforme a arquitetura definida para a plataforma.
+`usuário autenticado → escolha do curso → pedido EVA → Preference → Checkout Pro → retorno/webhook → confirmação pela API → acesso pendente`
 
-## Produção — autenticação
+Pendente para homologação em staging:
 
-No momento do deploy de autenticação para produção:
+1. executar `database/migrations/2026-08-19-checkout-pro.sql`;
+2. configurar `config/mercadopago.local.php` com credenciais de teste e `webhook_secret`;
+3. configurar o evento Pagamentos no painel do Mercado Pago para o webhook de staging;
+4. publicar os arquivos da branch no staging;
+5. executar compra de teste ponta a ponta;
+6. validar `orders`, `payments`, `payment_webhook_events` e `course_access`.
 
-1. backup de arquivos e banco;
+## Próximo bloco funcional
+
+**Moodle/SSO + matrícula/liberação definitiva do curso.**
+
+O pagamento aprovado já deixa o acesso em estado `pending`. O próximo bloco deve consumir esse estado, criar/sincronizar a matrícula no Moodle e somente então marcar o acesso como `active`.
+
+## Produção — autenticação e comércio
+
+No momento do deploy final para produção:
+
+1. fazer backup de arquivos e banco;
 2. revisar `.htaccess` existente da produção e mesclar as regras de segurança;
-3. executar `database/migrations/2026-08-14-auth-hardening.sql`;
-4. executar `database/migrations/2026-08-15-session-version.sql`;
-5. publicar os arquivos aprovados;
-6. preservar `config/database.local.php` e `config/mail.local.php` locais;
-7. garantir armazenamento de sessão fora do document root;
-8. executar checklist de `deployment/security-hardening.md`;
-9. validar fluxo completo em produção.
+3. executar as migrations ainda não aplicadas, na ordem cronológica;
+4. preservar os arquivos locais `config/database.local.php`, `config/mail.local.php` e `config/mercadopago.local.php`;
+5. garantir armazenamento de sessão fora do document root;
+6. configurar credenciais de produção e webhook de produção do Mercado Pago;
+7. executar checklist de `deployment/security-hardening.md`;
+8. validar autenticação, compra, webhook, retorno, acesso e integração Moodle/SSO;
+9. publicar somente após a bateria final aprovada.
 
-Não executar `database/schema.sql` sobre o banco de produção existente.
+Não executar `database/schema.sql` sobre banco de produção existente.
 
 ## Regra de ambientes
 
 Staging utiliza banco, usuário de banco e configurações locais separados da produção.
 
-Alterações manuais específicas do staging — domínio permitido e URLs de confirmação — não devem ser levadas para produção.
+Alterações manuais específicas do staging — como domínio permitido na configuração de segurança — não devem ser levadas para produção sem revisão.
+
+O Checkout Pro utiliza `base_url` por ambiente em `config/mercadopago.local.php`, evitando editar as URLs de retorno diretamente no código.
 
 Arquivos compactados usados para upload devem ser removidos do document root após extração.
