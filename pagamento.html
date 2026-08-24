@@ -8,6 +8,10 @@
     <link rel="icon" href="./assets/images/simbolo.svg" type="image/x-icon" />
     <link rel="stylesheet" href="./css/style.css" />
     <link rel="stylesheet" href="./css/pagamento.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded&icon_names=close,menu&display=block"
+      rel="stylesheet"
+    />
   </head>
   <body class="payment-page">
     <header class="site-header">
@@ -21,8 +25,51 @@
           <li><a href="./empresas.html">EVA Empresas</a></li>
         </ul>
         <a href="./contato.html" class="navbar-cta">Fale com a EVA</a>
+        <button
+          class="mobile-menu-toggle"
+          type="button"
+          aria-label="Abrir menu"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+        >
+          <span class="material-symbols-rounded" aria-hidden="true">menu</span>
+        </button>
       </nav>
     </header>
+
+    <div class="mobile-menu-overlay" data-menu-close aria-hidden="true"></div>
+    <aside
+      id="mobile-menu"
+      class="mobile-menu-drawer"
+      aria-label="Menu de navegação mobile"
+      aria-hidden="true"
+      inert
+    >
+      <div class="mobile-menu-header">
+        <a
+          href="./index.html"
+          class="mobile-menu-logo"
+          aria-label="Ir para a página inicial"
+          data-menu-link
+        >
+          <img src="./assets/images/eva-logo.svg" alt="Logo EVA" />
+        </a>
+        <button
+          class="mobile-menu-close"
+          type="button"
+          aria-label="Fechar menu"
+          data-menu-close
+        >
+          <span class="material-symbols-rounded" aria-hidden="true">close</span>
+        </button>
+      </div>
+      <nav class="mobile-menu-nav" aria-label="Navegação mobile">
+        <a href="./index.html" data-menu-link>Página Inicial</a>
+        <a href="./recursos.html" data-menu-link>EVA Individual</a>
+        <a href="./empresas.html" data-menu-link>EVA Empresas</a>
+      </nav>
+      <a href="./contato.html" class="mobile-menu-cta" data-menu-link>Fale com a EVA</a>
+    </aside>
 
     <main class="payment-main">
       <section class="payment-card" aria-live="polite" aria-busy="true" id="payment-status-card">
