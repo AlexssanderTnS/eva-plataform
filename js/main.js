@@ -1,3 +1,74 @@
+function normalizeSiteNavigation() {
+  const contactHref = "./contato.html";
+  const loginHref = "./acesso.html";
+  const isContactPage = window.location.pathname.endsWith("/contato.html");
+
+  const desktopMenu = document.querySelector(".navbar-menu");
+
+  if (desktopMenu && !desktopMenu.querySelector(`a[href="${contactHref}"]`)) {
+    const contactItem = document.createElement("li");
+    const contactLink = document.createElement("a");
+
+    contactLink.href = contactHref;
+    contactLink.textContent = "Contato";
+
+    if (isContactPage) {
+      contactLink.classList.add("is-active");
+    }
+
+    contactItem.appendChild(contactLink);
+
+    const companiesLink = desktopMenu.querySelector('a[href="./empresas.html"]');
+    const companiesItem = companiesLink?.closest("li");
+
+    if (companiesItem) {
+      companiesItem.insertAdjacentElement("afterend", contactItem);
+    } else {
+      desktopMenu.appendChild(contactItem);
+    }
+  }
+
+  const desktopCta = document.querySelector(".navbar-cta");
+
+  if (desktopCta) {
+    desktopCta.href = loginHref;
+    desktopCta.textContent = "Login";
+    desktopCta.setAttribute("aria-label", "Entrar na conta EVA");
+  }
+
+  const mobileNav = document.querySelector(".mobile-menu-nav");
+
+  if (mobileNav && !mobileNav.querySelector(`a[href="${contactHref}"]`)) {
+    const contactLink = document.createElement("a");
+
+    contactLink.href = contactHref;
+    contactLink.textContent = "Contato";
+    contactLink.setAttribute("data-menu-link", "");
+
+    if (isContactPage) {
+      contactLink.classList.add("is-active");
+    }
+
+    const companiesLink = mobileNav.querySelector('a[href="./empresas.html"]');
+
+    if (companiesLink) {
+      companiesLink.insertAdjacentElement("afterend", contactLink);
+    } else {
+      mobileNav.appendChild(contactLink);
+    }
+  }
+
+  const mobileCta = document.querySelector(".mobile-menu-cta");
+
+  if (mobileCta) {
+    mobileCta.href = loginHref;
+    mobileCta.textContent = "Login";
+    mobileCta.setAttribute("aria-label", "Entrar na conta EVA");
+  }
+}
+
+normalizeSiteNavigation();
+
 const openableCards = document.querySelectorAll(".openable-card");
 
 function destacarCard(cardId) {
