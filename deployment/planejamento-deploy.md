@@ -61,7 +61,7 @@ Entregue no código:
 - confirmação do pagamento por consulta à API do Mercado Pago;
 - persistência de pedidos, pagamentos e eventos de webhook;
 - criação de `course_access` como `pending` após pagamento aprovado;
-- migration específica para adaptação ao Checkout Pro;
+- migrations específicas para adaptação ao Checkout Pro e hardening de concorrência do webhook;
 - documentação e CI atualizados.
 
 Fluxo implementado:
@@ -70,7 +70,7 @@ Fluxo implementado:
 
 Pendente para homologação em staging:
 
-1. executar `database/migrations/2026-08-19-checkout-pro.sql`;
+1. executar `database/migrations/2026-08-19-checkout-pro.sql` e `database/migrations/2026-08-27-commerce-hardening.sql`, nessa ordem;
 2. configurar `config/mercadopago.local.php` com credenciais de teste e `webhook_secret`;
 3. configurar o evento Pagamentos no painel do Mercado Pago para o webhook de staging;
 4. publicar os arquivos da branch no staging;
@@ -103,8 +103,8 @@ Não executar `database/schema.sql` sobre banco de produção existente.
 
 Staging utiliza banco, usuário de banco e configurações locais separados da produção.
 
-Alterações manuais específicas do staging — como domínio permitido na configuração de segurança — não devem ser levadas para produção sem revisão.
+`config/app.php` centraliza URL base, origens confiáveis e namespace de sessão por ambiente, eliminando overrides manuais de domínio no staging.
 
-O Checkout Pro utiliza `base_url` por ambiente em `config/mercadopago.local.php`, evitando editar as URLs de retorno diretamente no código.
+O Checkout Pro utiliza a URL base resolvida pela aplicação; qualquer `base_url` legado no arquivo local precisa coincidir com esse ambiente.
 
 Arquivos compactados usados para upload devem ser removidos do document root após extração.

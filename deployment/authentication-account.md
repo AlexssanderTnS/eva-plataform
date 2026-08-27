@@ -363,16 +363,17 @@ Foi criado um ambiente isolado em subdomínio de staging com:
 - schema importado em banco vazio;
 - código da branch `security/auth-hardening`.
 
-### Overrides manuais de staging
+### Configuração automática por ambiente
 
-O código versionado continua configurado para produção em dois pontos que foram alterados manualmente no staging:
+A configuração de domínio foi centralizada em `config/app.php`.
 
-1. `config/security.php` — inclusão da origem `https://staging.evaglobal.com.br`;
-2. `api/auth/register.php` e `api/auth/resend-verification.php` — URL de confirmação apontando para o domínio de staging.
+O ambiente é resolvido pelo host conhecido da aplicação (produção ou staging), com suporte a override explícito por `EVA_APP_ENV` para desenvolvimento. A mesma configuração fornece:
 
-Esses overrides não devem ser copiados para produção.
+- URL base canônica;
+- origens permitidas;
+- namespace físico das sessões.
 
-Como melhoria futura, origem e URL base devem ser movidas para configuração por ambiente para eliminar edição manual.
+Com isso, `config/security.php`, os links de confirmação de e-mail e o armazenamento de sessão deixam de exigir edição manual específica do staging.
 
 ## 20. Testes já executados no staging
 
@@ -479,7 +480,7 @@ Ainda devem ser executados antes da produção:
 - `composer validate --no-check-publish`;
 - `composer audit --locked --no-interaction`;
 - sintaxe PHP;
-- sintaxe de `js/auth.js`;
+- sintaxe de todos os arquivos `.js` em `js/`;
 - verificação de que arquivos locais de segredo não estão versionados;
 - busca por logs de ID de sessão.
 
@@ -500,11 +501,9 @@ Antes do deploy final:
 9. verificar novamente que arquivos internos retornam `403/404`;
 10. validar cadastro, confirmação, login, conta e logout na produção.
 
-### Atenção: diretório de sessões por ambiente
+### Diretório de sessões por ambiente
 
-Hoje `config/session.php` deriva o diretório a partir do pai do `DOCUMENT_ROOT`. Em uma hospedagem onde staging e produção tenham document roots irmãos sob o mesmo diretório pai, os dois ambientes podem apontar para o mesmo `eva_sessions`.
-
-Os cookies são host-only e os IDs são aleatórios, mas a separação física por ambiente é preferível. Antes do rollout definitivo, considerar tornar o caminho configurável, por exemplo `eva_sessions_staging` e `eva_sessions`.
+`config/session.php` utiliza o namespace fornecido por `config/app.php`, separando fisicamente `eva_sessions_staging`, `eva_sessions_production` e o namespace de desenvolvimento quando aplicável.
 
 ## 25. Estado de fechamento
 
@@ -512,4 +511,4 @@ Para desenvolvimento, o bloco **login + cadastro + conta** está fechado e pront
 
 Não significa que a produção esteja liberada neste momento: a homologação final de segurança foi deliberadamente adiada para ser executada quando pagamento, liberação de curso e integrações estiverem completos, evitando repetir a bateria inteira após cada alteração.
 
-Próximo recurso planejado: **pagamento via Mercado Pago + confirmação de pagamento + liberação/matrícula do curso**.
+O bloco de Mercado Pago Checkout Pro já foi implementado na branch `integration/mercado-pago`. O próximo bloco funcional é **Moodle/SSO + matrícula/liberação definitiva do curso**.

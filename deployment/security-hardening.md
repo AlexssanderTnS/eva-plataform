@@ -92,17 +92,11 @@ Nunca importar `schema.sql` por cima de produção existente.
 
 ## Configuração por ambiente
 
-A branch versionada usa origens e links de confirmação de produção.
+A configuração de ambiente está centralizada em `config/app.php`.
 
-No staging foram feitos overrides manuais:
+Ela fornece URL base, origens confiáveis e namespace de sessão para produção e staging. Os endpoints de autenticação e `config/security.php` consomem essa configuração, eliminando overrides manuais de domínio no staging.
 
-- `config/security.php`: inclusão de `https://staging.evaglobal.com.br` nas origens permitidas;
-- `api/auth/register.php`: link de verificação apontando para staging;
-- `api/auth/resend-verification.php`: link de verificação apontando para staging.
-
-Não copiar esses overrides para produção.
-
-Como melhoria futura, origem e URL base devem ser configuráveis por ambiente.
+Para desenvolvimento local, é possível usar `EVA_APP_ENV=development` e, quando necessário, `EVA_APP_BASE_URL`.
 
 ## Testes que já passaram em staging
 

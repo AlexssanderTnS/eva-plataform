@@ -33,33 +33,28 @@ Use `config/mercadopago.example.php` como referência.
 <?php
 return [
     'environment' => 'test',
-    'public_key' => 'APP_USR-...',
     'access_token' => 'APP_USR-...',
     'webhook_secret' => '...',
     'currency' => 'BRL',
-    'base_url' => 'https://staging.evaglobal.com.br',
 ];
 ```
 
-`base_url` é opcional. Em `test`, o fallback é `https://staging.evaglobal.com.br`; em `production`, `https://evaglobal.com.br`.
+A URL base é obtida de `config/app.php`. Um `base_url` legado ainda pode existir no arquivo local, mas, se informado, precisa corresponder exatamente ao ambiente detectado.
 
 ## Banco existente
 
-Executar após a migration comercial de 2026-08-16:
+Executar, em ordem, após a migration comercial de 2026-08-16:
 
-`database/migrations/2026-08-19-checkout-pro.sql`
+1. `database/migrations/2026-08-19-checkout-pro.sql`;
+2. `database/migrations/2026-08-27-commerce-hardening.sql`.
 
-Ela:
-
-- adiciona `orders.provider_preference_id`;
-- renomeia o identificador de Merchant Order em `payments`;
-- torna a antiga chave de idempotência do pagamento opcional.
+A primeira adapta pedidos e pagamentos ao Checkout Pro. A segunda adiciona o estado `processing` aos eventos de webhook para permitir aquisição atômica do processamento e retries seguros.
 
 Não executar `database/schema.sql` sobre um banco já existente.
 
 ## Webhook
 
-No painel Mercado Pago Developers, configure o evento **Pagamentos** (`payment`) para:
+Cada Preference também envia explicitamente `notification_url` para o endpoint do ambiente atual. No painel Mercado Pago Developers, mantenha o evento **Pagamentos** (`payment`) configurado para:
 
 - teste: `https://staging.evaglobal.com.br/api/payments/webhook.php`
 - produção: `https://evaglobal.com.br/api/payments/webhook.php`
@@ -75,7 +70,7 @@ O endpoint não confia no payload recebido. Após validar `x-signature`, consult
 
 ## Teste de Checkout Pro em staging
 
-1. aplicar a migration `2026-08-19-checkout-pro.sql`;
+1. aplicar as migrations `2026-08-19-checkout-pro.sql` e `2026-08-27-commerce-hardening.sql`, nessa ordem;
 2. confirmar `mercadopago.local.php` com credenciais de teste;
 3. entrar em uma conta EVA de staging com e-mail confirmado;
 4. abrir `recursos.html`;
@@ -96,3 +91,12 @@ Pagamentos criados com credenciais de teste podem não disparar automaticamente 
 - somente a confirmação consultada na API do Mercado Pago altera o pedido.
 - o webhook é idempotente por `payment_webhook_events`.
 - um pagamento aprovado cria/atualiza `course_access` como `pending`; a ativação definitiva será concluída pelo bloco Moodle/SSO.
+
+
+## Hardening adicional
+
+- `sandbox_init_point` é aceito somente no ambiente de teste.
+- `init_point` é aceito somente em produção.
+- o ID retornado por `/v1/payments/{id}` deve ser exatamente o ID consultado.
+- reembolsos revogam apenas o acesso originado pelo mesmo `order_id`, evitando que um evento antigo revogue uma compra posterior.
+- quando há múltiplas tentativas de pagamento, a API de status prioriza o pagamento coerente com o estado atual do pedido.
