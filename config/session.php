@@ -25,8 +25,17 @@ function evaStartSecureSession(): void
         $sessionBase = sys_get_temp_dir();
     }
 
+    $appConfig = require __DIR__ . '/app.php';
+    $sessionDirectory = (string) ($appConfig['session_directory'] ?? 'eva_sessions');
+
+    if (!preg_match('/^[a-z0-9_-]+$/', $sessionDirectory)) {
+        throw new RuntimeException(
+            'Nome do diretório de sessão inválido.'
+        );
+    }
+
     $sessionPath =
-        $sessionBase . DIRECTORY_SEPARATOR . 'eva_sessions';
+        $sessionBase . DIRECTORY_SEPARATOR . $sessionDirectory;
 
     if (
         !is_dir($sessionPath) &&

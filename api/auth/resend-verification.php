@@ -93,8 +93,10 @@ try {
 
     $verificationToken = bin2hex(random_bytes(32));
     $verificationTokenHash = hash('sha256', $verificationToken);
+    $appConfig = require __DIR__ . '/../../config/app.php';
     $verificationUrl =
-        'https://www.evaglobal.com.br/api/auth/verify-email.php?token=' .
+        rtrim((string) $appConfig['base_url'], '/') .
+        '/api/auth/verify-email.php?token=' .
         rawurlencode($verificationToken);
 
     $pdo->beginTransaction();

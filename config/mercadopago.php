@@ -55,9 +55,18 @@ if ($currency !== 'BRL') {
     );
 }
 
-$defaultBaseUrl = $environment === 'test'
-    ? 'https://staging.evaglobal.com.br'
-    : 'https://evaglobal.com.br';
+$appConfig = require __DIR__ . '/app.php';
+$expectedEnvironment = $appConfig['environment'] === 'production'
+    ? 'production'
+    : 'test';
+
+if ($environment !== $expectedEnvironment) {
+    throw new RuntimeException(
+        'Ambiente do Mercado Pago não corresponde ao ambiente da aplicação.'
+    );
+}
+
+$defaultBaseUrl = rtrim((string) $appConfig['base_url'], '/');
 
 $baseUrl = isset($config['base_url'])
     ? rtrim(trim((string) $config['base_url']), '/')
@@ -72,11 +81,14 @@ if (
     );
 }
 
+if (!hash_equals(strtolower($defaultBaseUrl), strtolower($baseUrl))) {
+    throw new RuntimeException(
+        'URL base do Mercado Pago não corresponde ao ambiente da aplicação.'
+    );
+}
+
 return [
     'environment' => $environment,
-    'public_key' => isset($config['public_key'])
-        ? trim((string) $config['public_key'])
-        : '',
     'access_token' => trim($config['access_token']),
     'webhook_secret' => isset($config['webhook_secret'])
         ? trim((string) $config['webhook_secret'])

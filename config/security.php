@@ -63,10 +63,11 @@ function evaEnforceTrustedOrigin(): void
         rtrim(trim((string) ($_SERVER['HTTP_ORIGIN'] ?? '')), '/')
     );
 
-    $allowedOrigins = [
-        'https://www.evaglobal.com.br',
-        'https://evaglobal.com.br',
-    ];
+    $appConfig = require __DIR__ . '/app.php';
+    $allowedOrigins = array_map(
+        static fn (string $value): string => strtolower(rtrim($value, '/')),
+        $appConfig['allowed_origins']
+    );
 
     if (
         $origin === '' ||
