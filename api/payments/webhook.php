@@ -131,7 +131,6 @@ $eventKeySeed = implode('|', [
 $eventKey = 'payment:' . hash('sha256', $eventKeySeed);
 
 $pdo = null;
-$eventAlreadyProcessed = false;
 
 try {
     $pdo = require __DIR__ . '/../../config/database.php';
@@ -164,21 +163,42 @@ try {
 
     $statement = $pdo->prepare(
         "
-        SELECT status
-        FROM payment_webhook_events
-        WHERE provider = 'mercado_pago' AND event_key = :event_key
-        LIMIT 1
+        UPDATE payment_webhook_events
+        SET
+            status = 'processing',
+            processed_at = NULL
+        WHERE
+            provider = 'mercado_pago'
+            AND event_key = :event_key
+            AND status IN ('received', 'failed')
         "
     );
     $statement->execute(['event_key' => $eventKey]);
-    $event = $statement->fetch();
-    $eventAlreadyProcessed = $event !== false && $event['status'] === 'processed';
 
-    if ($eventAlreadyProcessed) {
-        webhookResponse(200, [
-            'success' => true,
-            'duplicate' => true,
-        ]);
+    if ($statement->rowCount() !== 1) {
+        $statement = $pdo->prepare(
+            "
+            SELECT status
+            FROM payment_webhook_events
+            WHERE provider = 'mercado_pago' AND event_key = :event_key
+            LIMIT 1
+            "
+        );
+        $statement->execute(['event_key' => $eventKey]);
+        $event = $statement->fetch();
+        $eventStatus = $event !== false ? (string) $event['status'] : '';
+
+        if (in_array($eventStatus, ['processing', 'processed'], true)) {
+            webhookResponse(200, [
+                'success' => true,
+                'duplicate' => true,
+                'processing' => $eventStatus === 'processing',
+            ]);
+        }
+
+        throw new RuntimeException(
+            'Não foi possível adquirir o evento de webhook para processamento.'
+        );
     }
 
     $mpClient = require __DIR__ . '/../../config/mercadopago-client.php';

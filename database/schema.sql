@@ -189,6 +189,7 @@ CREATE TABLE IF NOT EXISTS payment_webhook_events (
     resource_id VARCHAR(120) NULL,
     status ENUM(
         'received',
+        'processing',
         'processed',
         'ignored',
         'failed'

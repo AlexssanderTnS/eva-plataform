@@ -352,6 +352,7 @@ try {
                 'pending' => $baseUrl . '/pagamento.html?result=pending',
                 'failure' => $baseUrl . '/pagamento.html?result=failure',
             ],
+            'notification_url' => $baseUrl . '/api/payments/webhook.php',
             'auto_return' => 'approved',
             'expires' => true,
             'expiration_date_from' => $now->format(DATE_ATOM),

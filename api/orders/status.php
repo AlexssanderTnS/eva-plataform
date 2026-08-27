@@ -170,7 +170,15 @@ try {
                 SELECT p2.id
                 FROM payments p2
                 WHERE p2.order_id = o.id
-                ORDER BY p2.id DESC
+                ORDER BY
+                    CASE
+                        WHEN o.status = 'paid' AND p2.status = 'approved' THEN 0
+                        WHEN o.status = 'refunded' AND p2.status IN ('refunded', 'charged_back') THEN 0
+                        WHEN o.status = 'failed' AND p2.status = 'rejected' THEN 0
+                        ELSE 1
+                    END,
+                    p2.updated_at DESC,
+                    p2.id DESC
                 LIMIT 1
             )
         WHERE

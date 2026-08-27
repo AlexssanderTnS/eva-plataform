@@ -6,27 +6,21 @@ function evaMercadoPagoCheckoutUrl(
     array $preference,
     string $environment
 ): ?string {
-    $preferredKey = $environment === 'test'
+    $key = $environment === 'test'
         ? 'sandbox_init_point'
         : 'init_point';
 
-    $fallbackKey = $environment === 'test'
-        ? 'init_point'
-        : 'sandbox_init_point';
+    $value = trim((string) ($preference[$key] ?? ''));
 
-    foreach ([$preferredKey, $fallbackKey] as $key) {
-        $value = trim((string) ($preference[$key] ?? ''));
-
-        if (
-            $value !== '' &&
-            filter_var($value, FILTER_VALIDATE_URL) !== false &&
-            strtolower((string) parse_url($value, PHP_URL_SCHEME)) === 'https'
-        ) {
-            return $value;
-        }
+    if (
+        $value === '' ||
+        filter_var($value, FILTER_VALIDATE_URL) === false ||
+        strtolower((string) parse_url($value, PHP_URL_SCHEME)) !== 'https'
+    ) {
+        return null;
     }
 
-    return null;
+    return $value;
 }
 
 function evaValidateMercadoPagoWebhookSignature(
@@ -174,6 +168,12 @@ function evaSyncMercadoPagoPayment(
     ) {
         throw new RuntimeException(
             'Pagamento retornado pelo Mercado Pago possui dados incompletos.'
+        );
+    }
+
+    if (!hash_equals($paymentId, $providerPaymentId)) {
+        throw new RuntimeException(
+            'Pagamento retornado não corresponde ao identificador consultado.'
         );
     }
 
@@ -396,11 +396,13 @@ function evaSyncMercadoPagoPayment(
                 WHERE
                     user_id = :user_id
                     AND course_id = :course_id
+                    AND order_id = :order_id
                 "
             );
             $statement->execute([
                 'user_id' => $orderUserId,
                 'course_id' => $courseId,
+                'order_id' => $orderId,
             ]);
         }
 
