@@ -328,9 +328,11 @@ function evaSyncMercadoPagoPayment(
         $mappedOrderStatus = evaMercadoPagoOrderStatus($status);
         $currentOrderStatus = (string) $order['status'];
 
-        if (
+        if ($currentOrderStatus === 'refunded') {
+            $mappedOrderStatus = 'refunded';
+        } elseif (
             $currentOrderStatus === 'paid' &&
-            !in_array($mappedOrderStatus, ['refunded'], true)
+            $mappedOrderStatus !== 'refunded'
         ) {
             $mappedOrderStatus = 'paid';
         }

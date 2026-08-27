@@ -100,3 +100,6 @@ Pagamentos criados com credenciais de teste podem não disparar automaticamente 
 - o ID retornado por `/v1/payments/{id}` deve ser exatamente o ID consultado.
 - reembolsos revogam apenas o acesso originado pelo mesmo `order_id`, evitando que um evento antigo revogue uma compra posterior.
 - quando há múltiplas tentativas de pagamento, a API de status prioriza o pagamento coerente com o estado atual do pedido.
+
+- pedidos já marcados como `refunded` são terminais para aquele pedido; eventos antigos de aprovação não os reativam.
+- eventos presos em `processing` por interrupção inesperada podem ser retomados após uma janela de 5 minutos.

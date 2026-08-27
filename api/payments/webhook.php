@@ -166,11 +166,17 @@ try {
         UPDATE payment_webhook_events
         SET
             status = 'processing',
-            processed_at = NULL
+            processed_at = CURRENT_TIMESTAMP
         WHERE
             provider = 'mercado_pago'
             AND event_key = :event_key
-            AND status IN ('received', 'failed')
+            AND (
+                status IN ('received', 'failed')
+                OR (
+                    status = 'processing'
+                    AND processed_at < (CURRENT_TIMESTAMP - INTERVAL 5 MINUTE)
+                )
+            )
         "
     );
     $statement->execute(['event_key' => $eventKey]);
