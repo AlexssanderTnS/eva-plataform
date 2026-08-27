@@ -184,6 +184,17 @@ loginForm?.addEventListener('submit', async (event) => {
     }
 
     showMessage(loginMessage, 'Login realizado com sucesso.', true);
+
+    const pendingCourse = sessionStorage.getItem('eva_pending_course');
+
+    if (pendingCourse) {
+      sessionStorage.removeItem('eva_pending_course');
+      window.location.assign(
+        './recursos.html?resume_checkout=' + encodeURIComponent(pendingCourse),
+      );
+      return;
+    }
+
     window.location.assign('./conta.html');
   } catch (error) {
     console.error('Erro ao realizar login:', error);
@@ -464,6 +475,68 @@ exportButton?.addEventListener('click', async () => {
     showMessage(accountMessage, 'Não foi possível conectar com o servidor.');
   } finally {
     exportButton.disabled = false;
+  }
+});
+
+/* =========================================
+   Solicitação de exclusão da conta
+   ========================================= */
+
+const deleteAccountForm = document.querySelector('#delete-account-form');
+const deleteAccountMessage = document.querySelector('[data-delete-account-message]');
+
+deleteAccountForm?.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  if (!deleteAccountForm.checkValidity()) {
+    deleteAccountForm.reportValidity();
+    return;
+  }
+
+  const submitButton = deleteAccountForm.querySelector('button[type="submit"]');
+  const formData = new FormData(deleteAccountForm);
+  const password = formData.get('password')?.toString() || '';
+
+  showMessage(deleteAccountMessage, '');
+  if (submitButton) submitButton.disabled = true;
+
+  try {
+    const response = await fetch(`${API_BASE}/request-account-deletion.php`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify({ password }),
+    });
+
+    const data = await readJsonResponse(response);
+
+    if (response.status === 401 && data?.message === 'Não autenticado.') {
+      window.location.replace('./acesso.html');
+      return;
+    }
+
+    if (!response.ok) {
+      showMessage(
+        deleteAccountMessage,
+        data?.message || 'Não foi possível registrar a solicitação.',
+      );
+      return;
+    }
+
+    deleteAccountForm.reset();
+    showMessage(
+      deleteAccountMessage,
+      data?.message || 'Sua solicitação de exclusão foi registrada.',
+      true,
+    );
+  } catch (error) {
+    console.error('Erro ao solicitar exclusão da conta:', error);
+    showMessage(deleteAccountMessage, 'Não foi possível conectar com o servidor.');
+  } finally {
+    if (submitButton) submitButton.disabled = false;
   }
 });
 

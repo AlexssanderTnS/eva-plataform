@@ -392,6 +392,29 @@ async function initializeCourses() {
 
   renderCursos();
   updateCarousel();
+
+  const resumeCourseId = new URLSearchParams(window.location.search).get(
+    "resume_checkout",
+  );
+
+  if (resumeCourseId) {
+    const cleanUrl = new URL(window.location.href);
+    cleanUrl.searchParams.delete("resume_checkout");
+    window.history.replaceState({}, "", cleanUrl);
+
+    const course = cursosIndividuais.find(
+      (item) => item.id === resumeCourseId && item.available === true,
+    );
+
+    if (course) {
+      openModal(resumeCourseId);
+      const buyButton = modal?.querySelector("[data-course-buy]");
+
+      if (buyButton?.dataset.courseBuy === resumeCourseId) {
+        startCheckout(resumeCourseId, buyButton);
+      }
+    }
+  }
 }
 
 initializeCourses();

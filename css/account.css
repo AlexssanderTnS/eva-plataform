@@ -415,3 +415,20 @@
     padding: 22px 20px;
   }
 }
+
+
+.account-danger-card {
+  border-color: rgba(180, 35, 24, 0.2);
+}
+
+.account-danger-button {
+  color: #b42318;
+  border-color: rgba(180, 35, 24, 0.28);
+}
+
+.account-danger-button:hover,
+.account-danger-button:focus-visible {
+  color: #8f1d14;
+  border-color: rgba(180, 35, 24, 0.48);
+  background: rgba(180, 35, 24, 0.05);
+}

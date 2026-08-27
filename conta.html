@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="./css/style.css" />
     <link rel="stylesheet" href="./css/auth.css" />
     <link rel="stylesheet" href="./css/account.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded&icon_names=arrow_forward,check_circle,close,database,download,lock,logout,menu,person,school,shield,verified_user&display=block" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded&icon_names=arrow_forward,check_circle,close,database,delete_forever,download,lock,logout,menu,person,school,shield,verified_user&display=block" rel="stylesheet" />
   </head>
 
   <body class="account-page">
@@ -177,6 +177,32 @@
                   <span>Exportar meus dados</span>
                 </button>
                 <div class="auth-message" data-account-message aria-live="polite"></div>
+              </div>
+            </section>
+
+            <section class="account-card account-danger-card">
+              <div class="account-card-header">
+                <span class="account-card-icon material-symbols-rounded" aria-hidden="true">delete_forever</span>
+                <div class="account-card-title">
+                  <h2>Exclusão da conta</h2>
+                  <p>Solicite a exclusão dos dados vinculados à sua conta.</p>
+                </div>
+              </div>
+              <div class="account-card-body">
+                <p class="account-data-note">
+                  Para proteger seus dados, confirme sua senha. A solicitação será registrada para processamento conforme as obrigações legais aplicáveis.
+                </p>
+                <form id="delete-account-form" class="auth-form" method="post" action="./api/auth/request-account-deletion.php">
+                  <div class="auth-field">
+                    <label for="delete-account-password">Senha atual</label>
+                    <input id="delete-account-password" name="password" type="password" autocomplete="current-password" maxlength="128" required />
+                  </div>
+                  <div class="auth-message" data-delete-account-message aria-live="polite"></div>
+                  <button type="submit" class="account-secondary-button account-danger-button">
+                    <span class="material-symbols-rounded" aria-hidden="true">delete_forever</span>
+                    <span>Solicitar exclusão da conta</span>
+                  </button>
+                </form>
               </div>
             </section>
 
