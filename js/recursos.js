@@ -93,6 +93,62 @@ const cursosIndividuais = [
   },
 ];
 
+const COURSES_API = "./api/courses.php";
+const CREATE_ORDER_API = "./api/orders/create.php";
+
+const currencyFormatter = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL",
+});
+
+function formatCoursePrice(course) {
+  if (typeof course.price !== "string" || course.price.trim() === "") {
+    return "Preço indisponível";
+  }
+
+  const value = Number(course.price);
+  return Number.isFinite(value)
+    ? currencyFormatter.format(value)
+    : "Preço indisponível";
+}
+
+async function loadCommercialCatalog() {
+  const response = await fetch(COURSES_API, {
+    method: "GET",
+    headers: { Accept: "application/json" },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Não foi possível carregar o catálogo. HTTP ${response.status}`);
+  }
+
+  const data = await response.json();
+
+  if (data?.success !== true || !Array.isArray(data.courses)) {
+    throw new Error("Resposta inválida da API de cursos.");
+  }
+
+  const commercialCourses = new Map(
+    data.courses.map((course) => [course.slug, course]),
+  );
+
+  cursosIndividuais.forEach((course) => {
+    const commercialCourse = commercialCourses.get(course.id);
+
+    if (!commercialCourse) {
+      course.price = null;
+      course.currency = null;
+      course.available = false;
+      return;
+    }
+
+    course.price = commercialCourse.price;
+    course.currency = commercialCourse.currency;
+    course.available = true;
+  });
+}
+
 const track = document.querySelector("#resources-track");
 const prevButton = document.querySelector(".resources-arrow-prev");
 const nextButton = document.querySelector(".resources-arrow-next");
@@ -101,6 +157,7 @@ const modalContent = document.querySelector("#individual-course-modal-content");
 
 let currentIndex = 0;
 let individualModalLastFocusedElement = null;
+let checkoutInProgress = false;
 
 function renderCursos() {
   if (!track) return;
@@ -110,25 +167,18 @@ function renderCursos() {
       (curso) => `
         <article class="resource-card">
           <div class="resource-card-visual">
-            <img
-              src="${curso.imagem}"
-              alt="${curso.titulo}"
-              loading="lazy"
-            />
+            <img src="${curso.imagem}" alt="${curso.titulo}" loading="lazy" />
             <span class="resource-type">Curso online</span>
           </div>
-
           <div class="resource-card-content">
             <h3>${curso.titulo}</h3>
             <p>${curso.descricao}</p>
-
             <div class="resource-meta">
               <span class="material-symbols-rounded" aria-hidden="true">schedule</span>
               <span>${curso.duracao}</span>
               <span class="material-symbols-rounded" aria-hidden="true">devices</span>
               <span>${curso.formato}</span>
             </div>
-
             <button
               class="resource-button resource-details-button"
               type="button"
@@ -154,34 +204,89 @@ function renderModal(curso) {
       <div class="course-detail-visual">
         <img src="${curso.imagem}" alt="${curso.titulo}" />
       </div>
-
       <div class="course-detail-main">
         <span class="course-detail-type">Curso online</span>
         <h2 id="individual-course-modal-title">${curso.titulo}</h2>
         <p class="course-detail-description">${curso.descricaoCompleta}</p>
-
         <div class="course-detail-meta">
           <span><span class="material-symbols-rounded" aria-hidden="true">schedule</span>${curso.duracao}</span>
           <span><span class="material-symbols-rounded" aria-hidden="true">devices</span>${curso.formato}</span>
         </div>
-
         <div class="course-detail-section">
           <h3>Você vai aprender</h3>
           <ul>${curso.aprendizados.map((item) => `<li>${item}</li>`).join("")}</ul>
         </div>
-
         <div class="course-investment-card">
           <span>Investimento</span>
-          <strong>R$69,90</strong>
+          <strong>${formatCoursePrice(curso)}</strong>
         </div>
-
         <div class="course-detail-actions">
-          <a href="./contato.html?curso=${encodeURIComponent(curso.id)}" class="course-detail-primary">Tenho interesse</a>
-          <a href="mailto:contato@evaglobal.com.br?subject=${encodeURIComponent(`Interesse no curso ${curso.titulo}`)}" class="course-detail-secondary">Enviar e-mail</a>
+          ${
+            curso.available
+              ? `<button class="course-detail-primary" type="button" data-course-buy="${curso.id}">Comprar curso</button>`
+              : `<button class="course-detail-primary" type="button" disabled aria-disabled="true">Indisponível no momento</button>`
+          }
+          <a
+            href="mailto:contato@evaglobal.com.br?subject=${encodeURIComponent(`Interesse no curso ${curso.titulo}`)}"
+            class="course-detail-secondary"
+          >Enviar e-mail</a>
         </div>
       </div>
     </div>
   `;
+}
+
+async function startCheckout(courseId, button) {
+  if (checkoutInProgress) return;
+
+  checkoutInProgress = true;
+  const originalLabel = button.textContent;
+  button.disabled = true;
+  button.textContent = "Abrindo checkout...";
+
+  try {
+    const response = await fetch(CREATE_ORDER_API, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ course: courseId }),
+    });
+
+    const data = await response.json().catch(() => null);
+
+    if (response.status === 401) {
+      sessionStorage.setItem("eva_pending_course", courseId);
+      window.location.assign("./acesso.html");
+      return;
+    }
+
+    if (!response.ok || data?.success !== true) {
+      throw new Error(
+        data?.message || "Não foi possível iniciar o pagamento.",
+      );
+    }
+
+    if (
+      typeof data.checkout_url !== "string" ||
+      !data.checkout_url.startsWith("https://")
+    ) {
+      throw new Error("O checkout retornou uma URL inválida.");
+    }
+
+    window.location.assign(data.checkout_url);
+  } catch (error) {
+    console.error("Falha ao iniciar Checkout Pro:", error);
+    window.alert(
+      error instanceof Error
+        ? error.message
+        : "Não foi possível iniciar o pagamento.",
+    );
+    button.disabled = false;
+    button.textContent = originalLabel;
+    checkoutInProgress = false;
+  }
 }
 
 function openModal(courseId) {
@@ -199,7 +304,7 @@ function openModal(courseId) {
 }
 
 function closeModal() {
-  if (!modal) return;
+  if (!modal || checkoutInProgress) return;
 
   modal.classList.remove("is-open");
   modal.setAttribute("aria-hidden", "true");
@@ -238,7 +343,16 @@ track?.addEventListener("click", (event) => {
 });
 
 modal?.addEventListener("click", (event) => {
-  if (event.target.closest("[data-course-close]")) closeModal();
+  const buyButton = event.target.closest("[data-course-buy]");
+
+  if (buyButton) {
+    startCheckout(buyButton.dataset.courseBuy, buyButton);
+    return;
+  }
+
+  if (event.target.closest("[data-course-close]")) {
+    closeModal();
+  }
 });
 
 document.addEventListener("keydown", (event) => {
@@ -257,12 +371,50 @@ nextButton?.addEventListener("click", () => {
     0,
     cursosIndividuais.length - getVisibleCards(),
   );
-
   currentIndex = Math.min(maximumIndex, currentIndex + 1);
   updateCarousel();
 });
 
 window.addEventListener("resize", updateCarousel);
 
-renderCursos();
-updateCarousel();
+async function initializeCourses() {
+  try {
+    await loadCommercialCatalog();
+  } catch (error) {
+    console.error("Não foi possível carregar o catálogo comercial:", error);
+
+    cursosIndividuais.forEach((course) => {
+      course.price = null;
+      course.currency = null;
+      course.available = false;
+    });
+  }
+
+  renderCursos();
+  updateCarousel();
+
+  const resumeCourseId = new URLSearchParams(window.location.search).get(
+    "resume_checkout",
+  );
+
+  if (resumeCourseId) {
+    const cleanUrl = new URL(window.location.href);
+    cleanUrl.searchParams.delete("resume_checkout");
+    window.history.replaceState({}, "", cleanUrl);
+
+    const course = cursosIndividuais.find(
+      (item) => item.id === resumeCourseId && item.available === true,
+    );
+
+    if (course) {
+      openModal(resumeCourseId);
+      const buyButton = modal?.querySelector("[data-course-buy]");
+
+      if (buyButton?.dataset.courseBuy === resumeCourseId) {
+        startCheckout(resumeCourseId, buyButton);
+      }
+    }
+  }
+}
+
+initializeCourses();

@@ -30,18 +30,13 @@
         </a>
 
         <ul class="navbar-menu">
-          <li>
-            <a href="#hero" class="is-active">Página Inicial</a>
-          </li>
-          <li>
-            <a href="./recursos.html">EVA Individual</a>
-          </li>
-          <li>
-            <a href="./empresas.html">EVA Empresas</a>
-          </li>
+          <li><a href="./index.html" class="is-active" aria-current="page">Página Inicial</a></li>
+          <li><a href="./recursos.html">EVA Individual</a></li>
+          <li><a href="./empresas.html">EVA Empresas</a></li>
+          <li><a href="./contato.html">Contato</a></li>
         </ul>
 
-        <a href="./contato.html" class="navbar-cta">Fale com a EVA</a>
+        <a href="./acesso.html" class="navbar-cta" aria-label="Entrar na conta EVA">Login</a>
 
         <button
           class="mobile-menu-toggle"
@@ -85,14 +80,13 @@
       </div>
 
       <nav class="mobile-menu-nav" aria-label="Navegação mobile">
-        <a href="#hero" data-menu-link>Página Inicial</a>
+        <a href="./index.html" class="is-active" aria-current="page" data-menu-link>Página Inicial</a>
         <a href="./recursos.html" data-menu-link>EVA Individual</a>
         <a href="./empresas.html" data-menu-link>EVA Empresas</a>
+        <a href="./contato.html" data-menu-link>Contato</a>
       </nav>
 
-      <a href="./contato.html" class="mobile-menu-cta" data-menu-link>
-        Fale com a EVA
-      </a>
+      <a href="./acesso.html" class="mobile-menu-cta" aria-label="Entrar na conta EVA" data-menu-link>Login</a>
     </aside>
 
     <main>
@@ -244,6 +238,8 @@
           <figure class="origin-photo origin-photo-main">
             <img
               src="./assets/images/Colorado2.JPG"
+              loading="lazy"
+              decoding="async"
               alt="Juliana e Mariana durante a viagem ao Colorado"
             />
           </figure>
@@ -251,6 +247,8 @@
           <figure class="origin-photo origin-photo-top">
             <img
               src="./assets/images/Colorado1.jpg"
+              loading="lazy"
+              decoding="async"
               alt="Registro da viagem ao Colorado"
             />
           </figure>
@@ -258,6 +256,8 @@
           <figure class="origin-photo origin-photo-bottom">
             <img
               src="./assets/images/Colorado.jpg"
+              loading="lazy"
+              decoding="async"
               alt="Momento vivido durante a viagem que inspirou a criação da EVA"
             />
           </figure>
@@ -287,7 +287,7 @@
             <div class="eva-video-frame">
               <video
                 controls
-                preload="metadata"
+                preload="none"
                 playsinline
                 poster="./assets/images/contato.jpg"
                 aria-label="Vídeo institucional da EVA"
@@ -380,6 +380,8 @@
               <img
                 src="./assets/images/juliana.jpg"
                 alt="Juliana Coelho Netto"
+                loading="lazy"
+                decoding="async"
               />
             </div>
 
@@ -403,7 +405,7 @@
 
           <article class="founder-card reveal reveal-up reveal-delay-2">
             <div class="founder-photo">
-              <img src="./assets/images/mariana.jpg" alt="Mariana Scelza" />
+              <img src="./assets/images/mariana.jpg" alt="Mariana Scelza" loading="lazy" decoding="async" />
             </div>
 
             <h3>Mariana Scelza</h3>

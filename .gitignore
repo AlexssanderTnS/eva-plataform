@@ -13,6 +13,7 @@ config/*.local.php
 
 # Logs
 *.log
+error_log
 logs/
 
 # Arquivos temporários

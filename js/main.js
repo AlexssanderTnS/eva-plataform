@@ -276,22 +276,6 @@ if ("IntersectionObserver" in window) {
   });
 }
 
-function loadCourseUiStyles() {
-  const hasCourseUi = document.querySelector(
-    ".resources-carousel, .business-courses-carousel, .course-modal",
-  );
-
-  if (!hasCourseUi || document.querySelector('link[data-course-ui="true"]')) {
-    return;
-  }
-
-  const stylesheet = document.createElement("link");
-  stylesheet.rel = "stylesheet";
-  stylesheet.href = "./css/course-ui.css";
-  stylesheet.dataset.courseUi = "true";
-  document.head.appendChild(stylesheet);
-}
-
 function enableCarouselSwipe() {
   const carousels = [
     {
@@ -400,7 +384,6 @@ function restoreMobileCtaColors() {
   document.head.appendChild(style);
 }
 
-loadCourseUiStyles();
 enableCarouselSwipe();
 restoreMobileCtaColors();
 

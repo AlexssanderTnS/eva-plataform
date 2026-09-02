@@ -2,104 +2,156 @@
 
 declare(strict_types=1);
 
-$sessionPath = __DIR__ . '/../../tmp/sessions';
+require __DIR__ . '/../../config/security.php';
 
-if (!is_dir($sessionPath)) {
-    mkdir($sessionPath, 0700, true);
+evaApplyApiSecurityHeaders();
+
+try {
+    require __DIR__ . '/../../config/session.php';
+} catch (Throwable $error) {
+    error_log('EVA Auth: falha ao iniciar sessão: ' . $error->getMessage());
+    evaSecurityJsonResponse(500, 'Não foi possível exportar seus dados.');
 }
-
-session_save_path($sessionPath);
-
-session_set_cookie_params([
-    'lifetime' => 0,
-    'path' => '/',
-    'secure' => true,
-    'httponly' => true,
-    'samesite' => 'Lax'
-]);
-
-session_start();
 
 header('Content-Type: application/json; charset=UTF-8');
 
-function sendJsonResponse(int $status, array $payload): void
+function sendJsonResponse(int $status, array $payload): never
 {
     http_response_code($status);
-
     echo json_encode(
         $payload,
         JSON_UNESCAPED_UNICODE |
+        JSON_UNESCAPED_SLASHES |
         JSON_PRETTY_PRINT
     );
-
     exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-    sendJsonResponse(405, [
-        'success' => false,
-        'message' => 'Método não permitido.'
-    ]);
+    sendJsonResponse(405, ['success' => false, 'message' => 'Método não permitido.']);
 }
 
 $userId = $_SESSION['user_id'] ?? null;
 
 if (!is_int($userId) && !ctype_digit((string) $userId)) {
-    sendJsonResponse(401, [
-        'success' => false,
-        'message' => 'Não autenticado.'
-    ]);
+    sendJsonResponse(401, ['success' => false, 'message' => 'Não autenticado.']);
 }
 
-$pdo = require __DIR__ . '/../../config/database.php';
+$userId = (int) $userId;
 
-$statement = $pdo->prepare(
-    'SELECT
-        id,
-        first_name,
-        last_name,
-        email,
-        email_verified_at,
-        moodle_user_id,
-        status,
-        created_at,
-        updated_at
-     FROM users
-     WHERE id = :id
-     LIMIT 1'
-);
+try {
+    $pdo = require __DIR__ . '/../../config/database.php';
 
-$statement->execute([
-    'id' => (int) $userId
-]);
+    $statement = $pdo->prepare(
+        'SELECT first_name, last_name, email, email_verified_at, moodle_user_id, status, created_at, updated_at
+         FROM users
+         WHERE id = :id
+         LIMIT 1'
+    );
+    $statement->execute(['id' => $userId]);
+    $user = $statement->fetch();
 
-$user = $statement->fetch();
+    if ($user === false) {
+        evaDestroySession();
+        sendJsonResponse(401, ['success' => false, 'message' => 'Não autenticado.']);
+    }
 
-if ($user === false) {
-    sendJsonResponse(404, [
-        'success' => false,
-        'message' => 'Usuário não encontrado.'
-    ]);
+    if ($user['status'] !== 'active' || $user['email_verified_at'] === null) {
+        evaDestroySession();
+        sendJsonResponse(403, ['success' => false, 'message' => 'Esta conta não está disponível para exportação.']);
+    }
+
+    $statement = $pdo->prepare(
+        'SELECT
+            o.external_reference,
+            c.slug AS course_slug,
+            c.title AS course_title,
+            o.amount,
+            o.currency,
+            o.status,
+            o.paid_at,
+            o.created_at,
+            o.updated_at
+         FROM orders o
+         INNER JOIN courses c ON c.id = o.course_id
+         WHERE o.user_id = :user_id
+         ORDER BY o.id ASC'
+    );
+    $statement->execute(['user_id' => $userId]);
+    $orders = $statement->fetchAll();
+
+    $statement = $pdo->prepare(
+        'SELECT
+            o.external_reference AS order_reference,
+            p.provider,
+            p.provider_merchant_order_id,
+            p.provider_payment_id,
+            p.payment_method_id,
+            p.payment_method_type,
+            p.status,
+            p.status_detail,
+            p.amount,
+            p.currency,
+            p.approved_at,
+            p.created_at,
+            p.updated_at
+         FROM payments p
+         INNER JOIN orders o ON o.id = p.order_id
+         WHERE o.user_id = :user_id
+         ORDER BY p.id ASC'
+    );
+    $statement->execute(['user_id' => $userId]);
+    $payments = $statement->fetchAll();
+
+    $statement = $pdo->prepare(
+        'SELECT
+            c.slug AS course_slug,
+            c.title AS course_title,
+            o.external_reference AS order_reference,
+            ca.status,
+            ca.granted_at,
+            ca.revoked_at,
+            ca.created_at,
+            ca.updated_at
+         FROM course_access ca
+         INNER JOIN courses c ON c.id = ca.course_id
+         INNER JOIN orders o ON o.id = ca.order_id
+         WHERE ca.user_id = :user_id
+         ORDER BY ca.id ASC'
+    );
+    $statement->execute(['user_id' => $userId]);
+    $courseAccess = $statement->fetchAll();
+
+    $statement = $pdo->prepare(
+        'SELECT status, requested_at, processed_at
+         FROM account_deletion_requests
+         WHERE user_id = :user_id
+         ORDER BY id ASC'
+    );
+    $statement->execute(['user_id' => $userId]);
+    $deletionRequests = $statement->fetchAll();
+} catch (Throwable $error) {
+    error_log('EVA LGPD: erro ao exportar dados: ' . $error->getMessage());
+    sendJsonResponse(500, ['success' => false, 'message' => 'Não foi possível exportar seus dados.']);
 }
 
 sendJsonResponse(200, [
     'success' => true,
-    'generated_at' => date(DATE_ATOM),
+    'generated_at' => gmdate(DATE_ATOM),
     'data' => [
         'account' => [
-            'id' => (int) $user['id'],
             'first_name' => $user['first_name'],
             'last_name' => $user['last_name'],
             'email' => $user['email'],
-            'email_verified_at' =>
-                $user['email_verified_at'],
-            'moodle_user_id' =>
-                $user['moodle_user_id'] !== null
-                    ? (int) $user['moodle_user_id']
-                    : null,
+            'email_verified_at' => $user['email_verified_at'],
+            'moodle_user_id' => $user['moodle_user_id'],
             'status' => $user['status'],
             'created_at' => $user['created_at'],
-            'updated_at' => $user['updated_at']
-        ]
-    ]
+            'updated_at' => $user['updated_at'],
+        ],
+        'orders' => $orders,
+        'payments' => $payments,
+        'course_access' => $courseAccess,
+        'account_deletion_requests' => $deletionRequests,
+    ],
 ]);
