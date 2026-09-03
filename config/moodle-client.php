@@ -31,12 +31,12 @@ final class EvaMoodleClient
         }
 
         $payload = array_merge(
+            $parameters,
             [
                 'wstoken' => $this->token,
                 'wsfunction' => $function,
                 'moodlewsrestformat' => 'json',
-            ],
-            $parameters
+            ]
         );
 
         $curl = curl_init();
