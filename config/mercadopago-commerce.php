@@ -114,6 +114,65 @@ function evaNormalizeMoneyToCents(mixed $value): ?int
     return (int) round($floatValue * 100);
 }
 
+function evaQueueMoodleProvisioningJob(
+    PDO $pdo,
+    int $userId,
+    int $courseId,
+    int $orderId,
+    string $action
+): void {
+    if (!in_array($action, ['provision', 'revoke'], true)) {
+        throw new InvalidArgumentException(
+            'Ação de provisionamento Moodle inválida.'
+        );
+    }
+
+    $statement = $pdo->prepare(
+        "
+        INSERT INTO moodle_provisioning_jobs (
+            course_access_id,
+            order_id,
+            action,
+            status
+        )
+        SELECT
+            id,
+            order_id,
+            :action,
+            'pending'
+        FROM course_access
+        WHERE
+            user_id = :user_id
+            AND course_id = :course_id
+            AND order_id = :order_id
+        LIMIT 1
+        ON DUPLICATE KEY UPDATE
+            status = CASE
+                WHEN moodle_provisioning_jobs.status = 'failed'
+                THEN 'pending'
+                ELSE moodle_provisioning_jobs.status
+            END,
+            available_at = CASE
+                WHEN moodle_provisioning_jobs.status = 'failed'
+                THEN CURRENT_TIMESTAMP
+                ELSE moodle_provisioning_jobs.available_at
+            END,
+            last_error = CASE
+                WHEN moodle_provisioning_jobs.status = 'failed'
+                THEN NULL
+                ELSE moodle_provisioning_jobs.last_error
+            END,
+            updated_at = CURRENT_TIMESTAMP
+        "
+    );
+    $statement->execute([
+        'action' => $action,
+        'user_id' => $userId,
+        'course_id' => $courseId,
+        'order_id' => $orderId,
+    ]);
+}
+
 function evaSyncMercadoPagoPayment(
     PDO $pdo,
     object $client,
@@ -388,6 +447,14 @@ function evaSyncMercadoPagoPayment(
                 'course_id' => $courseId,
                 'order_id' => $orderId,
             ]);
+
+            evaQueueMoodleProvisioningJob(
+                $pdo,
+                $orderUserId,
+                $courseId,
+                $orderId,
+                'provision'
+            );
         } elseif ($mappedOrderStatus === 'refunded') {
             $statement = $pdo->prepare(
                 "
@@ -406,6 +473,14 @@ function evaSyncMercadoPagoPayment(
                 'course_id' => $courseId,
                 'order_id' => $orderId,
             ]);
+
+            evaQueueMoodleProvisioningJob(
+                $pdo,
+                $orderUserId,
+                $courseId,
+                $orderId,
+                'revoke'
+            );
         }
 
         $pdo->commit();
