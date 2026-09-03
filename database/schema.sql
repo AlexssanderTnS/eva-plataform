@@ -181,6 +181,49 @@ CREATE TABLE IF NOT EXISTS course_access (
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS moodle_provisioning_jobs (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    course_access_id BIGINT UNSIGNED NOT NULL,
+    order_id BIGINT UNSIGNED NOT NULL,
+    action ENUM('provision', 'revoke') NOT NULL,
+    status ENUM(
+        'pending',
+        'processing',
+        'completed',
+        'failed',
+        'ignored'
+    ) NOT NULL DEFAULT 'pending',
+    attempts SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+    available_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    started_at TIMESTAMP NULL,
+    completed_at TIMESTAMP NULL,
+    last_error VARCHAR(1000) NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_moodle_jobs_course_access
+        FOREIGN KEY (course_access_id)
+        REFERENCES course_access(id)
+        ON DELETE RESTRICT,
+    CONSTRAINT fk_moodle_jobs_order
+        FOREIGN KEY (order_id)
+        REFERENCES orders(id)
+        ON DELETE RESTRICT,
+
+    UNIQUE KEY uq_moodle_job_scope (
+        course_access_id,
+        order_id,
+        action
+    ),
+    KEY idx_moodle_job_queue (
+        status,
+        available_at
+    )
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS payment_webhook_events (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     provider ENUM('mercado_pago') NOT NULL DEFAULT 'mercado_pago',
@@ -208,6 +251,7 @@ INSERT INTO courses (
     title,
     price,
     currency,
+    moodle_course_id,
     status
 )
 VALUES
@@ -216,6 +260,7 @@ VALUES
     'Gestão Financeira Pessoal',
     69.90,
     'BRL',
+    2,
     'active'
 ),
 (
@@ -223,6 +268,7 @@ VALUES
     'Micro-Hábitos Pessoais: Construindo Mudanças Sustentáveis no Dia a Dia',
     69.90,
     'BRL',
+    NULL,
     'active'
 ),
 (
@@ -230,6 +276,7 @@ VALUES
     'Comunicação Não Violenta na Prática: Transformando Relações Pessoais e Profissionais',
     69.90,
     'BRL',
+    NULL,
     'active'
 ),
 (
@@ -237,6 +284,7 @@ VALUES
     'Regulação Emocional',
     69.90,
     'BRL',
+    NULL,
     'active'
 ),
 (
@@ -244,9 +292,14 @@ VALUES
     'Comunicação Empática e Escuta Ativa',
     69.90,
     'BRL',
+    NULL,
     'active'
 )
 ON DUPLICATE KEY UPDATE
     title = VALUES(title),
     price = VALUES(price),
-    currency = VALUES(currency);
+    currency = VALUES(currency),
+    moodle_course_id = COALESCE(
+        VALUES(moodle_course_id),
+        courses.moodle_course_id
+    );
