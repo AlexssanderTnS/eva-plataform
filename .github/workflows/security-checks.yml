@@ -3,8 +3,10 @@ name: Security checks
 on:
   push:
     branches:
+      - main
       - security/auth-hardening
       - integration/mercado-pago
+      - integration/moodle
   pull_request:
 
 permissions:
@@ -31,7 +33,7 @@ jobs:
         run: composer audit --locked --no-interaction
 
       - name: PHP syntax
-        run: find api config -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+        run: find api config jobs -type f -name '*.php' -print0 | xargs -0 -n1 php -l
 
       - name: JavaScript syntax
         run: |
@@ -42,11 +44,12 @@ jobs:
           test ! -f config/database.local.php
           test ! -f config/mail.local.php
           test ! -f config/mercadopago.local.php
+          test ! -f config/moodle.local.php
           test ! -f .env
 
       - name: Ensure session debug logs are absent
         run: |
-          if grep -R -n -E 'EVA SESSION ID|session_id\(\).*error_log|error_log\(.*session_id' api config; then
+          if grep -R -n -E 'EVA SESSION ID|session_id\(\).*error_log|error_log\(.*session_id' api config jobs; then
             echo 'Session debug logging found.'
             exit 1
           fi
