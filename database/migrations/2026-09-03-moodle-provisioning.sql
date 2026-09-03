@@ -44,3 +44,27 @@ COLLATE=utf8mb4_unicode_ci;
 UPDATE courses
 SET moodle_course_id = 2
 WHERE slug = 'gestao-financeira-pessoal';
+
+
+INSERT INTO moodle_provisioning_jobs (
+    course_access_id,
+    order_id,
+    action,
+    status
+)
+SELECT
+    ca.id,
+    ca.order_id,
+    'provision',
+    'pending'
+FROM course_access ca
+INNER JOIN orders o
+    ON o.id = ca.order_id
+INNER JOIN courses c
+    ON c.id = ca.course_id
+WHERE
+    ca.status = 'pending'
+    AND o.status = 'paid'
+    AND c.moodle_course_id IS NOT NULL
+ON DUPLICATE KEY UPDATE
+    updated_at = CURRENT_TIMESTAMP;
