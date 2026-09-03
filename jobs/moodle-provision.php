@@ -474,7 +474,7 @@ for ($index = 0; $index < EVA_MOODLE_JOB_LIMIT; $index++) {
             '+' . $retryMinutes . ' minutes'
         ))->format('Y-m-d H:i:s');
 
-        $safeMessage = mb_substr(
+        $safeMessage = substr(
             trim($error->getMessage()),
             0,
             1000
