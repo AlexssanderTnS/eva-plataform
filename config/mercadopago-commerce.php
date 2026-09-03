@@ -438,6 +438,11 @@ function evaSyncMercadoPagoPayment(
                         THEN 'active'
                         ELSE 'pending'
                     END,
+                    granted_at = CASE
+                        WHEN course_access.status = 'active'
+                        THEN course_access.granted_at
+                        ELSE NULL
+                    END,
                     revoked_at = NULL,
                     updated_at = CURRENT_TIMESTAMP
                 "
