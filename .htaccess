@@ -12,5 +12,5 @@ Options -Indexes
     RewriteRule "(^|/)\.(?!well-known(?:/|$))" - [F,L]
 
     # Diretórios internos nunca devem ser servidos diretamente.
-    RewriteRule "(^|/)(?:config|database|deployment|tmp|vendor)(?:/|$)" - [F,L,NC]
+    RewriteRule "(^|/)(?:config|database|deployment|jobs|tmp|vendor)(?:/|$)" - [F,L,NC]
 </IfModule>
