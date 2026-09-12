@@ -1,0 +1,98 @@
+.account-courses-empty.is-loaded {
+  margin-top: 24px;
+}
+
+.account-course-list {
+  display: grid;
+  gap: 14px;
+}
+
+.account-course-item {
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+}
+
+.account-course-item h3 {
+  margin: 10px 0 7px;
+  color: #fff;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.account-course-item p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.account-course-status {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 6px 9px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+
+.account-course-status.is-active {
+  background: rgba(184, 236, 238, 0.16);
+  color: #d9fbfc;
+}
+
+.account-course-status.is-pending {
+  background: rgba(255, 200, 87, 0.16);
+  color: #ffe7a9;
+}
+
+.account-course-status.is-revoked {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.64);
+}
+
+.account-course-ready {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 13px;
+  color: #d9fbfc;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.account-course-ready .material-symbols-rounded {
+  font-size: 1rem;
+}
+
+.account-course-browse {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 16px;
+  padding: 10px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 11px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.08);
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.account-course-browse:hover,
+.account-course-browse:focus-visible {
+  background: rgba(255, 255, 255, 0.14);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 700px) {
+  .account-course-item {
+    padding: 16px;
+  }
+}
