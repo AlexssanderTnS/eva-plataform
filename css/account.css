@@ -172,9 +172,12 @@ html {
 }
 
 .account-sidebar-footer {
+  display: grid;
+  gap: 8px;
   margin-top: auto;
 }
 
+.account-sidebar-home,
 .account-sidebar-logout {
   width: 100%;
   min-height: 46px;
@@ -196,6 +199,12 @@ html {
     transform 160ms ease;
 }
 
+.account-sidebar-home {
+  text-decoration: none;
+}
+
+.account-sidebar-home:hover,
+.account-sidebar-home:focus-visible,
 .account-sidebar-logout:hover,
 .account-sidebar-logout:focus-visible {
   background: rgba(255, 255, 255, 0.12);
@@ -1017,9 +1026,11 @@ html {
   }
 
   .account-sidebar-footer {
+    display: flex;
     margin: 0 0 0 auto;
   }
 
+  .account-sidebar-home,
   .account-sidebar-logout {
     width: auto;
     min-height: 38px;
@@ -1157,11 +1168,13 @@ html {
 
 @media (max-width: 520px) {
   .account-sidebar-nav a span:last-child,
+  .account-sidebar-home span:last-child,
   .account-sidebar-logout span:last-child {
     display: none;
   }
 
   .account-sidebar-nav a,
+  .account-sidebar-home,
   .account-sidebar-logout {
     width: 38px;
     min-width: 38px;
