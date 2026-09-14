@@ -388,3 +388,82 @@ enableCarouselSwipe();
 restoreMobileCtaColors();
 
 console.log("EVA carregada com sucesso!");
+
+
+// =========================================
+// Estado de autenticação na navegação
+// =========================================
+
+function createAuthenticatedNavbarContent(link, user, isMobile = false) {
+  const firstName = String(user.first_name || "").trim();
+  const lastName = String(user.last_name || "").trim();
+  const displayName = firstName || "Minha conta";
+  const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase() || "E";
+
+  const avatar = document.createElement("span");
+  avatar.className = "navbar-user-avatar";
+  avatar.setAttribute("aria-hidden", "true");
+  avatar.textContent = initials;
+
+  const copy = document.createElement("span");
+  copy.className = "navbar-user-copy";
+
+  const label = document.createElement("small");
+  label.className = "navbar-user-label";
+  label.textContent = isMobile ? "Conectado como" : "Olá,";
+
+  const name = document.createElement("strong");
+  name.className = "navbar-user-name";
+  name.textContent = displayName;
+
+  copy.append(label, name);
+  link.replaceChildren(avatar, copy);
+  link.href = "./conta.html";
+  link.classList.add("is-authenticated");
+  link.setAttribute("aria-label", `Acessar a conta de ${displayName}`);
+  link.setAttribute("title", "Ir para a Área do Aluno");
+}
+
+async function syncNavbarAuthenticationState() {
+  const desktopLink = document.querySelector(".navbar > .navbar-cta");
+  const mobileLink = document.querySelector(".mobile-menu-cta");
+
+  if (!desktopLink && !mobileLink) {
+    return;
+  }
+
+  try {
+    const response = await fetch("./api/auth/me.php", {
+      method: "GET",
+      credentials: "same-origin",
+      cache: "no-store",
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      return;
+    }
+
+    const payload = await response.json();
+
+    if (!payload.success || !payload.user) {
+      return;
+    }
+
+    document.documentElement.classList.add("user-is-authenticated");
+
+    if (desktopLink) {
+      createAuthenticatedNavbarContent(desktopLink, payload.user);
+    }
+
+    if (mobileLink) {
+      createAuthenticatedNavbarContent(mobileLink, payload.user, true);
+    }
+  } catch (error) {
+    // A navegação pública continua disponível se a consulta de sessão falhar.
+  }
+}
+
+syncNavbarAuthenticationState();
