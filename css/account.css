@@ -54,19 +54,27 @@ html {
 
 .account-app {
   min-height: 100vh;
+  padding: clamp(16px, 2vw, 28px);
 }
 
 .account-shell {
-  min-height: 100vh;
+  width: min(1480px, 100%);
+  min-height: calc(100vh - clamp(32px, 4vw, 56px));
   display: grid;
   grid-template-columns: 272px minmax(0, 1fr);
+  margin: 0 auto;
+  overflow: clip;
+  border: 1px solid rgba(42, 31, 111, 0.08);
+  border-radius: 32px;
+  background: var(--account-surface);
+  box-shadow: 0 28px 80px rgba(28, 21, 79, 0.12);
 }
 
 .account-sidebar {
   position: sticky;
   top: 0;
   z-index: 50;
-  height: 100vh;
+  height: calc(100vh - clamp(32px, 4vw, 56px));
   display: flex;
   flex-direction: column;
   gap: 22px;
@@ -167,8 +175,21 @@ html {
   transform: translateX(2px);
 }
 
-.account-sidebar-nav .material-symbols-rounded {
+.account-sidebar-nav .material-symbols-rounded,
+.account-sidebar-home .material-symbols-rounded,
+.account-sidebar-logout .material-symbols-rounded {
+  width: 1.25rem;
+  height: 1.25rem;
+  display: grid;
+  flex: 0 0 1.25rem;
+  place-items: center;
   font-size: 1.18rem;
+  line-height: 1;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 500,
+    "GRAD" 0,
+    "opsz" 24;
 }
 
 .account-sidebar-footer {
@@ -212,9 +233,13 @@ html {
 }
 
 .account-workspace {
-  width: min(1320px, 100%);
+  width: min(1208px, 100%);
+  min-width: 0;
   margin: 0 auto;
-  padding: 36px 42px 64px;
+  padding: clamp(30px, 3vw, 48px) clamp(28px, 4vw, 56px) 64px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(95, 70, 216, 0.035), transparent 28rem),
+    var(--account-surface);
 }
 
 .account-topbar {
@@ -957,8 +982,18 @@ html {
 }
 
 @media (max-width: 1160px) {
+  .account-app {
+    padding: 14px;
+  }
+
   .account-shell {
+    min-height: calc(100vh - 28px);
     grid-template-columns: 236px minmax(0, 1fr);
+    border-radius: 26px;
+  }
+
+  .account-sidebar {
+    height: calc(100vh - 28px);
   }
 
   .account-workspace {
@@ -975,8 +1010,16 @@ html {
 }
 
 @media (max-width: 900px) {
+  .account-app {
+    padding: 0;
+  }
+
   .account-shell {
+    min-height: 100vh;
     display: block;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
   }
 
   .account-sidebar {
@@ -1038,7 +1081,7 @@ html {
   }
 
   .account-workspace {
-    padding-top: 24px;
+    padding: 24px 22px 52px;
   }
 
   #inicio,
@@ -1180,6 +1223,14 @@ html {
     min-width: 38px;
     padding: 0;
     justify-content: center;
+  }
+
+  .account-sidebar-brand {
+    width: 100%;
+  }
+
+  .account-sidebar-brand img {
+    width: 76px;
   }
 
   .account-sidebar-nav {
