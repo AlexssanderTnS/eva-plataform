@@ -499,11 +499,6 @@
   gap: 22px;
 }
 
-.account-shell {
-  width: min(1080px, calc(100% - 40px));
-  margin: 36px auto 90px;
-}
-
 .account-hero {
   margin-bottom: 34px;
 }
@@ -550,13 +545,6 @@
   background: #e8e4fb;
 }
 
-.account-loading {
-  width: min(1080px, calc(100% - 40px));
-  margin: 80px auto;
-  color: var(--auth-muted);
-  text-align: center;
-}
-
 @media (max-width: 960px) {
   .auth-shell {
     grid-template-columns: 1fr;
@@ -590,9 +578,7 @@
     padding-top: 18px;
   }
 
-  .auth-shell,
-  .account-shell,
-  .account-loading {
+  .auth-shell {
     width: min(100% - 28px, 1080px);
   }
 

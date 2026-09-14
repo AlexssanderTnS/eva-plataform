@@ -243,12 +243,16 @@ const profileEmail = document.querySelector('#profile-email');
 async function loadAccount() {
   if (!accountRoot) return;
 
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), 8000);
+
   try {
     const response = await fetch(`${API_BASE}/me.php`, {
       method: 'GET',
       credentials: 'same-origin',
       headers: { Accept: 'application/json' },
       cache: 'no-store',
+      signal: controller.signal,
     });
 
     const data = await readJsonResponse(response);
@@ -260,6 +264,7 @@ async function loadAccount() {
 
     if (!response.ok || !data?.user) {
       if (accountLoading) {
+        accountLoading.classList.add('is-error');
         accountLoading.textContent =
           data?.message || 'Não foi possível carregar sua conta.';
       }
@@ -279,8 +284,14 @@ async function loadAccount() {
     console.error('Erro ao carregar conta:', error);
 
     if (accountLoading) {
-      accountLoading.textContent = 'Não foi possível carregar sua conta.';
+      accountLoading.classList.add('is-error');
+      accountLoading.textContent =
+        error.name === 'AbortError'
+          ? 'O carregamento demorou mais que o esperado. Atualize a página.'
+          : 'Não foi possível carregar sua conta.';
     }
+  } finally {
+    window.clearTimeout(timeoutId);
   }
 }
 

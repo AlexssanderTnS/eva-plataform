@@ -57,6 +57,11 @@ html {
   padding: clamp(16px, 2vw, 28px);
 }
 
+.account-shell[hidden],
+.account-loading[hidden] {
+  display: none !important;
+}
+
 .account-shell {
   width: min(1480px, 100%);
   min-height: calc(100vh - clamp(32px, 4vw, 56px));
@@ -72,7 +77,7 @@ html {
 
 .account-sidebar {
   position: sticky;
-  top: 0;
+  top: clamp(16px, 2vw, 28px);
   z-index: 50;
   height: calc(100vh - clamp(32px, 4vw, 56px));
   display: flex;
@@ -89,16 +94,31 @@ html {
 }
 
 .account-sidebar-brand {
-  display: inline-flex;
   width: fit-content;
+  min-height: 58px;
+  display: inline-flex;
   align-items: center;
+  padding: 9px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 17px;
+  background: #fff;
   text-decoration: none;
+  box-shadow: 0 12px 30px rgba(13, 9, 48, 0.22);
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.account-sidebar-brand:hover,
+.account-sidebar-brand:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 34px rgba(13, 9, 48, 0.28);
 }
 
 .account-sidebar-brand img {
   display: block;
   width: 104px;
-  max-height: 46px;
+  max-height: 40px;
 }
 
 .account-sidebar-profile {
@@ -965,6 +985,10 @@ html {
   font-size: 0.86rem;
 }
 
+.account-loading.is-error::before {
+  display: none;
+}
+
 .account-loading::before {
   content: "";
   width: 26px;
@@ -993,6 +1017,7 @@ html {
   }
 
   .account-sidebar {
+    top: 14px;
     height: calc(100vh - 28px);
   }
 
