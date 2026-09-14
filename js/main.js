@@ -389,11 +389,6 @@ restoreMobileCtaColors();
 
 console.log("EVA carregada com sucesso!");
 
-
-// =========================================
-// Estado de autenticação na navegação
-// =========================================
-
 const NAVBAR_AUTH_TIMEOUT = 5000;
 
 function getNavbarUserIdentity(user) {
@@ -486,7 +481,7 @@ async function logoutFromNavbar(button) {
       },
     });
   } catch (error) {
-    // O redirecionamento permite que o backend confirme o estado da sessão.
+
   } finally {
     window.location.replace("./acesso.html");
   }
