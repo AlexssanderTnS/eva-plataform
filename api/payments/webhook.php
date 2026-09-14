@@ -41,6 +41,12 @@ if ($contentLength > 65536) {
     ]);
 }
 
+$clientIp = evaClientIp();
+$rateLimitWindow = 60;
+
+evaAssertRateLimit('mercadopago-webhook-ip', $clientIp, 300, $rateLimitWindow);
+evaRecordRateLimitHit('mercadopago-webhook-ip', $clientIp, $rateLimitWindow);
+
 try {
     $mpConfig = require __DIR__ . '/../../config/mercadopago.php';
 } catch (Throwable $error) {

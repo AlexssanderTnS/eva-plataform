@@ -16,10 +16,6 @@ async function readJsonResponse(response) {
   }
 }
 
-/* =========================================
-   Abas de autenticação
-   ========================================= */
-
 const tabs = document.querySelectorAll('[data-auth-tab]');
 const panels = document.querySelectorAll('[data-auth-panel]');
 const switchAuthButtons = document.querySelectorAll('[data-switch-auth]');
@@ -49,10 +45,6 @@ switchAuthButtons.forEach((button) => {
     switchAuthPanel(button.dataset.switchAuth);
   });
 });
-
-/* =========================================
-   Cadastro
-   ========================================= */
 
 const registerForm = document.querySelector('#register-form');
 const registerMessage = document.querySelector('[data-register-message]');
@@ -117,10 +109,6 @@ registerForm?.addEventListener('submit', async (event) => {
     if (submitButton) submitButton.disabled = false;
   }
 });
-
-/* =========================================
-   Login e reenvio de confirmação
-   ========================================= */
 
 const loginForm = document.querySelector('#login-form');
 const loginMessage = document.querySelector('[data-login-message]');
@@ -245,10 +233,6 @@ resendButton?.addEventListener('click', async () => {
   }
 });
 
-/* =========================================
-   Minha conta
-   ========================================= */
-
 const accountRoot = document.querySelector('[data-account-root]');
 const accountLoading = document.querySelector('[data-account-loading]');
 const accountName = document.querySelector('[data-account-name]');
@@ -301,10 +285,6 @@ async function loadAccount() {
 }
 
 loadAccount();
-
-/* =========================================
-   Atualização de perfil
-   ========================================= */
 
 const profileForm = document.querySelector('#profile-form');
 const profileMessage = document.querySelector('[data-profile-message]');
@@ -359,10 +339,6 @@ profileForm?.addEventListener('submit', async (event) => {
     if (submitButton) submitButton.disabled = false;
   }
 });
-
-/* =========================================
-   Alteração de senha
-   ========================================= */
 
 const changePasswordForm = document.querySelector('#change-password-form');
 const passwordMessage = document.querySelector('[data-password-message]');
@@ -426,10 +402,6 @@ changePasswordForm?.addEventListener('submit', async (event) => {
   }
 });
 
-/* =========================================
-   Exportação de dados
-   ========================================= */
-
 const exportButton = document.querySelector('[data-export-data]');
 const accountMessage = document.querySelector('[data-account-message]');
 
@@ -477,10 +449,6 @@ exportButton?.addEventListener('click', async () => {
     exportButton.disabled = false;
   }
 });
-
-/* =========================================
-   Solicitação de exclusão da conta
-   ========================================= */
 
 const deleteAccountForm = document.querySelector('#delete-account-form');
 const deleteAccountMessage = document.querySelector('[data-delete-account-message]');
@@ -539,10 +507,6 @@ deleteAccountForm?.addEventListener('submit', async (event) => {
     if (submitButton) submitButton.disabled = false;
   }
 });
-
-/* =========================================
-   Logout
-   ========================================= */
 
 const logoutButton = document.querySelector('[data-logout]');
 

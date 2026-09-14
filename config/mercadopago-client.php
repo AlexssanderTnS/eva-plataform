@@ -18,12 +18,7 @@ final class EvaMercadoPagoClient
         }
     }
 
-    /**
-     * @return array{
-     *     status: int,
-     *     data: mixed
-     * }
-     */
+    
     public function request(
         string $method,
         string $path,
@@ -94,22 +89,14 @@ final class EvaMercadoPagoClient
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPHEADER => $headers,
 
-            /*
-             * Não seguimos redirects vindos da API.
-             * Isso também reduz o risco de o header Authorization
-             * ser reenviado para um destino inesperado.
-             */
+            
             CURLOPT_FOLLOWLOCATION => false,
 
-            /*
-             * Timeouts para não prender um worker PHP indefinidamente.
-             */
+            
             CURLOPT_CONNECTTIMEOUT => 5,
             CURLOPT_TIMEOUT => 20,
 
-            /*
-             * Nunca desabilitar estas verificações.
-             */
+            
             CURLOPT_SSL_VERIFYPEER => true,
             CURLOPT_SSL_VERIFYHOST => 2,
         ];
@@ -128,10 +115,7 @@ final class EvaMercadoPagoClient
 
             curl_close($curl);
 
-            /*
-             * O erro pode ser registrado no servidor,
-             * mas jamais registramos Access Token ou payload.
-             */
+            
             error_log(sprintf(
                 'Mercado Pago HTTP error (%d): %s',
                 $curlErrorNumber,

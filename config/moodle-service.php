@@ -80,10 +80,7 @@ function evaMoodleCreateUser(
         );
     }
 
-    /*
-     * O aluno acessará o Moodle pelo SSO. A senha aleatória existe apenas
-     * para satisfazer o método auth=manual e nunca é persistida pela EVA.
-     */
+    
     $randomPassword = bin2hex(random_bytes(24)) . 'Aa1!';
 
     $result = $client->call(

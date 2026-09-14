@@ -626,10 +626,6 @@
   }
 }
 
-/* =========================================
-   Ajuste de enquadramento da tela de acesso
-   ========================================= */
-
 .auth-main {
   min-height: 100vh;
   padding: 112px 0 36px;
@@ -647,8 +643,6 @@
 
   align-items: center;
 }
-
-/* painel esquerdo mais compacto */
 
 .auth-experience {
   min-height: 560px;
@@ -699,8 +693,6 @@
   max-height: 90px;
 }
 
-/* card login */
-
 .auth-card {
   max-width: 500px;
   padding: 26px 30px;
@@ -714,8 +706,6 @@
   gap: 14px;
   margin-bottom: 18px;
 }
-
-/* corrige o cadeado */
 
 .auth-card-icon {
   width: 46px;
@@ -747,8 +737,6 @@
   line-height: 1.15;
 }
 
-/* reduz altura geral do formulário */
-
 .auth-tabs {
   margin-bottom: 20px;
 }
@@ -778,8 +766,6 @@
   margin-top: 17px;
   padding-top: 14px;
 }
-
-/* telas menores de notebook */
 
 @media (max-height: 850px) and (min-width: 961px) {
   .auth-main {
@@ -820,8 +806,6 @@
   }
 }
 
-/* tablet e mobile continuam em coluna */
-
 @media (max-width: 960px) {
   .auth-main {
     min-height: auto;
@@ -851,12 +835,12 @@
     margin: 0 auto;
   }
 
-  /* Esconde o painel explicativo */
+  
   .auth-experience {
     display: none;
   }
 
-  /* Card ocupa toda a largura disponível */
+  
   .auth-card {
     width: 100%;
     max-width: none;

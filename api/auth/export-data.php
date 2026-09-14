@@ -39,6 +39,11 @@ if (!is_int($userId) && !ctype_digit((string) $userId)) {
 
 $userId = (int) $userId;
 
+$rateLimitWindow = 3600;
+
+evaAssertRateLimit('data-export-user', (string) $userId, 5, $rateLimitWindow);
+evaRecordRateLimitHit('data-export-user', (string) $userId, $rateLimitWindow);
+
 try {
     $pdo = require __DIR__ . '/../../config/database.php';
 

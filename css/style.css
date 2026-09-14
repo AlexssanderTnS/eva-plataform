@@ -50,7 +50,6 @@ img {
   display: block;
 }
 
-
 .site-header {
   position: fixed;
   top: 0;
@@ -124,7 +123,6 @@ img {
   box-shadow: 0 22px 44px rgba(22, 140, 255, 0.3);
   box-shadow: 0 16px 34px rgba(184, 116, 14, 0.507);
 }
-
 
 .hero-section {
   position: relative;
@@ -338,7 +336,6 @@ img {
   right: 2%;
   animation-delay: 1.7s;
 }
-
 
 .journey-section {
   padding: 38px 8vw 90px;
@@ -794,8 +791,6 @@ img {
   font-weight: 900;
 }
 
-
-
 .site-footer {
   padding: 70px 8vw 30px;
   display: grid;
@@ -851,7 +846,6 @@ img {
   display: flex;
   gap: 18px;
 }
-
 
 @keyframes logoEntrance {
   from {
@@ -920,7 +914,6 @@ img {
     0 0 0 4px rgba(0, 212, 255, 0.16),
     var(--shadow-soft);
 }
-
 
 body.menu-open {
   overflow: hidden;
@@ -1176,7 +1169,6 @@ body.menu-open {
     transform 0.34s cubic-bezier(0.22, 1, 0.36, 1) 0.28s;
 }
 
-
 @media (max-width: 1060px) {
   .navbar-menu,
   .navbar > .navbar-cta {
@@ -1304,7 +1296,6 @@ body.menu-open {
   opacity: 0.72;
 }
 
-
 @media (prefers-reduced-motion: reduce) {
   .logo-orb,
   .logo-orb::after,
@@ -1431,10 +1422,6 @@ body.menu-open {
     transition: none;
   }
 }
-
-/* =========================================
-   Estado autenticado da navegação
-   ========================================= */
 
 .navbar-cta.is-auth-checking,
 .mobile-menu-cta.is-auth-checking {

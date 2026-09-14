@@ -38,6 +38,12 @@ if (!is_int($userId) && !ctype_digit((string) $userId)) {
     ]);
 }
 
+$userId = (int) $userId;
+$rateLimitWindow = 300;
+
+evaAssertRateLimit('account-courses-user', (string) $userId, 120, $rateLimitWindow);
+evaRecordRateLimitHit('account-courses-user', (string) $userId, $rateLimitWindow);
+
 try {
     $pdo = require __DIR__ . '/../../config/database.php';
 
@@ -73,7 +79,7 @@ try {
             COALESCE(ca.granted_at, ca.created_at) DESC
         "
     );
-    $statement->execute(['user_id' => (int) $userId]);
+    $statement->execute(['user_id' => $userId]);
     $rows = $statement->fetchAll();
 } catch (Throwable $error) {
     error_log('EVA Account: erro ao carregar cursos: ' . $error->getMessage());
