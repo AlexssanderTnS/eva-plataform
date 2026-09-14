@@ -144,7 +144,16 @@ html {
 }
 
 .account-sidebar-avatar .material-symbols-rounded {
-  font-size: 1.35rem;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-size: 22px;
+  line-height: 1;
+  text-align: center;
 }
 
 .account-sidebar-profile strong,
@@ -500,15 +509,31 @@ html {
   gap: 13px;
 }
 
-.account-panel-icon {
+.account-panel-icon.material-symbols-rounded {
   width: 46px;
   height: 46px;
-  flex: 0 0 auto;
+  flex: 0 0 46px;
   display: grid;
   place-items: center;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
   border-radius: 14px;
   background: #f0edff;
   color: var(--account-primary-2);
+  font-family: "Material Symbols Rounded";
+  font-size: 24px;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-align: center;
+  white-space: nowrap;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 500,
+    "GRAD" 0,
+    "opsz" 24;
 }
 
 .account-panel-heading h2 {
@@ -910,15 +935,31 @@ html {
   gap: 14px;
 }
 
-.account-danger-icon {
+.account-danger-icon.material-symbols-rounded {
   width: 46px;
   height: 46px;
-  flex: 0 0 auto;
+  flex: 0 0 46px;
   display: grid;
   place-items: center;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
   border-radius: 14px;
   background: rgba(180, 35, 24, 0.08);
   color: var(--account-danger);
+  font-family: "Material Symbols Rounded";
+  font-size: 24px;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-align: center;
+  white-space: nowrap;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 500,
+    "GRAD" 0,
+    "opsz" 24;
 }
 
 .account-danger-copy h2 {
