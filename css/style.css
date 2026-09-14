@@ -1431,3 +1431,100 @@ body.menu-open {
     transition: none;
   }
 }
+
+/* =========================================
+   Estado autenticado da navegação
+   ========================================= */
+
+.navbar-cta.is-authenticated {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 16px 6px 7px;
+  background: linear-gradient(145deg, var(--color-purple-dark), #4d39b0);
+  box-shadow: 0 12px 28px rgba(42, 31, 111, 0.22);
+}
+
+.navbar-cta.is-authenticated:hover,
+.navbar-cta.is-authenticated:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 17px 34px rgba(42, 31, 111, 0.3);
+}
+
+.navbar-user-avatar {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+
+.navbar-user-copy {
+  min-width: 0;
+  display: grid;
+  gap: 1px;
+  line-height: 1.05;
+  text-align: left;
+}
+
+.navbar-user-label {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.61rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.navbar-user-name {
+  max-width: 126px;
+  overflow: hidden;
+  color: #fff;
+  font-size: 0.79rem;
+  font-weight: 850;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-menu-cta.is-authenticated {
+  min-height: 66px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 8px 14px 8px 9px;
+  border-radius: 18px;
+  background: linear-gradient(145deg, var(--color-purple-dark), #4d39b0);
+  box-shadow: 0 14px 32px rgba(42, 31, 111, 0.22);
+}
+
+.mobile-menu-cta.is-authenticated .navbar-user-avatar {
+  width: 42px;
+  height: 42px;
+}
+
+.mobile-menu-cta.is-authenticated .navbar-user-label {
+  font-size: 0.68rem;
+}
+
+.mobile-menu-cta.is-authenticated .navbar-user-name {
+  max-width: 220px;
+  font-size: 0.9rem;
+}
+
+.mobile-menu-drawer.is-open .mobile-menu-cta.is-authenticated {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navbar-cta.is-authenticated,
+  .mobile-menu-cta.is-authenticated {
+    transition: none;
+  }
+}
