@@ -39,6 +39,31 @@ try {
     );
     $statement->execute(['id' => (int) $userId]);
     $user = $statement->fetch();
+
+    $deletionRequest = null;
+
+    if ($user !== false) {
+        $statement = $pdo->prepare(
+            'SELECT status, requested_at, scheduled_for, processed_at
+             FROM account_deletion_requests
+             WHERE user_id = :user_id
+             LIMIT 1'
+        );
+        $statement->execute(['user_id' => (int) $userId]);
+        $row = $statement->fetch();
+
+        if ($row !== false && in_array((string) $row['status'], ['pending', 'processing'], true)) {
+            $deletionRequest = [
+                'status' => (string) $row['status'],
+                'requested_at' => $row['requested_at'],
+                'scheduled_for' => $row['scheduled_for'],
+                'processed_at' => $row['processed_at'],
+                'can_cancel' => (string) $row['status'] === 'pending' &&
+                    $row['scheduled_for'] !== null &&
+                    strtotime((string) $row['scheduled_for']) > time(),
+            ];
+        }
+    }
 } catch (Throwable $error) {
     error_log('EVA Auth: erro ao carregar conta: ' . $error->getMessage());
     sendJsonResponse(500, ['success' => false, 'message' => 'Não foi possível carregar sua conta.']);
@@ -66,5 +91,6 @@ sendJsonResponse(200, [
         'last_name' => $user['last_name'],
         'email' => $user['email'],
         'email_verified' => true
-    ]
+    ],
+    'account_deletion' => $deletionRequest,
 ]);
