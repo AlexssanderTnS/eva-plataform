@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta name="referrer" content="no-referrer" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Acesse ou crie sua conta na plataforma EVA."
+    />
+    <title>Recuperar senha | EVA</title>
+    <link rel="icon" href="./assets/images/simbolo.svg" type="image/x-icon" />
+    <link rel="stylesheet" href="./css/style.css?v=20260915-navbar" />
+    <link rel="stylesheet" href="./css/auth.css?v=20260913-2" />
+    <link rel="stylesheet" href="./css/password-recovery.css?v=20260915" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded&icon_names=arrow_forward,check_circle,close,lock,menu,school,verified_user&display=block"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body data-password-recovery class="auth-page">
+    <header class="site-header">
+      <nav class="navbar" aria-label="Navegação principal">
+        <a
+          href="./index.html"
+          class="navbar-logo"
+          aria-label="Ir para a página inicial"
+        >
+          <img src="./assets/images/eva-logo.svg" alt="Logo EVA" />
+        </a>
+        <ul class="navbar-menu">
+          <li><a href="./index.html">Página Inicial</a></li>
+          <li><a href="./recursos.html">EVA Individual</a></li>
+          <li><a href="./empresas.html">EVA Empresas</a></li>
+          <li><a href="./contato.html">Contato</a></li>
+        </ul>
+        <a
+          href="./acesso.html"
+          class="navbar-cta"
+          aria-label="Entrar na conta EVA"
+          >Login</a
+        >
+        <button
+          class="mobile-menu-toggle"
+          type="button"
+          aria-label="Abrir menu"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+        >
+          <span class="material-symbols-rounded" aria-hidden="true">menu</span>
+        </button>
+      </nav>
+    </header>
+
+    <div class="mobile-menu-overlay" data-menu-close aria-hidden="true"></div>
+
+    <aside
+      id="mobile-menu"
+      class="mobile-menu-drawer"
+      aria-label="Menu de navegação mobile"
+      aria-hidden="true"
+      inert
+    >
+      <div class="mobile-menu-header">
+        <a
+          href="./index.html"
+          class="mobile-menu-logo"
+          aria-label="Ir para a página inicial"
+          data-menu-link
+        >
+          <img src="./assets/images/eva-logo.svg" alt="Logo EVA" />
+        </a>
+        <button
+          class="mobile-menu-close"
+          type="button"
+          aria-label="Fechar menu"
+          data-menu-close
+        >
+          <span class="material-symbols-rounded" aria-hidden="true">close</span>
+        </button>
+      </div>
+      <nav class="mobile-menu-nav" aria-label="Navegação mobile">
+        <a href="./index.html" data-menu-link>Página Inicial</a>
+        <a href="./recursos.html" data-menu-link>EVA Individual</a>
+        <a href="./empresas.html" data-menu-link>EVA Empresas</a>
+        <a href="./contato.html" data-menu-link>Contato</a>
+      </nav>
+      <a
+        href="./acesso.html"
+        class="mobile-menu-cta"
+        aria-label="Entrar na conta EVA"
+        data-menu-link
+        >Login</a
+      >
+    </aside>
+
+    <main class="auth-main">
+      <section class="auth-shell">
+        <div class="auth-experience" aria-labelledby="auth-title">
+          <div class="auth-glow auth-glow-one" aria-hidden="true"></div>
+          <div class="auth-glow auth-glow-two" aria-hidden="true"></div>
+          <div class="auth-experience-content">
+            <span class="auth-eyebrow">Sua jornada na EVA</span>
+            <h1 id="auth-title">
+              Desenvolvimento que continua <strong>com você.</strong>
+            </h1>
+            <p>
+              Entre para acessar sua conta, acompanhar seus cursos e continuar
+              aprendendo no seu ritmo. Se esta é sua primeira vez, criar uma
+              conta leva só alguns instantes.
+            </p>
+            <div class="auth-benefits" aria-label="Benefícios da conta EVA">
+              <div class="auth-benefit">
+                <span class="material-symbols-rounded" aria-hidden="true"
+                  >school</span
+                >
+                <div>
+                  <strong>Seus cursos em um só lugar</strong>
+                  <span>Acesse sua jornada sempre que precisar.</span>
+                </div>
+              </div>
+              <div class="auth-benefit">
+                <span class="material-symbols-rounded" aria-hidden="true"
+                  >verified_user</span
+                >
+                <div>
+                  <strong>Conta protegida</strong>
+                  <span>Confirmação de e-mail e sessão segura.</span>
+                </div>
+              </div>
+            </div>
+            <div class="auth-brand-mark" aria-hidden="true">
+              <img src="./assets/images/LogoVertical.svg" alt="" />
+            </div>
+          </div>
+        </div>
+
+        <section class="auth-card" aria-labelledby="recovery-title">
+          <div class="auth-card-heading">
+            <span class="auth-card-icon" aria-hidden="true"><span class="material-symbols-rounded">lock_reset</span></span>
+            <div><span>Área do aluno</span><h2 id="recovery-title">Recuperar senha</h2></div>
+          </div>
+          <p id="recovery-description">Informe seu e-mail para receber um link de recuperação.</p>
+          <form id="recovery-request-form" class="auth-form">
+            <div class="auth-field"><label for="recovery-email">E-mail</label><input id="recovery-email" name="email" type="email" autocomplete="email" maxlength="254" required /></div>
+            <button class="auth-submit" type="submit">Enviar link de recuperação</button>
+          </form>
+          <form id="recovery-reset-form" class="auth-form" hidden>
+            <div class="auth-field"><label for="recovery-password">Nova senha</label><input id="recovery-password" name="password" type="password" autocomplete="new-password" minlength="8" maxlength="72" aria-describedby="password-help" required /><small id="password-help">Use de 8 a 72 caracteres.</small></div>
+            <div class="auth-field"><label for="recovery-confirmation">Confirme a nova senha</label><input id="recovery-confirmation" name="password_confirmation" type="password" autocomplete="new-password" minlength="8" maxlength="72" required /></div>
+            <button class="auth-submit" type="submit">Salvar nova senha</button>
+          </form>
+          <div id="recovery-message" class="auth-message" role="status" aria-live="polite"></div>
+          <p class="auth-helper"><a href="./acesso.html">Voltar para entrar</a></p>
+          <p class="auth-helper"><a href="./recuperar-senha.html">Solicitar outro link</a></p>
+        </section>
+      </section>
+    </main>
+
+    <script src="./js/main.js?v=20260915-recovery"></script>
+    <script src="./js/password-recovery.js?v=20260915"></script>
+  </body>
+</html>

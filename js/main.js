@@ -619,7 +619,7 @@ async function syncNavbarAuthenticationState() {
       return;
     }
 
-    if (document.body.classList.contains("auth-page")) {
+    if (document.body.classList.contains("auth-page") && !document.body.hasAttribute("data-password-recovery")) {
       window.location.replace("./conta.html");
       return;
     }
@@ -652,3 +652,4 @@ document.addEventListener("keydown", (event) => {
 });
 
 syncNavbarAuthenticationState();
+
