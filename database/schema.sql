@@ -41,9 +41,11 @@ CREATE TABLE IF NOT EXISTS account_deletion_requests (
         'pending',
         'processing',
         'completed',
+        'cancelled',
         'rejected'
     ) NOT NULL DEFAULT 'pending',
     requested_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    scheduled_for TIMESTAMP NULL,
     processed_at TIMESTAMP NULL,
 
     CONSTRAINT fk_account_deletion_user
@@ -51,7 +53,8 @@ CREATE TABLE IF NOT EXISTS account_deletion_requests (
         REFERENCES users(id)
         ON DELETE CASCADE,
 
-    UNIQUE KEY uq_account_deletion_user (user_id)
+    UNIQUE KEY uq_account_deletion_user (user_id),
+    KEY idx_account_deletion_queue (status, scheduled_for)
 ) ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_unicode_ci;
