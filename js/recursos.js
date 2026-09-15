@@ -1,100 +1,190 @@
 const cursosIndividuais = [
   {
-    id: "gestao-financeira-pessoal",
-    titulo: "Gestão Financeira Pessoal",
-    duracao: "1 Hora",
-    formato: "Online • Moodle",
-    imagem: "./assets/images/gestaoFinanceira.png",
-    descricao:
-      "Estratégias práticas para organizar o orçamento, controlar despesas, definir metas e desenvolver hábitos financeiros mais saudáveis.",
-    descricaoCompleta:
-      "Um curso prático para ajudar você a organizar sua vida financeira, compreender melhor seus gastos e construir decisões mais conscientes e sustentáveis no dia a dia.",
-    aprendizados: [
+    "id": "gestao-financeira-pessoal",
+    "titulo": "Gestão Financeira Pessoal",
+    "duracao": "1 Hora",
+    "formato": "Online • Moodle",
+    "imagem": "./assets/images/gestaoFinanceira.png",
+    "descricao": "Estratégias práticas para organizar o orçamento, controlar despesas, definir metas e desenvolver hábitos financeiros mais saudáveis.",
+    "descricaoCompleta": "Um curso prático para ajudar você a organizar sua vida financeira, compreender melhor seus gastos e construir decisões mais conscientes e sustentáveis no dia a dia.",
+    "aprendizados": [
       "Organizar seu orçamento pessoal",
       "Controlar gastos e despesas",
       "Definir metas financeiras realistas",
       "Criar hábitos financeiros mais saudáveis",
-      "Tomar decisões financeiras com mais segurança",
-    ],
+      "Tomar decisões financeiras com mais segurança"
+    ]
   },
   {
-    id: "micro-habitos-pessoais",
-    titulo:
-      "Micro-Hábitos Pessoais: Construindo Mudanças Sustentáveis no Dia a Dia",
-    duracao: "1 Hora",
-    formato: "Online • Moodle",
-    imagem: "./assets/images/microPessoais.png",
-    descricao:
-      "Estratégias práticas para criar e manter hábitos positivos, fortalecer a disciplina e alcançar objetivos de forma consistente.",
-    descricaoCompleta:
-      "Aprenda a construir mudanças possíveis por meio de pequenos comportamentos consistentes, reduzindo a dependência de motivação e aumentando a chance de manter novos hábitos ao longo do tempo.",
-    aprendizados: [
-      "Entender como hábitos são formados",
-      "Transformar objetivos em pequenas ações",
-      "Criar rotinas mais sustentáveis",
-      "Lidar melhor com interrupções e recaídas",
-      "Acompanhar seu progresso de forma prática",
-    ],
+    "id": "consciencia-financeira",
+    "titulo": "Consciência Financeira",
+    "duracao": "45 Minutos",
+    "formato": "Online • Moodle",
+    "imagem": "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=900&q=80",
+    "descricao": "Planejamento financeiro e hábitos sustentáveis para promover mais organização, tranquilidade e bem-estar no cotidiano.",
+    "descricaoCompleta": "Curso de educação financeira aplicada ao cotidiano, com estratégias para organização de gastos, planejamento e desenvolvimento de hábitos mais sustentáveis.",
+    "aprendizados": [
+      "Compreender melhor receitas e despesas",
+      "Organizar o orçamento pessoal",
+      "Identificar hábitos financeiros prejudiciais",
+      "Definir metas mais realistas",
+      "Construir uma relação mais saudável com o dinheiro"
+    ]
   },
   {
-    id: "comunicacao-nao-violenta",
-    titulo:
-      "Comunicação Não Violenta na Prática: Transformando Relações Pessoais e Profissionais",
-    duracao: "1 Hora",
-    formato: "Online • Moodle",
-    imagem: "./assets/images/comunicacaoNviolenta.png",
-    descricao:
-      "Aprenda a expressar suas necessidades com clareza, lidar melhor com conflitos e construir relações mais conscientes e respeitosas.",
-    descricaoCompleta:
-      "Conheça os princípios da Comunicação Não Violenta e pratique uma forma de se expressar com mais clareza, escuta e respeito, inclusive em conversas difíceis.",
-    aprendizados: [
-      "Identificar observações sem julgamentos",
-      "Reconhecer sentimentos e necessidades",
-      "Fazer pedidos claros e possíveis",
-      "Escutar com mais empatia",
-      "Conduzir conflitos de forma mais consciente",
-    ],
-  },
-  {
-    id: "regulacao-emocional",
-    titulo: "Regulação Emocional",
-    duracao: "1 Hora",
-    formato: "Online • Moodle",
-    imagem: "./assets/images/regulacaoEmocional.png",
-    descricao:
-      "Estratégias práticas para compreender e gerenciar emoções, lidar com situações de estresse e tomar decisões de maneira mais equilibrada.",
-    descricaoCompleta:
-      "Desenvolva recursos para reconhecer suas emoções, compreender o que elas sinalizam e responder a situações desafiadoras com mais consciência e equilíbrio.",
-    aprendizados: [
+    "id": "inteligencia-emocional",
+    "titulo": "Inteligência Emocional",
+    "duracao": "1 Hora",
+    "formato": "Online • Moodle",
+    "imagem": "./assets/images/regulacaoEmocional.png",
+    "descricao": "Estratégias práticas para compreender e gerenciar emoções, lidar com situações de estresse e tomar decisões de maneira mais equilibrada.",
+    "descricaoCompleta": "Desenvolva recursos para reconhecer suas emoções, compreender o que elas sinalizam e responder a situações desafiadoras com mais consciência e equilíbrio.",
+    "aprendizados": [
       "Reconhecer emoções e gatilhos",
       "Compreender respostas emocionais",
       "Aplicar estratégias de autorregulação",
       "Lidar melhor com situações de estresse",
-      "Tomar decisões com mais consciência",
-    ],
+      "Tomar decisões com mais consciência"
+    ]
   },
   {
-    id: "comunicacao-empatica",
-    titulo: "Comunicação Empática e Escuta Ativa",
-    duracao: "1 Hora",
-    formato: "Online • Moodle",
-    imagem: "./assets/images/comunicacaoEmpatica.png",
-    descricao:
-      "Desenvolva uma comunicação mais clara e respeitosa por meio de técnicas de escuta ativa, empatia e comunicação assertiva.",
-    descricaoCompleta:
-      "Um curso para fortalecer conexões por meio de escuta ativa, empatia e comunicação assertiva, com ferramentas aplicáveis às relações pessoais e profissionais.",
-    aprendizados: [
+    "id": "atendimento-de-excelencia",
+    "titulo": "Atendimento de Excelência",
+    "duracao": "1 Hora",
+    "formato": "Online • Moodle",
+    "imagem": "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=900&q=80",
+    "descricao": "Atendimento humanizado, comunicação eficaz e resolução de problemas para proporcionar experiências melhores aos clientes.",
+    "descricaoCompleta": "Treinamento voltado ao desenvolvimento de uma experiência de atendimento mais clara, humana e eficiente, fortalecendo comunicação, postura e resolução de problemas.",
+    "aprendizados": [
+      "Aprimorar postura profissional no atendimento",
+      "Compreender necessidades do cliente",
+      "Comunicar informações com clareza",
+      "Lidar melhor com situações difíceis",
+      "Fortalecer a experiência e a confiança do cliente"
+    ]
+  },
+  {
+    "id": "lideranca",
+    "titulo": "Liderança",
+    "duracao": "1 Hora",
+    "formato": "Online • Moodle",
+    "imagem": "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=900&q=80",
+    "descricao": "Competências de comunicação, gestão de pessoas, inteligência emocional e tomada de decisão para formar lideranças mais preparadas.",
+    "descricaoCompleta": "Treinamento para lideranças que desejam desenvolver comunicação, gestão de pessoas, inteligência emocional e tomada de decisão de forma mais consciente e responsável.",
+    "aprendizados": [
+      "Aprimorar comunicação de liderança",
+      "Conduzir equipes com mais clareza",
+      "Desenvolver escuta e feedback",
+      "Tomar decisões de forma mais consciente",
+      "Fortalecer engajamento e desenvolvimento da equipe"
+    ]
+  },
+  {
+    "id": "comunicacao-nao-violenta",
+    "titulo": "Comunicação Não Violenta",
+    "duracao": "1 Hora",
+    "formato": "Online • Moodle",
+    "imagem": "./assets/images/comunicacaoNviolenta.png",
+    "descricao": "Aprenda a expressar suas necessidades com clareza, lidar melhor com conflitos e construir relações mais conscientes e respeitosas.",
+    "descricaoCompleta": "Conheça os princípios da Comunicação Não Violenta e pratique uma forma de se expressar com mais clareza, escuta e respeito, inclusive em conversas difíceis.",
+    "aprendizados": [
+      "Identificar observações sem julgamentos",
+      "Reconhecer sentimentos e necessidades",
+      "Fazer pedidos claros e possíveis",
+      "Escutar com mais empatia",
+      "Conduzir conflitos de forma mais consciente"
+    ]
+  },
+  {
+    "id": "construcao-de-habitos-pessoais",
+    "titulo": "Construção de Hábitos Pessoais",
+    "duracao": "1 Hora",
+    "formato": "Online • Moodle",
+    "imagem": "./assets/images/microPessoais.png",
+    "descricao": "Estratégias práticas para criar e manter hábitos positivos, fortalecer a disciplina e alcançar objetivos de forma consistente.",
+    "descricaoCompleta": "Aprenda a construir mudanças possíveis por meio de pequenos comportamentos consistentes, reduzindo a dependência de motivação e aumentando a chance de manter novos hábitos ao longo do tempo.",
+    "aprendizados": [
+      "Entender como hábitos são formados",
+      "Transformar objetivos em pequenas ações",
+      "Criar rotinas mais sustentáveis",
+      "Lidar melhor com interrupções e recaídas",
+      "Acompanhar seu progresso de forma prática"
+    ]
+  },
+  {
+    "id": "assedio-no-trabalho",
+    "titulo": "Assédio no Trabalho",
+    "duracao": "1 Hora",
+    "formato": "Online • Moodle",
+    "imagem": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=900&q=80",
+    "descricao": "Conscientização e prevenção para fortalecer ambientes de trabalho mais seguros, éticos, saudáveis e respeitosos.",
+    "descricaoCompleta": "Conteúdo de conscientização sobre assédio moral e sexual, seus impactos e formas de prevenção, com foco no fortalecimento de ambientes de trabalho mais seguros e respeitosos.",
+    "aprendizados": [
+      "Reconhecer comportamentos inadequados",
+      "Diferenciar conflitos de situações de assédio",
+      "Compreender impactos individuais e organizacionais",
+      "Conhecer atitudes preventivas no cotidiano",
+      "Fortalecer uma cultura de respeito"
+    ]
+  },
+  {
+    "id": "comunicacao-empatica",
+    "titulo": "Comunicação Empática e Escuta Ativa",
+    "duracao": "1 Hora",
+    "formato": "Online • Moodle",
+    "imagem": "./assets/images/comunicacaoEmpatica.png",
+    "descricao": "Desenvolva uma comunicação mais clara e respeitosa por meio de técnicas de escuta ativa, empatia e comunicação assertiva.",
+    "descricaoCompleta": "Um curso para fortalecer conexões por meio de escuta ativa, empatia e comunicação assertiva, com ferramentas aplicáveis às relações pessoais e profissionais.",
+    "aprendizados": [
       "Praticar escuta ativa",
       "Identificar barreiras na comunicação",
       "Se expressar com mais clareza",
       "Desenvolver respostas mais empáticas",
-      "Reduzir ruídos e conflitos nas relações",
-    ],
+      "Reduzir ruídos e conflitos nas relações"
+    ]
   },
+  {
+    "id": "construcao-de-habitos-no-trabalho",
+    "titulo": "Construção de Hábitos no Trabalho",
+    "duracao": "1 Hora",
+    "formato": "Online • Moodle",
+    "imagem": "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=900&q=80",
+    "descricao": "Estratégias para desenvolver organização, disciplina, responsabilidade e hábitos positivos no ambiente profissional.",
+    "descricaoCompleta": "Curso prático para apoiar a construção de rotinas mais sustentáveis, organização do trabalho e comportamentos que favoreçam produtividade, responsabilidade e colaboração.",
+    "aprendizados": [
+      "Identificar hábitos que impactam o trabalho",
+      "Transformar objetivos em ações menores",
+      "Organizar melhor rotinas e prioridades",
+      "Criar comportamentos mais sustentáveis",
+      "Acompanhar progresso e manter consistência"
+    ]
+  },
+  {
+    "id": "vistoriador-de-imoveis",
+    "titulo": "Vistoriador de Imóveis",
+    "duracao": "30 minutos",
+    "formato": "Online • Moodle",
+    "imagem": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=900&q=80",
+    "descricao": "Práticas para realizar inspeções com organização, precisão e segurança, reduzindo riscos e conflitos futuros.",
+    "descricaoCompleta": "Treinamento para profissionais que atuam com vistorias, reforçando organização, atenção aos detalhes, registro de informações e padronização do processo.",
+    "aprendizados": [
+      "Compreender a importância da vistoria",
+      "Organizar etapas de inspeção",
+      "Registrar informações com mais precisão",
+      "Identificar pontos que exigem atenção",
+      "Reduzir riscos e conflitos posteriores"
+    ]
+  }
 ];
 
 const COURSES_API = "./api/courses.php";
 const CREATE_ORDER_API = "./api/orders/create.php";
+
+function normalizeCourseId(courseId) {
+  if (courseId === "micro-habitos-pessoais") return "construcao-de-habitos-pessoais";
+  if (courseId === "regulacao-emocional") return "inteligencia-emocional";
+  return courseId;
+}
 
 const currencyFormatter = new Intl.NumberFormat("pt-BR", {
   style: "currency",
@@ -237,6 +327,7 @@ function renderModal(curso) {
 }
 
 async function startCheckout(courseId, button) {
+  courseId = normalizeCourseId(courseId);
   if (checkoutInProgress) return;
 
   checkoutInProgress = true;
@@ -290,6 +381,7 @@ async function startCheckout(courseId, button) {
 }
 
 function openModal(courseId) {
+  courseId = normalizeCourseId(courseId);
   if (!modal) return;
 
   const curso = cursosIndividuais.find((item) => item.id === courseId);
@@ -393,8 +485,8 @@ async function initializeCourses() {
   renderCursos();
   updateCarousel();
 
-  const resumeCourseId = new URLSearchParams(window.location.search).get(
-    "resume_checkout",
+  const resumeCourseId = normalizeCourseId(
+    new URLSearchParams(window.location.search).get("resume_checkout"),
   );
 
   if (resumeCourseId) {
@@ -418,3 +510,4 @@ async function initializeCourses() {
 }
 
 initializeCourses();
+
