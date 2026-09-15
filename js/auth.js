@@ -239,6 +239,113 @@ const accountName = document.querySelector('[data-account-name]');
 const profileFirstName = document.querySelector('#profile-first-name');
 const profileLastName = document.querySelector('#profile-last-name');
 const profileEmail = document.querySelector('#profile-email');
+const deleteAccountForm = document.querySelector('#delete-account-form');
+const deleteAccountMessage = document.querySelector('[data-delete-account-message]');
+
+function formatDeletionDate(value) {
+  if (!value) return '';
+
+  const normalized = value.includes('T') ? value : value.replace(' ', 'T');
+  const date = new Date(normalized);
+
+  if (Number.isNaN(date.getTime())) return '';
+
+  return new Intl.DateTimeFormat('pt-BR', {
+    dateStyle: 'long',
+    timeStyle: 'short',
+  }).format(date);
+}
+
+function renderAccountDeletion(deletion) {
+  if (!deleteAccountForm) return;
+
+  const passwordField = deleteAccountForm.querySelector('.auth-field');
+  const submitButton = deleteAccountForm.querySelector('button[type="submit"]');
+  const existingPendingBox = deleteAccountForm.querySelector('[data-deletion-pending]');
+
+  if (!deletion || !['pending', 'processing'].includes(deletion.status)) {
+    if (passwordField) passwordField.hidden = false;
+    if (submitButton) submitButton.hidden = false;
+    existingPendingBox?.remove();
+    return;
+  }
+
+  if (passwordField) passwordField.hidden = true;
+  if (submitButton) submitButton.hidden = true;
+  showMessage(deleteAccountMessage, '');
+
+  const pendingBox = existingPendingBox || document.createElement('div');
+  pendingBox.dataset.deletionPending = '';
+  pendingBox.className = 'auth-message is-success';
+
+  const scheduledFor = formatDeletionDate(deletion.scheduled_for);
+  const statusText = deletion.status === 'processing'
+    ? 'Sua exclusão está sendo processada.'
+    : scheduledFor
+      ? `Sua conta está agendada para exclusão em ${scheduledFor}.`
+      : 'Sua conta está agendada para exclusão.';
+
+  pendingBox.textContent = statusText;
+
+  if (deletion.can_cancel !== false && deletion.status === 'pending') {
+    const cancelButton = document.createElement('button');
+    cancelButton.type = 'button';
+    cancelButton.className = 'account-secondary-button';
+    cancelButton.textContent = 'Cancelar exclusão';
+    cancelButton.style.marginTop = '12px';
+
+    cancelButton.addEventListener('click', async () => {
+      cancelButton.disabled = true;
+      showMessage(deleteAccountMessage, '');
+
+      try {
+        const response = await fetch(`${API_BASE}/cancel-account-deletion.php`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          credentials: 'same-origin',
+          body: '{}',
+        });
+
+        const data = await readJsonResponse(response);
+
+        if (response.status === 401 || response.status === 403) {
+          window.location.replace('./acesso.html');
+          return;
+        }
+
+        if (!response.ok) {
+          showMessage(
+            deleteAccountMessage,
+            data?.message || 'Não foi possível cancelar a exclusão.',
+          );
+          return;
+        }
+
+        renderAccountDeletion(null);
+        showMessage(
+          deleteAccountMessage,
+          data?.message || 'A exclusão da sua conta foi cancelada.',
+          true,
+        );
+      } catch (error) {
+        console.error('Erro ao cancelar exclusão da conta:', error);
+        showMessage(deleteAccountMessage, 'Não foi possível conectar com o servidor.');
+      } finally {
+        cancelButton.disabled = false;
+      }
+    });
+
+    pendingBox.appendChild(document.createElement('br'));
+    pendingBox.appendChild(cancelButton);
+  }
+
+  if (!existingPendingBox) {
+    deleteAccountForm.appendChild(pendingBox);
+  }
+}
 
 async function loadAccount() {
   if (!accountRoot) return;
@@ -277,6 +384,8 @@ async function loadAccount() {
     if (profileFirstName) profileFirstName.value = user.first_name || '';
     if (profileLastName) profileLastName.value = user.last_name || '';
     if (profileEmail) profileEmail.value = user.email || '';
+
+    renderAccountDeletion(data.account_deletion || null);
 
     accountRoot.hidden = false;
     if (accountLoading) accountLoading.hidden = true;
@@ -461,9 +570,6 @@ exportButton?.addEventListener('click', async () => {
   }
 });
 
-const deleteAccountForm = document.querySelector('#delete-account-form');
-const deleteAccountMessage = document.querySelector('[data-delete-account-message]');
-
 deleteAccountForm?.addEventListener('submit', async (event) => {
   event.preventDefault();
 
@@ -498,6 +604,10 @@ deleteAccountForm?.addEventListener('submit', async (event) => {
     }
 
     if (!response.ok) {
+      if (data?.deletion) {
+        renderAccountDeletion(data.deletion);
+      }
+
       showMessage(
         deleteAccountMessage,
         data?.message || 'Não foi possível registrar a solicitação.',
@@ -506,6 +616,11 @@ deleteAccountForm?.addEventListener('submit', async (event) => {
     }
 
     deleteAccountForm.reset();
+    renderAccountDeletion(data?.deletion || {
+      status: 'pending',
+      scheduled_for: null,
+      can_cancel: true,
+    });
     showMessage(
       deleteAccountMessage,
       data?.message || 'Sua solicitação de exclusão foi registrada.',
