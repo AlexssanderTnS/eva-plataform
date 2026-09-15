@@ -897,3 +897,8 @@
     font-size: 0.74rem;
   }
 }
+
+.auth-page .auth-form[hidden],
+.auth-page .auth-panel[hidden] {
+  display: none !important;
+}
