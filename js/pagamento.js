@@ -96,6 +96,9 @@ async function loadOrderStatus() {
     return;
   }
 
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), 12000);
+
   try {
     const response = await fetch("./api/orders/status.php", {
       method: "POST",
@@ -107,6 +110,7 @@ async function loadOrderStatus() {
         reference,
         payment_id: paymentId || undefined,
       }),
+      signal: controller.signal,
     });
 
     if (response.status === 401) {
@@ -130,10 +134,14 @@ async function loadOrderStatus() {
     console.error("Falha ao consultar pagamento:", error);
     setState(
       result === "failure" ? "failure" : "pending",
-      "Não foi possível atualizar o status agora",
-      "O retorno do pagamento foi recebido, mas a consulta automática falhou. O status continuará sendo atualizado pelo sistema e poderá ser conferido na sua conta.",
+      error?.name === "AbortError"
+        ? "A verificação está demorando mais que o esperado"
+        : "Não foi possível atualizar o status agora",
+      "O retorno do pagamento foi recebido e o sistema continuará atualizando o pedido. Você pode acompanhar o status pela sua conta.",
       result === "failure" ? "×" : "…",
     );
+  } finally {
+    window.clearTimeout(timeoutId);
   }
 }
 
