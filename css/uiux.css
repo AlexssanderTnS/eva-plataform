@@ -1,5 +1,3 @@
-html:not(.navbar-auth-ready) .navbar-cta,
-html:not(.navbar-auth-ready) .mobile-menu-cta,
 .navbar-cta.is-auth-checking,
 .mobile-menu-cta.is-auth-checking {
   position: relative;
@@ -10,8 +8,6 @@ html:not(.navbar-auth-ready) .mobile-menu-cta,
   overflow: hidden;
 }
 
-html:not(.navbar-auth-ready) .navbar-cta::before,
-html:not(.navbar-auth-ready) .mobile-menu-cta::before,
 .navbar-cta.is-auth-checking::before,
 .mobile-menu-cta.is-auth-checking::before {
   content: "";
@@ -130,8 +126,8 @@ html:not(.navbar-auth-ready) .mobile-menu-cta::before,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html:not(.navbar-auth-ready) .navbar-cta::before,
-  html:not(.navbar-auth-ready) .mobile-menu-cta::before,
+  .navbar-cta.is-auth-checking::before,
+  .mobile-menu-cta.is-auth-checking::before,
   .auth-page.auth-session-checking::after,
   .resource-skeleton-visual,
   .resource-skeleton-content span,
