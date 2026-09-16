@@ -14,7 +14,7 @@
 
     <link rel="icon" href="./assets/images/simbolo.svg" type="image/x-icon" />
     <link rel="stylesheet" href="./css/style.css?v=20260915-navbar" />
-    <link rel="stylesheet" href="./css/home-video.css" />
+    <link rel="stylesheet" href="./css/home-video.css?v=20260915-uiux2" />
 
     <link
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded&icon_names=auto_awesome,business_center,check_circle,close,diversity_3,flight_takeoff,home,lightbulb,mail,menu,psychology,school,science&display=block"
@@ -284,20 +284,12 @@
           </div>
 
           <div class="eva-video-card reveal reveal-right">
-            <div class="eva-video-frame">
-              <video
-                controls
-                preload="none"
-                playsinline
-                poster="./assets/images/contato.jpg"
-                aria-label="Vídeo institucional da EVA"
-              >
-                <source
-                  src="./assets/images/EVAInstitucional.mp4"
-                  type="video/mp4"
-                />
-                Seu navegador não oferece suporte à reprodução de vídeo.
-              </video>
+            <div class="eva-video-frame" data-vimeo-embed data-vimeo-id="">
+              <div class="eva-video-placeholder" data-vimeo-placeholder>
+                <span aria-hidden="true">▶</span>
+                <strong>Vídeo institucional da EVA</strong>
+                <p>O vídeo será exibido aqui pela incorporação do Vimeo.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -480,6 +472,8 @@
       </div>
     </footer>
 
-    <script src="./js/main.js?v=20260915-navbar"></script>
+    <script src="./js/network.js?v=20260915-uiux2"></script>
+    <script src="./js/home-video.js?v=20260915-uiux2"></script>
+    <script src="./js/main.js?v=20260915-uiux2"></script>
   </body>
 </html>
