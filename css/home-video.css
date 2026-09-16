@@ -17,9 +17,7 @@
   align-items: center;
 }
 
-.eva-video-copy {
-  max-width: 520px;
-}
+.eva-video-copy { max-width: 520px; }
 
 .eva-video-tag {
   display: inline-flex;
@@ -44,18 +42,6 @@
   color: rgba(7, 20, 63, 0.68);
   font-size: 1.04rem;
   line-height: 1.78;
-}
-
-
-
-.eva-video-note::before {
-  content: "";
-  width: 9px;
-  height: 9px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-purple), var(--color-cyan));
-  box-shadow: 0 0 0 6px rgba(106, 60, 255, 0.08);
 }
 
 .eva-video-card {
@@ -85,7 +71,6 @@
   background: #07143f;
 }
 
-.eva-video-frame video,
 .eva-video-frame iframe {
   width: 100%;
   height: 100%;
@@ -93,124 +78,61 @@
   border: 0;
 }
 
-.eva-video-frame video {
-  object-fit: cover;
-  background: #07143f;
-}
-
-.eva-video-fallback {
+.eva-video-placeholder {
   position: absolute;
   inset: 0;
-  z-index: 2;
-  display: none;
-  place-items: center;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 10px;
   padding: 28px;
   text-align: center;
   color: #fff;
   background:
-    linear-gradient(rgba(3, 14, 46, 0.58), rgba(3, 14, 46, 0.72)),
+    linear-gradient(rgba(3, 14, 46, 0.58), rgba(3, 14, 46, 0.78)),
     url("../assets/images/contato.jpg") center / cover no-repeat;
 }
 
-.eva-video-fallback.is-visible {
-  display: grid;
+.eva-video-placeholder > span {
+  font-size: 2.6rem;
+  line-height: 1;
+  color: var(--color-cyan);
 }
 
-.eva-video-fallback strong {
-  display: block;
+.eva-video-placeholder strong {
   font-family: var(--font-title);
   font-size: 1.35rem;
 }
 
-.eva-video-fallback span {
-  display: block;
+.eva-video-placeholder p {
   max-width: 420px;
-  margin-top: 8px;
+  margin: 0;
   color: rgba(255, 255, 255, 0.82);
   line-height: 1.6;
 }
 
 @media (max-width: 1040px) {
-  .eva-video-section {
-    padding-block: 96px;
-  }
-
-  .eva-video-container {
-    grid-template-columns: 1fr;
-    gap: 42px;
-  }
-
-  .eva-video-copy {
-    max-width: 760px;
-    text-align: center;
-    margin-inline: auto;
-  }
-
-  .eva-video-note {
-    justify-content: center;
-  }
-
-  .eva-video-card {
-    width: min(820px, 100%);
-    margin-inline: auto;
-  }
+  .eva-video-section { padding-block: 96px; }
+  .eva-video-container { grid-template-columns: 1fr; gap: 42px; }
+  .eva-video-copy { max-width: 760px; text-align: center; margin-inline: auto; }
+  .eva-video-card { width: min(820px, 100%); margin-inline: auto; }
 }
 
 @media (max-width: 720px) {
-  .eva-video-section {
-    padding: 78px 20px;
-  }
-
-  .eva-video-container {
-    gap: 34px;
-  }
-
-  .eva-video-copy h2 {
-    font-size: clamp(2.2rem, 11vw, 3.25rem);
-  }
-
-  .eva-video-copy p {
-    margin-top: 18px;
-    font-size: 0.98rem;
-    line-height: 1.68;
-  }
-
-  .eva-video-note {
-    margin-top: 20px;
-    font-size: 0.82rem;
-  }
-
-  .eva-video-card {
-    padding: 8px;
-    border-radius: 25px;
-  }
-
-  .eva-video-frame {
-    border-radius: 19px;
-  }
+  .eva-video-section { padding: 78px 20px; }
+  .eva-video-container { gap: 34px; }
+  .eva-video-copy h2 { font-size: clamp(2.2rem, 11vw, 3.25rem); }
+  .eva-video-copy p { margin-top: 18px; font-size: 0.98rem; line-height: 1.68; }
+  .eva-video-card { padding: 8px; border-radius: 25px; }
+  .eva-video-frame { border-radius: 19px; }
 }
 
 @media (max-width: 430px) {
-  .eva-video-section {
-    padding-inline: 16px;
-  }
-
-  .eva-video-copy h2 {
-    font-size: 2.15rem;
-  }
-
-  .eva-video-frame {
-    aspect-ratio: 16 / 9;
-  }
-
-  .eva-video-frame video {
-    object-fit: contain;
-  }
+  .eva-video-section { padding-inline: 16px; }
+  .eva-video-copy h2 { font-size: 2.15rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .eva-video-card,
-  .eva-video-copy {
-    transition: none;
-  }
+  .eva-video-copy { transition: none; }
 }
