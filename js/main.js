@@ -634,6 +634,8 @@ async function syncNavbarAuthenticationState() {
   } finally {
     window.clearTimeout(timeoutId);
     setNavbarAuthenticationPending(false);
+    document.documentElement.classList.add("navbar-auth-ready");
+    document.body.classList.remove("auth-session-checking");
   }
 }
 
@@ -652,4 +654,3 @@ document.addEventListener("keydown", (event) => {
 });
 
 syncNavbarAuthenticationState();
-
