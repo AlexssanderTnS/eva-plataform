@@ -11,7 +11,7 @@
     <link rel="icon" href="./assets/images/simbolo.svg" type="image/x-icon" />
     <link rel="stylesheet" href="./css/style.css?v=20260915-navbar" />
     <link rel="stylesheet" href="./css/uiux.css?v=20260915-uiux2" />
-    <link rel="stylesheet" href="./css/auth.css?v=20260915-uiux2" />
+    <link rel="stylesheet" href="./css/auth.css?v=20260919-course-flow" />
     <link
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded&icon_names=arrow_forward,check_circle,close,lock,menu,school,verified_user&display=block"
       rel="stylesheet"
@@ -95,7 +95,54 @@
     </aside>
 
     <main class="auth-main">
-      <section class="auth-shell">
+      <div class="auth-layout">
+        <section class="auth-purchase-flow" aria-labelledby="purchase-flow-title">
+          <h2 id="purchase-flow-title">
+            Etapas para finalizar a compra
+            <strong>do seu curso:</strong>
+          </h2>
+          <ol class="auth-flow-steps">
+            <li class="auth-flow-step">
+              <div class="auth-flow-icon" aria-hidden="true">
+                <span class="auth-flow-number">1</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="8" r="4"></circle>
+                  <path d="M4 21a8 8 0 0 1 16 0"></path>
+                </svg>
+              </div>
+              <span>Faça seu login/<br />crie sua conta</span>
+            </li>
+            <li class="auth-flow-arrow" aria-hidden="true">
+              <span class="material-symbols-rounded">arrow_forward</span>
+            </li>
+            <li class="auth-flow-step">
+              <div class="auth-flow-icon" aria-hidden="true">
+                <span class="auth-flow-number">2</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                  <path d="M3 10h18"></path>
+                  <path d="M7 15h2"></path>
+                </svg>
+              </div>
+              <span>Realize o<br />pagamento</span>
+            </li>
+            <li class="auth-flow-arrow" aria-hidden="true">
+              <span class="material-symbols-rounded">arrow_forward</span>
+            </li>
+            <li class="auth-flow-step">
+              <div class="auth-flow-icon" aria-hidden="true">
+                <span class="auth-flow-number">3</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 10 12 5l10 5-10 5L2 10Z"></path>
+                  <path d="M6 12.5V17c3.5 2.5 8.5 2.5 12 0v-4.5"></path>
+                </svg>
+              </div>
+              <span>Tenha acesso ao seu curso e aprenda no seu tempo</span>
+            </li>
+          </ol>
+        </section>
+
+        <section class="auth-shell">
         <div class="auth-experience" aria-labelledby="auth-title">
           <div class="auth-glow auth-glow-one" aria-hidden="true"></div>
           <div class="auth-glow auth-glow-two" aria-hidden="true"></div>
@@ -349,6 +396,7 @@
           </div>
         </section>
       </section>
+      </div>
     </main>
 
     <script src="./js/network.js?v=20260915-uiux2"></script>
