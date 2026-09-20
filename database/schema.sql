@@ -267,27 +267,59 @@ VALUES
     'active'
 ),
 (
-    'micro-habitos-pessoais',
-    'Micro-Hábitos Pessoais: Construindo Mudanças Sustentáveis no Dia a Dia',
+    'consciencia-financeira',
+    'Consciência Financeira',
     69.90,
     'BRL',
-    NULL,
+    3,
+    'active'
+),
+(
+    'inteligencia-emocional',
+    'Inteligência Emocional',
+    69.90,
+    'BRL',
+    4,
+    'active'
+),
+(
+    'atendimento-de-excelencia',
+    'Atendimento de Excelência',
+    69.90,
+    'BRL',
+    5,
+    'active'
+),
+(
+    'lideranca',
+    'Liderança',
+    69.90,
+    'BRL',
+    6,
     'active'
 ),
 (
     'comunicacao-nao-violenta',
-    'Comunicação Não Violenta na Prática: Transformando Relações Pessoais e Profissionais',
+    'Comunicação Não Violenta',
     69.90,
     'BRL',
-    NULL,
+    7,
     'active'
 ),
 (
-    'regulacao-emocional',
-    'Regulação Emocional',
+    'construcao-de-habitos-pessoais',
+    'Construção de Hábitos Pessoais',
     69.90,
     'BRL',
-    NULL,
+    8,
+    'active'
+),
+(
+    'assedio-no-trabalho',
+    'Assédio no Trabalho',
+    69.90,
+    'BRL',
+    9,
     'active'
 ),
 (
@@ -295,17 +327,31 @@ VALUES
     'Comunicação Empática e Escuta Ativa',
     69.90,
     'BRL',
-    NULL,
+    10,
+    'active'
+),
+(
+    'construcao-de-habitos-no-trabalho',
+    'Construção de Hábitos no Trabalho',
+    69.90,
+    'BRL',
+    11,
+    'active'
+),
+(
+    'vistoriador-de-imoveis',
+    'Vistoriador de Imóveis',
+    69.90,
+    'BRL',
+    12,
     'active'
 )
 ON DUPLICATE KEY UPDATE
     title = VALUES(title),
     price = VALUES(price),
     currency = VALUES(currency),
-    moodle_course_id = COALESCE(
-        VALUES(moodle_course_id),
-        courses.moodle_course_id
-    );
+    moodle_course_id = VALUES(moodle_course_id),
+    status = VALUES(status);
 
 CREATE TABLE IF NOT EXISTS password_reset_tokens (
     user_id BIGINT UNSIGNED NOT NULL PRIMARY KEY,
