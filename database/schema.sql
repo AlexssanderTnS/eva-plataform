@@ -41,9 +41,11 @@ CREATE TABLE IF NOT EXISTS account_deletion_requests (
         'pending',
         'processing',
         'completed',
+        'cancelled',
         'rejected'
     ) NOT NULL DEFAULT 'pending',
     requested_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    scheduled_for TIMESTAMP NULL,
     processed_at TIMESTAMP NULL,
 
     CONSTRAINT fk_account_deletion_user
@@ -51,7 +53,8 @@ CREATE TABLE IF NOT EXISTS account_deletion_requests (
         REFERENCES users(id)
         ON DELETE CASCADE,
 
-    UNIQUE KEY uq_account_deletion_user (user_id)
+    UNIQUE KEY uq_account_deletion_user (user_id),
+    KEY idx_account_deletion_queue (status, scheduled_for)
 ) ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_unicode_ci;
@@ -109,6 +112,36 @@ CREATE TABLE IF NOT EXISTS orders (
     KEY idx_orders_user_id (user_id),
     KEY idx_orders_course_id (course_id),
     KEY idx_orders_status (status)
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS purchase_email_jobs (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    order_id BIGINT UNSIGNED NOT NULL,
+    status ENUM(
+        'pending',
+        'processing',
+        'sent',
+        'failed',
+        'ignored'
+    ) NOT NULL DEFAULT 'pending',
+    attempts SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+    available_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    started_at TIMESTAMP NULL,
+    sent_at TIMESTAMP NULL,
+    last_error VARCHAR(1000) NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_purchase_email_jobs_order
+        FOREIGN KEY (order_id)
+        REFERENCES orders(id)
+        ON DELETE RESTRICT,
+
+    UNIQUE KEY uq_purchase_email_job_order (order_id),
+    KEY idx_purchase_email_job_queue (status, available_at)
 ) ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_unicode_ci;
@@ -181,6 +214,49 @@ CREATE TABLE IF NOT EXISTS course_access (
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS moodle_provisioning_jobs (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    course_access_id BIGINT UNSIGNED NOT NULL,
+    order_id BIGINT UNSIGNED NOT NULL,
+    action ENUM('provision', 'revoke') NOT NULL,
+    status ENUM(
+        'pending',
+        'processing',
+        'completed',
+        'failed',
+        'ignored'
+    ) NOT NULL DEFAULT 'pending',
+    attempts SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+    available_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    started_at TIMESTAMP NULL,
+    completed_at TIMESTAMP NULL,
+    last_error VARCHAR(1000) NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_moodle_jobs_course_access
+        FOREIGN KEY (course_access_id)
+        REFERENCES course_access(id)
+        ON DELETE RESTRICT,
+    CONSTRAINT fk_moodle_jobs_order
+        FOREIGN KEY (order_id)
+        REFERENCES orders(id)
+        ON DELETE RESTRICT,
+
+    UNIQUE KEY uq_moodle_job_scope (
+        course_access_id,
+        order_id,
+        action
+    ),
+    KEY idx_moodle_job_queue (
+        status,
+        available_at
+    )
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS payment_webhook_events (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     provider ENUM('mercado_pago') NOT NULL DEFAULT 'mercado_pago',
@@ -194,11 +270,18 @@ CREATE TABLE IF NOT EXISTS payment_webhook_events (
         'ignored',
         'failed'
     ) NOT NULL DEFAULT 'received',
+    attempts SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+    available_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    started_at TIMESTAMP NULL,
     received_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     processed_at TIMESTAMP NULL,
+    last_error VARCHAR(1000) NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
 
     UNIQUE KEY uq_payment_webhook_event (provider, event_key),
-    KEY idx_payment_webhook_status (status)
+    KEY idx_payment_webhook_queue (status, available_at)
 ) ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_unicode_ci;
@@ -208,6 +291,7 @@ INSERT INTO courses (
     title,
     price,
     currency,
+    moodle_course_id,
     status
 )
 VALUES
@@ -216,27 +300,63 @@ VALUES
     'Gestão Financeira Pessoal',
     69.90,
     'BRL',
+    2,
     'active'
 ),
 (
-    'micro-habitos-pessoais',
-    'Micro-Hábitos Pessoais: Construindo Mudanças Sustentáveis no Dia a Dia',
+    'consciencia-financeira',
+    'Consciência Financeira',
     69.90,
     'BRL',
+    3,
+    'active'
+),
+(
+    'inteligencia-emocional',
+    'Inteligência Emocional',
+    69.90,
+    'BRL',
+    4,
+    'active'
+),
+(
+    'atendimento-de-excelencia',
+    'Atendimento de Excelência',
+    69.90,
+    'BRL',
+    5,
+    'active'
+),
+(
+    'lideranca',
+    'Liderança',
+    69.90,
+    'BRL',
+    6,
     'active'
 ),
 (
     'comunicacao-nao-violenta',
-    'Comunicação Não Violenta na Prática: Transformando Relações Pessoais e Profissionais',
+    'Comunicação Não Violenta',
     69.90,
     'BRL',
+    7,
     'active'
 ),
 (
-    'regulacao-emocional',
-    'Regulação Emocional',
+    'construcao-de-habitos-pessoais',
+    'Construção de Hábitos Pessoais',
     69.90,
     'BRL',
+    8,
+    'active'
+),
+(
+    'assedio-no-trabalho',
+    'Assédio no Trabalho',
+    69.90,
+    'BRL',
+    9,
     'active'
 ),
 (
@@ -244,9 +364,38 @@ VALUES
     'Comunicação Empática e Escuta Ativa',
     69.90,
     'BRL',
+    10,
+    'active'
+),
+(
+    'construcao-de-habitos-no-trabalho',
+    'Construção de Hábitos no Trabalho',
+    69.90,
+    'BRL',
+    11,
+    'active'
+),
+(
+    'vistoriador-de-imoveis',
+    'Vistoriador de Imóveis',
+    69.90,
+    'BRL',
+    12,
     'active'
 )
 ON DUPLICATE KEY UPDATE
     title = VALUES(title),
     price = VALUES(price),
-    currency = VALUES(currency);
+    currency = VALUES(currency),
+    moodle_course_id = VALUES(moodle_course_id),
+    status = VALUES(status);
+
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+    user_id BIGINT UNSIGNED NOT NULL PRIMARY KEY,
+    token_hash CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+    session_version INT UNSIGNED NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_password_reset_token_hash (token_hash),
+    KEY idx_password_reset_expiry (expires_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

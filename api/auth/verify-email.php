@@ -21,6 +21,12 @@ if ($token === '' || !ctype_xdigit($token) || strlen($token) !== 64) {
     exit;
 }
 
+$clientIp = evaClientIp();
+$rateLimitWindow = 3600;
+
+evaAssertRateLimit('email-verification-ip', $clientIp, 60, $rateLimitWindow);
+evaRecordRateLimitHit('email-verification-ip', $clientIp, $rateLimitWindow);
+
 $tokenHash = hash('sha256', $token);
 
 try {

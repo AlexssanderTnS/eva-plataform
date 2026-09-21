@@ -78,22 +78,82 @@ try {
 
     evaClearRateLimit('delete-account-user', $userRateKey);
 
-    $statement = $pdo->prepare(
-        'INSERT INTO account_deletion_requests (user_id)
-         VALUES (:user_id)
-         ON DUPLICATE KEY UPDATE
-            requested_at = IF(status = "completed", requested_at, CURRENT_TIMESTAMP),
-            processed_at = IF(status = "completed", processed_at, NULL),
-            status = IF(status = "completed", status, "pending")'
-    );
+    $pdo->beginTransaction();
 
+    $statement = $pdo->prepare(
+        'SELECT status, scheduled_for
+         FROM account_deletion_requests
+         WHERE user_id = :user_id
+         LIMIT 1
+         FOR UPDATE'
+    );
     $statement->execute(['user_id' => (int) $userId]);
+    $existingRequest = $statement->fetch();
+
+    if (
+        $existingRequest !== false &&
+        in_array((string) $existingRequest['status'], ['pending', 'processing'], true)
+    ) {
+        $pdo->commit();
+
+        sendJsonResponse(409, [
+            'success' => false,
+            'message' => 'Já existe uma solicitação de exclusão em andamento.',
+            'deletion' => [
+                'status' => (string) $existingRequest['status'],
+                'scheduled_for' => $existingRequest['scheduled_for'],
+            ],
+        ]);
+    }
+
+    $statement = $pdo->prepare(
+        'INSERT INTO account_deletion_requests (
+            user_id,
+            status,
+            requested_at,
+            scheduled_for,
+            processed_at
+        )
+        VALUES (
+            :user_id,
+            "pending",
+            CURRENT_TIMESTAMP,
+            DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 3 DAY),
+            NULL
+        )
+        ON DUPLICATE KEY UPDATE
+            status = "pending",
+            requested_at = CURRENT_TIMESTAMP,
+            scheduled_for = DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 3 DAY),
+            processed_at = NULL'
+    );
+    $statement->execute(['user_id' => (int) $userId]);
+
+    $statement = $pdo->prepare(
+        'SELECT requested_at, scheduled_for
+         FROM account_deletion_requests
+         WHERE user_id = :user_id
+         LIMIT 1'
+    );
+    $statement->execute(['user_id' => (int) $userId]);
+    $request = $statement->fetch();
+
+    $pdo->commit();
 } catch (Throwable $error) {
+    if (isset($pdo) && $pdo instanceof PDO && $pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+
     error_log('EVA LGPD: erro na solicitação de exclusão: ' . $error->getMessage());
     sendJsonResponse(500, ['success' => false, 'message' => 'Não foi possível registrar a solicitação.']);
 }
 
 sendJsonResponse(202, [
     'success' => true,
-    'message' => 'Sua solicitação de exclusão foi registrada.'
+    'message' => 'Sua conta foi agendada para exclusão em 3 dias.',
+    'deletion' => [
+        'status' => 'pending',
+        'requested_at' => $request['requested_at'] ?? null,
+        'scheduled_for' => $request['scheduled_for'] ?? null,
+    ],
 ]);

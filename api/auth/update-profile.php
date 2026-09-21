@@ -35,6 +35,11 @@ if (!is_int($userId) && !ctype_digit((string) $userId)) {
     sendJsonResponse(401, ['success' => false, 'message' => 'Não autenticado.']);
 }
 
+$userId = (int) $userId;
+$rateLimitWindow = 3600;
+
+evaAssertRateLimit('profile-update-user', (string) $userId, 30, $rateLimitWindow);
+
 $input = json_decode(file_get_contents('php://input'), true);
 
 if (!is_array($input)) {
@@ -68,6 +73,8 @@ if ($errors !== []) {
         'errors' => $errors
     ]);
 }
+
+evaRecordRateLimitHit('profile-update-user', (string) $userId, $rateLimitWindow);
 
 try {
     $pdo = require __DIR__ . '/../../config/database.php';

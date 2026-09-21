@@ -251,7 +251,17 @@ function evaClearRateLimit(
 ): void {
     $file = evaRateLimitFile($bucket, $identifier);
 
-    if (is_file($file)) {
-        @unlink($file);
+    if (
+        is_file($file) &&
+        file_put_contents($file, '[]', LOCK_EX) === false
+    ) {
+        error_log(
+            'EVA Security: não foi possível limpar o controle de rate limit.'
+        );
+
+        evaSecurityJsonResponse(
+            503,
+            'Serviço temporariamente indisponível.'
+        );
     }
 }

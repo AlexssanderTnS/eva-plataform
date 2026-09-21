@@ -1,0 +1,222 @@
+.account-courses-empty.is-loaded {
+  margin-top: 22px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.account-course-list {
+  display: grid;
+  gap: 14px;
+}
+
+.account-course-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(190px, 240px);
+  column-gap: 28px;
+  align-items: center;
+  padding: 22px;
+  overflow: hidden;
+  border: 1px solid var(--account-border, #e6e7f0);
+  border-radius: 17px;
+  background:
+    radial-gradient(
+      circle at 100% 0,
+      rgba(101, 84, 217, 0.08),
+      transparent 13rem
+    ),
+    linear-gradient(145deg, #ffffff, #f8f7ff);
+  box-shadow: 0 10px 28px rgba(42, 31, 111, 0.05);
+  transition:
+    transform 170ms ease,
+    border-color 170ms ease,
+    box-shadow 170ms ease;
+}
+
+.account-course-item:hover {
+  transform: translateY(-2px);
+  border-color: rgba(101, 84, 217, 0.25);
+  box-shadow: 0 17px 38px rgba(42, 31, 111, 0.1);
+}
+
+.account-course-status,
+.account-course-item h3,
+.account-course-item p,
+.account-course-ready {
+  grid-column: 1;
+}
+
+.account-course-item h3 {
+  margin: 11px 0 6px;
+  color: var(--account-text, #17182d);
+  font-size: 1.02rem;
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+}
+
+.account-course-item p {
+  margin: 0;
+  color: var(--account-muted, #6f7388);
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
+.account-course-status {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.02em;
+}
+
+.account-course-status.is-active {
+  background: #e7f8f2;
+  color: #13795f;
+}
+
+.account-course-status.is-pending {
+  background: #fff5d8;
+  color: #856000;
+}
+
+.account-course-status.is-revoked {
+  background: #eff0f4;
+  color: #686c7d;
+}
+
+.account-course-ready {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 13px;
+  color: #13795f;
+  font-size: 0.76rem;
+  font-weight: 750;
+}
+
+.account-course-ready .material-symbols-rounded {
+  font-size: 1.05rem;
+}
+
+.account-course-access {
+  grid-column: 2;
+  grid-row: 1 / 5;
+  align-self: center;
+  width: 100%;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0 17px;
+  border: 0;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #2a1f6f, #4939ad);
+  color: #ffffff;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 850;
+  cursor: pointer;
+  box-shadow: 0 11px 25px rgba(42, 31, 111, 0.18);
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    opacity 160ms ease;
+}
+
+.account-course-access:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 31px rgba(42, 31, 111, 0.25);
+}
+
+.account-course-access:focus-visible {
+  outline: 3px solid rgba(101, 84, 217, 0.28);
+  outline-offset: 3px;
+}
+
+.account-course-access:disabled {
+  opacity: 0.58;
+  cursor: wait;
+  transform: none;
+}
+
+.account-course-access .material-symbols-rounded {
+  font-size: 1.05rem;
+}
+
+.account-course-message {
+  grid-column: 2;
+  min-height: 16px;
+  margin-top: 8px;
+  color: var(--account-danger, #b42318);
+  font-size: 0.73rem;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.account-course-browse {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: fit-content;
+  min-height: 44px;
+  margin-top: 16px;
+  padding: 0 14px;
+  border: 1px solid #dedbea;
+  border-radius: 12px;
+  background: #f1efff;
+  color: #2a1f6f;
+  font-size: 0.79rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    border-color 160ms ease;
+}
+
+.account-course-browse:hover,
+.account-course-browse:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(42, 31, 111, 0.2);
+  background: #e8e4ff;
+}
+
+@media (max-width: 760px) {
+  .account-course-item {
+    grid-template-columns: 1fr;
+    padding: 18px;
+  }
+
+  .account-course-status,
+  .account-course-item h3,
+  .account-course-item p,
+  .account-course-ready,
+  .account-course-access,
+  .account-course-message {
+    grid-column: 1;
+  }
+
+  .account-course-access {
+    grid-row: auto;
+    margin-top: 17px;
+  }
+
+  .account-course-message {
+    text-align: left;
+  }
+}
+
+@media (max-width: 420px) {
+  .account-course-item {
+    padding: 16px;
+    border-radius: 14px;
+  }
+}

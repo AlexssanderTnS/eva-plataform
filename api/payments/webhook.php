@@ -41,10 +41,19 @@ if ($contentLength > 65536) {
     ]);
 }
 
+$clientIp = evaClientIp();
+$rateLimitWindow = 60;
+
+evaAssertRateLimit('mercadopago-webhook-ip', $clientIp, 300, $rateLimitWindow);
+evaRecordRateLimitHit('mercadopago-webhook-ip', $clientIp, $rateLimitWindow);
+
 try {
     $mpConfig = require __DIR__ . '/../../config/mercadopago.php';
 } catch (Throwable $error) {
-    error_log('EVA Mercado Pago Webhook: configuração indisponível: ' . $error->getMessage());
+    error_log(
+        'EVA Mercado Pago Webhook: configuração indisponível: ' .
+        $error->getMessage()
+    );
     webhookResponse(503, ['success' => false]);
 }
 
@@ -117,7 +126,11 @@ if ($type !== 'payment') {
     ]);
 }
 
-if ($dataId === '' || strlen($dataId) > 100) {
+if (
+    $dataId === '' ||
+    strlen($dataId) > 100 ||
+    !preg_match('/^[A-Za-z0-9_-]+$/', $dataId)
+) {
     webhookResponse(400, ['success' => false]);
 }
 
@@ -130,8 +143,6 @@ $eventKeySeed = implode('|', [
 ]);
 $eventKey = 'payment:' . hash('sha256', $eventKeySeed);
 
-$pdo = null;
-
 try {
     $pdo = require __DIR__ . '/../../config/database.php';
 
@@ -142,112 +153,46 @@ try {
             event_key,
             topic,
             resource_id,
-            status
+            status,
+            available_at
         )
         VALUES (
             'mercado_pago',
             :event_key,
             :topic,
             :resource_id,
-            'received'
+            'received',
+            CURRENT_TIMESTAMP
         )
         ON DUPLICATE KEY UPDATE
-            event_key = VALUES(event_key)
+            topic = VALUES(topic),
+            resource_id = VALUES(resource_id),
+            available_at = CASE
+                WHEN status = 'failed'
+                THEN CURRENT_TIMESTAMP
+                ELSE available_at
+            END,
+            last_error = CASE
+                WHEN status = 'failed'
+                THEN NULL
+                ELSE last_error
+            END
         "
     );
+
     $statement->execute([
         'event_key' => $eventKey,
         'topic' => $action !== '' ? $action : 'payment',
         'resource_id' => $dataId,
     ]);
 
-    $statement = $pdo->prepare(
-        "
-        UPDATE payment_webhook_events
-        SET
-            status = 'processing',
-            processed_at = CURRENT_TIMESTAMP
-        WHERE
-            provider = 'mercado_pago'
-            AND event_key = :event_key
-            AND (
-                status IN ('received', 'failed')
-                OR (
-                    status = 'processing'
-                    AND processed_at < (CURRENT_TIMESTAMP - INTERVAL 5 MINUTE)
-                )
-            )
-        "
-    );
-    $statement->execute(['event_key' => $eventKey]);
-
-    if ($statement->rowCount() !== 1) {
-        $statement = $pdo->prepare(
-            "
-            SELECT status
-            FROM payment_webhook_events
-            WHERE provider = 'mercado_pago' AND event_key = :event_key
-            LIMIT 1
-            "
-        );
-        $statement->execute(['event_key' => $eventKey]);
-        $event = $statement->fetch();
-        $eventStatus = $event !== false ? (string) $event['status'] : '';
-
-        if (in_array($eventStatus, ['processing', 'processed'], true)) {
-            webhookResponse(200, [
-                'success' => true,
-                'duplicate' => true,
-                'processing' => $eventStatus === 'processing',
-            ]);
-        }
-
-        throw new RuntimeException(
-            'Não foi possível adquirir o evento de webhook para processamento.'
-        );
-    }
-
-    $mpClient = require __DIR__ . '/../../config/mercadopago-client.php';
-    $syncResult = evaSyncMercadoPagoPayment(
-        $pdo,
-        $mpClient,
-        $dataId
-    );
-
-    $statement = $pdo->prepare(
-        "
-        UPDATE payment_webhook_events
-        SET
-            status = 'processed',
-            processed_at = CURRENT_TIMESTAMP
-        WHERE provider = 'mercado_pago' AND event_key = :event_key
-        "
-    );
-    $statement->execute(['event_key' => $eventKey]);
-
     webhookResponse(200, [
         'success' => true,
-        'payment_status' => $syncResult['payment_status'],
+        'queued' => true,
     ]);
 } catch (Throwable $error) {
-    if ($pdo instanceof PDO) {
-        try {
-            $statement = $pdo->prepare(
-                "
-                UPDATE payment_webhook_events
-                SET
-                    status = 'failed',
-                    processed_at = CURRENT_TIMESTAMP
-                WHERE provider = 'mercado_pago' AND event_key = :event_key
-                "
-            );
-            $statement->execute(['event_key' => $eventKey]);
-        } catch (Throwable) {
-        }
-    }
-
     error_log(
-        'EVA Mercado Pago Webhook: falha no processamento: ' .
+        'EVA Mercado Pago Webhook: falha ao registrar evento: ' .
         $error->getMessage()
     );
 

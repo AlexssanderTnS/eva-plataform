@@ -28,8 +28,6 @@
   );
 }
 
-
-
 .contact-hero {
   position: relative;
   min-height: 760px;
@@ -245,7 +243,6 @@
   font-size: 0.75rem;
 }
 
-
 .contact-section {
   padding: 110px 0;
   background:
@@ -404,8 +401,6 @@ a.contact-item:hover .contact-arrow {
   pointer-events: none;
   opacity: 0.55;
 }
-
-
 
 .contact-form-wrapper {
   padding: clamp(28px, 4vw, 50px);
@@ -802,7 +797,6 @@ a.contact-item:hover .contact-arrow {
   }
 }
 
-
 .contact-cta {
   padding: 92px 0;
   background: #fff;
@@ -901,8 +895,6 @@ a.contact-item:hover .contact-arrow {
   width: 310px;
   height: 310px;
 }
-
-
 
 @media (max-width: 1060px) {
   .contact-hero-grid {

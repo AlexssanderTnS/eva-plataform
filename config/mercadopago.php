@@ -39,9 +39,9 @@ foreach ($requiredFields as $field) {
     }
 }
 
-$environment = strtolower(trim($config['environment']));
+$mpEnvironment = strtolower(trim($config['environment']));
 
-if (!in_array($environment, ['test', 'production'], true)) {
+if (!in_array($mpEnvironment, ['test', 'production'], true)) {
     throw new RuntimeException(
         'Ambiente do Mercado Pago inválido.'
     );
@@ -56,11 +56,11 @@ if ($currency !== 'BRL') {
 }
 
 $appConfig = require __DIR__ . '/app.php';
-$expectedEnvironment = $appConfig['environment'] === 'production'
+$expectedMpEnvironment = $appConfig['environment'] === 'production'
     ? 'production'
     : 'test';
 
-if ($environment !== $expectedEnvironment) {
+if ($mpEnvironment !== $expectedMpEnvironment) {
     throw new RuntimeException(
         'Ambiente do Mercado Pago não corresponde ao ambiente da aplicação.'
     );
@@ -88,7 +88,7 @@ if (!hash_equals(strtolower($defaultBaseUrl), strtolower($baseUrl))) {
 }
 
 return [
-    'environment' => $environment,
+    'environment' => $mpEnvironment,
     'access_token' => trim($config['access_token']),
     'webhook_secret' => isset($config['webhook_secret'])
         ? trim((string) $config['webhook_secret'])

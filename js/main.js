@@ -388,3 +388,269 @@ enableCarouselSwipe();
 restoreMobileCtaColors();
 
 console.log("EVA carregada com sucesso!");
+
+const NAVBAR_AUTH_TIMEOUT = 5000;
+
+function getNavbarUserIdentity(user) {
+  const firstName = String(user.first_name || "").trim();
+  const lastName = String(user.last_name || "").trim();
+
+  return {
+    displayName: firstName || "Minha conta",
+    initials:
+      `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase() || "E",
+  };
+}
+
+function createNavbarUserContent(user, labelText) {
+  const { displayName, initials } = getNavbarUserIdentity(user);
+  const fragment = document.createDocumentFragment();
+
+  const avatar = document.createElement("span");
+  avatar.className = "navbar-user-avatar";
+  avatar.setAttribute("aria-hidden", "true");
+  avatar.textContent = initials;
+
+  const copy = document.createElement("span");
+  copy.className = "navbar-user-copy";
+
+  const label = document.createElement("small");
+  label.className = "navbar-user-label";
+  label.textContent = labelText;
+
+  const name = document.createElement("strong");
+  name.className = "navbar-user-name";
+  name.textContent = displayName;
+
+  copy.append(label, name);
+  fragment.append(avatar, copy);
+
+  return { fragment, displayName };
+}
+
+function closeNavbarAccountMenu(restoreFocus = false) {
+  const toggle = document.querySelector("[data-navbar-account-toggle]");
+  const menu = document.querySelector("[data-navbar-account-menu]");
+
+  if (!toggle || !menu || menu.hidden) {
+    return;
+  }
+
+  menu.hidden = true;
+  toggle.setAttribute("aria-expanded", "false");
+  document.documentElement.classList.remove("navbar-account-is-open");
+
+  if (restoreFocus) {
+    toggle.focus();
+  }
+}
+
+function toggleNavbarAccountMenu() {
+  const toggle = document.querySelector("[data-navbar-account-toggle]");
+  const menu = document.querySelector("[data-navbar-account-menu]");
+
+  if (!toggle || !menu) {
+    return;
+  }
+
+  const willOpen = menu.hidden;
+  menu.hidden = !willOpen;
+  toggle.setAttribute("aria-expanded", String(willOpen));
+  document.documentElement.classList.toggle("navbar-account-is-open", willOpen);
+
+  if (willOpen) {
+    menu.querySelector("a, button")?.focus();
+  }
+}
+
+async function logoutFromNavbar(button) {
+  if (button.disabled) {
+    return;
+  }
+
+  button.disabled = true;
+  button.setAttribute("aria-busy", "true");
+
+  try {
+    await fetch("./api/auth/logout.php", {
+      method: "POST",
+      credentials: "same-origin",
+      cache: "no-store",
+      headers: {
+        Accept: "application/json",
+      },
+    });
+  } catch (error) {
+
+  } finally {
+    window.location.replace("./acesso.html");
+  }
+}
+
+function createNavbarLogoutButton(className) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = className;
+  button.textContent = "Sair da conta";
+  button.addEventListener("click", () => logoutFromNavbar(button));
+  return button;
+}
+
+function renderDesktopAuthenticatedNavbar(link, user) {
+  if (!link?.parentElement || document.querySelector(".navbar-account")) {
+    return;
+  }
+
+  const { fragment, displayName } = createNavbarUserContent(user, "Olá,");
+  const wrapper = document.createElement("div");
+  wrapper.className = "navbar-account";
+
+  const toggle = document.createElement("button");
+  toggle.type = "button";
+  toggle.className = "navbar-cta navbar-account-toggle is-authenticated";
+  toggle.dataset.navbarAccountToggle = "";
+  toggle.setAttribute("aria-expanded", "false");
+  toggle.setAttribute("aria-haspopup", "true");
+  toggle.setAttribute("aria-controls", "navbar-account-menu");
+  toggle.setAttribute("aria-label", `Abrir opções da conta de ${displayName}`);
+  toggle.append(fragment);
+
+  const menu = document.createElement("div");
+  menu.id = "navbar-account-menu";
+  menu.className = "navbar-account-menu";
+  menu.dataset.navbarAccountMenu = "";
+  menu.setAttribute("aria-label", "Opções da conta");
+  menu.hidden = true;
+
+  const accountLink = document.createElement("a");
+  accountLink.href = "./conta.html";
+  accountLink.textContent = "Área do Aluno";
+
+  const coursesLink = document.createElement("a");
+  coursesLink.href = "./conta.html#meus-cursos";
+  coursesLink.textContent = "Meus cursos";
+
+  const divider = document.createElement("span");
+  divider.className = "navbar-account-divider";
+  divider.setAttribute("aria-hidden", "true");
+
+  const logoutButton = createNavbarLogoutButton("navbar-account-logout");
+
+  menu.append(accountLink, coursesLink, divider, logoutButton);
+  wrapper.append(toggle, menu);
+  link.replaceWith(wrapper);
+
+  toggle.addEventListener("click", toggleNavbarAccountMenu);
+  menu.addEventListener("click", (event) => {
+    if (event.target.closest("a")) {
+      closeNavbarAccountMenu();
+    }
+  });
+}
+
+function renderMobileAuthenticatedNavbar(link, user) {
+  if (!link) {
+    return;
+  }
+
+  const { fragment, displayName } = createNavbarUserContent(
+    user,
+    "Conectado como",
+  );
+
+  link.replaceChildren(fragment);
+  link.href = "./conta.html";
+  link.classList.add("is-authenticated");
+  link.setAttribute("aria-label", `Acessar a conta de ${displayName}`);
+  link.setAttribute("title", "Ir para a Área do Aluno");
+  link.removeAttribute("aria-disabled");
+
+  if (!document.querySelector(".mobile-navbar-logout")) {
+    link.insertAdjacentElement(
+      "afterend",
+      createNavbarLogoutButton("mobile-navbar-logout"),
+    );
+  }
+}
+
+function setNavbarAuthenticationPending(isPending) {
+  document
+    .querySelectorAll(".navbar-cta, .mobile-menu-cta")
+    .forEach((link) => {
+      link.classList.toggle("is-auth-checking", isPending);
+      link.setAttribute("aria-busy", String(isPending));
+    });
+}
+
+async function syncNavbarAuthenticationState() {
+  const desktopLink = document.querySelector(".navbar > .navbar-cta");
+  const mobileLink = document.querySelector(".mobile-menu-cta");
+
+  if (!desktopLink && !mobileLink) {
+    return;
+  }
+
+  setNavbarAuthenticationPending(true);
+
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(
+    () => controller.abort(),
+    NAVBAR_AUTH_TIMEOUT,
+  );
+
+  try {
+    const response = await fetch("./api/auth/me.php", {
+      method: "GET",
+      credentials: "same-origin",
+      cache: "no-store",
+      signal: controller.signal,
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      return;
+    }
+
+    const payload = await response.json();
+
+    if (!payload.success || !payload.user) {
+      return;
+    }
+
+    if (document.body.classList.contains("auth-page") && !document.body.hasAttribute("data-password-recovery")) {
+      window.location.replace("./conta.html");
+      return;
+    }
+
+    document.documentElement.classList.add("user-is-authenticated");
+    renderDesktopAuthenticatedNavbar(desktopLink, payload.user);
+    renderMobileAuthenticatedNavbar(mobileLink, payload.user);
+  } catch (error) {
+    if (error.name !== "AbortError") {
+      console.warn("Não foi possível verificar a sessão da navbar.");
+    }
+  } finally {
+    window.clearTimeout(timeoutId);
+    setNavbarAuthenticationPending(false);
+    document.documentElement.classList.add("navbar-auth-ready");
+    document.body.classList.remove("auth-session-checking");
+  }
+}
+
+document.addEventListener("click", (event) => {
+  const account = document.querySelector(".navbar-account");
+
+  if (account && !account.contains(event.target)) {
+    closeNavbarAccountMenu();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeNavbarAccountMenu(true);
+  }
+});
+
+syncNavbarAuthenticationState();

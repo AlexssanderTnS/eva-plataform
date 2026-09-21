@@ -1,39 +1,28 @@
-# ==========================================
-# EVA Platform
-# ==========================================
 
-# Credenciais / variáveis de ambiente
 .env
 .env.*
 !.env.example
 
-# Configurações locais com credenciais
 config.local.php
 config/*.local.php
 
-# Logs
 *.log
 error_log
 logs/
 
-# Arquivos temporários
 tmp/
 temp/
 .cache/
 
-# Sistema operacional
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# IDE / Editor
 .vscode/
 .idea/
 
-# XAMPP / configurações locais
 php.ini
 
-# Testes locais que possam conter credenciais
 api/teste-smtp.php
 api/test-database.php
 api/test-users.php
