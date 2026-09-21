@@ -74,7 +74,11 @@ try {
     sendJsonResponse(500, ['success' => false, 'message' => 'Não foi possível realizar o login.']);
 }
 
-$dummyHash = '$2y$12$o6gaANvWo5Fkov2yIUtETehi7ZLCOMY2v7P1Q69SgVBYMAYEJAkwi';
+$dummyHash = password_hash(
+    'eva-login-dummy-password',
+    PASSWORD_BCRYPT,
+    ['cost' => 12]
+);
 $passwordHash = $user !== false ? (string) $user['password_hash'] : $dummyHash;
 $passwordIsValid = password_verify($password, $passwordHash);
 
