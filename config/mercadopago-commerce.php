@@ -69,7 +69,7 @@ function evaValidateMercadoPagoWebhookSignature(
     $manifestParts = [];
 
     if ($dataId !== '') {
-        $manifestParts[] = 'id:' . $dataId;
+        $manifestParts[] = 'id:' . strtolower($dataId);
     }
 
     if ($xRequestId !== '') {
