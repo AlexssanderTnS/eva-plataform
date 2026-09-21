@@ -270,11 +270,18 @@ CREATE TABLE IF NOT EXISTS payment_webhook_events (
         'ignored',
         'failed'
     ) NOT NULL DEFAULT 'received',
+    attempts SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+    available_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    started_at TIMESTAMP NULL,
     received_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     processed_at TIMESTAMP NULL,
+    last_error VARCHAR(1000) NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
 
     UNIQUE KEY uq_payment_webhook_event (provider, event_key),
-    KEY idx_payment_webhook_status (status)
+    KEY idx_payment_webhook_queue (status, available_at)
 ) ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_unicode_ci;
