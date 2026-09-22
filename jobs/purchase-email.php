@@ -349,12 +349,12 @@ function evaSendPurchaseConfirmationEmail(
         );
     }
 
-    $accountUrl =
+    $coursesUrl =
         rtrim(
             (string) $appConfig['base_url'],
             '/'
         ) .
-        '/conta.html';
+        '/cursos';
 
     $formattedAmount =
         'R$ ' .
@@ -386,9 +386,9 @@ function evaSendPurchaseConfirmationEmail(
             'UTF-8'
         );
 
-    $safeAccountUrl =
+    $safeCoursesUrl =
         htmlspecialchars(
-            $accountUrl,
+            $coursesUrl,
             ENT_QUOTES,
             'UTF-8'
         );
@@ -493,10 +493,10 @@ Valor confirmado
 
 <p style="margin:30px 0;text-align:center;">
 <a
-href="{$safeAccountUrl}"
+href="{$safeCoursesUrl}"
 style="display:inline-block;padding:14px 24px;border-radius:10px;background:#2a1f6f;color:#fff;text-decoration:none;font-weight:bold;"
 >
-Acessar meus cursos
+Acessar área de cursos
 </a>
 </p>
 
@@ -517,7 +517,7 @@ HTML;
         "Curso: {$courseTitle}\n" .
         "Valor: {$formattedAmount}\n\n" .
         "{$accessMessage}\n\n" .
-        "Acesse seus cursos em: {$accountUrl}\n\n" .
+        "Acesse a área de cursos em: {$coursesUrl}\n\n" .
         "Suporte e reembolso: contato@evaglobal.com.br";
 
     $mail->send();
