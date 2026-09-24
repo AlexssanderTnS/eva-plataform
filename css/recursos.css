@@ -635,10 +635,32 @@
   font-size: 0.9rem;
 }
 
+.course-payment-recipient-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 15px 0 0;
+  color: var(--color-text-soft);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.course-payment-recipient-note .material-symbols-rounded {
+  flex: 0 0 auto;
+  margin-top: 1px;
+  font-size: 17px;
+  color: var(--color-primary);
+}
+
+.course-payment-recipient-note strong {
+  color: var(--color-text);
+  font-weight: 650;
+}
+
 .course-detail-actions {
   display: grid;
   gap: 12px;
-  margin-top: 28px;
+  margin-top: 22px;
 }
 
 .course-detail-primary,

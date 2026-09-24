@@ -2,6 +2,9 @@
   const coursesBox = document.querySelector('.account-courses-empty');
   if (!coursesBox) return;
 
+  const courseParam = new URLSearchParams(window.location.search).get('curso') || '';
+  const targetSlug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(courseParam) ? courseParam : '';
+
   function formatDate(value) {
     if (!value) return '';
     const normalized = value.includes('T') ? value : value.replace(' ', 'T');
@@ -114,6 +117,10 @@
     courses.forEach((course) => {
       const item = document.createElement('article');
       item.className = `account-course-item is-${course.status}`;
+      if (targetSlug && course.slug === targetSlug) {
+        item.classList.add('is-target');
+        item.setAttribute('aria-label', `Curso da sua compra: ${course.title}`);
+      }
       const badge = document.createElement('span');
       badge.className = `account-course-status is-${course.status}`;
       badge.textContent = statusLabel(course.status);
@@ -148,6 +155,11 @@
     });
 
     coursesBox.append(list);
+
+    const target = list.querySelector('.account-course-item.is-target');
+    if (target && document.querySelector('[data-account-root]')?.hidden === false) {
+      window.requestAnimationFrame(() => target.scrollIntoView({ block: 'center' }));
+    }
   }
 
   async function loadCourses() {
@@ -163,7 +175,10 @@
       const data = await response.json().catch(() => null);
 
       if (response.status === 401 || response.status === 403) {
-        window.location.replace('./acesso.html');
+        const loginUrl = window.location.hash === '#meus-cursos' || targetSlug
+          ? './acesso.html?next=meus-cursos' + (targetSlug ? '&curso=' + encodeURIComponent(targetSlug) : '')
+          : './acesso.html';
+        window.location.replace(loginUrl);
         return;
       }
 

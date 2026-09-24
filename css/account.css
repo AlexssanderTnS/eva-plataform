@@ -1313,3 +1313,9 @@ html {
     font-size: 1.65rem;
   }
 }
+
+.account-course-item.is-target {
+  border-color: var(--account-primary-2);
+  box-shadow: 0 0 0 3px rgba(95, 70, 216, 0.13), var(--account-shadow);
+  scroll-margin-top: 24px;
+}

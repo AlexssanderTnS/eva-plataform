@@ -142,10 +142,18 @@
   line-height: 1.65;
 }
 
+.contact-hero-actions {
+  margin-top: 34px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
 .contact-primary-button {
   width: fit-content;
   min-height: 54px;
-  margin-top: 34px;
+  margin-top: 0;
   padding: 0 24px;
   display: inline-flex;
   align-items: center;
@@ -166,6 +174,29 @@
 .contact-primary-button:hover {
   transform: translateY(-4px);
   box-shadow: 0 24px 48px rgba(255, 94, 72, 0.28);
+}
+
+.contact-secondary-button {
+  width: fit-content;
+  min-height: 54px;
+  padding: 0 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid rgba(42, 31, 111, 0.18);
+  border-radius: 999px;
+  color: var(--color-purple-dark);
+  background: #fff;
+  font-weight: 900;
+  box-shadow: 0 12px 30px rgba(42, 31, 111, 0.08);
+  transition: var(--transition);
+}
+
+.contact-secondary-button:hover {
+  transform: translateY(-4px);
+  border-color: rgba(42, 31, 111, 0.3);
+  box-shadow: 0 18px 38px rgba(42, 31, 111, 0.14);
 }
 
 .contact-hero-image {

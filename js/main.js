@@ -237,7 +237,7 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
 
       target.scrollIntoView({
         behavior: "smooth",
-        block: "start",
+        block: this.dataset.scrollBlock === "center" ? "center" : "start",
       });
     }
   });
