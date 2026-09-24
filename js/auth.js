@@ -173,6 +173,16 @@ loginForm?.addEventListener('submit', async (event) => {
 
     showMessage(loginMessage, 'Login realizado com sucesso.', true);
 
+    const loginParams = new URLSearchParams(window.location.search);
+    if (loginParams.get('next') === 'meus-cursos') {
+      const course = loginParams.get('curso') || '';
+      const courseParam = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(course)
+        ? '?curso=' + encodeURIComponent(course)
+        : '';
+      window.location.assign('./conta.html' + courseParam + '#meus-cursos');
+      return;
+    }
+
     const pendingCourse = sessionStorage.getItem('eva_pending_course');
 
     if (pendingCourse) {
@@ -234,6 +244,17 @@ resendButton?.addEventListener('click', async () => {
 });
 
 const accountRoot = document.querySelector('[data-account-root]');
+
+function accountLoginUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const course = params.get('curso') || '';
+  const courseParam = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(course)
+    ? '&curso=' + encodeURIComponent(course)
+    : '';
+  return window.location.hash === '#meus-cursos' || courseParam
+    ? './acesso.html?next=meus-cursos' + courseParam
+    : './acesso.html';
+}
 const accountLoading = document.querySelector('[data-account-loading]');
 const accountName = document.querySelector('[data-account-name]');
 const profileFirstName = document.querySelector('#profile-first-name');
@@ -365,7 +386,7 @@ async function loadAccount() {
     const data = await readJsonResponse(response);
 
     if (response.status === 401 || response.status === 403) {
-      window.location.replace('./acesso.html');
+      window.location.replace(accountLoginUrl());
       return;
     }
 
@@ -389,6 +410,11 @@ async function loadAccount() {
 
     accountRoot.hidden = false;
     if (accountLoading) accountLoading.hidden = true;
+    if (window.location.hash === '#meus-cursos') {
+      window.requestAnimationFrame(() => {
+        document.getElementById('meus-cursos')?.scrollIntoView({ block: 'start' });
+      });
+    }
   } catch (error) {
     console.error('Erro ao carregar conta:', error);
 
