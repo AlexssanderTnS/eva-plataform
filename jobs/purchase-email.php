@@ -185,6 +185,7 @@ function evaLoadPurchaseEmailContext(
             u.email,
 
             c.title AS course_title,
+            c.slug AS course_slug,
 
             ca.status AS access_status
 
@@ -313,6 +314,8 @@ function evaSendPurchaseConfirmationEmail(
         (string) $context['course_title']
     );
 
+    $courseSlug = trim((string) ($context['course_slug'] ?? ''));
+
     $currency = strtoupper(
         trim(
             (string) $context['currency']
@@ -341,6 +344,7 @@ function evaSendPurchaseConfirmationEmail(
 
     if (
         $courseTitle === '' ||
+        !preg_match('/^[a-z0-9]+(?:-[a-z0-9]+)*$/', $courseSlug) ||
         $currency !== 'BRL' ||
         $amount < 0
     ) {
@@ -354,7 +358,7 @@ function evaSendPurchaseConfirmationEmail(
             (string) $appConfig['base_url'],
             '/'
         ) .
-        '/cursos';
+        '/conta.html?curso=' . rawurlencode($courseSlug) . '#meus-cursos';
 
     $formattedAmount =
         'R$ ' .
@@ -496,8 +500,12 @@ Valor confirmado
 href="{$safeCoursesUrl}"
 style="display:inline-block;padding:14px 24px;border-radius:10px;background:#2a1f6f;color:#fff;text-decoration:none;font-weight:bold;"
 >
-Acessar área de cursos
+Acessar meu curso na EVA
 </a>
+</p>
+
+<p style="line-height:1.7;color:#667085;font-size:13px;">
+Se estiver usando outro navegador ou dispositivo, entre com sua conta EVA para acessar o curso.
 </p>
 
 <p style="line-height:1.7;color:#667085;">
