@@ -6,6 +6,7 @@ const details = document.querySelector("#payment-details");
 const course = document.querySelector("#payment-course");
 const amount = document.querySelector("#payment-amount");
 const referenceElement = document.querySelector("#payment-reference");
+const accountLink = document.querySelector("#payment-account-link");
 
 const params = new URLSearchParams(window.location.search);
 const reference = params.get("external_reference") || "";
@@ -19,6 +20,7 @@ let pollAttempts = 0;
 let pollTimerId = null;
 let firstStatusRequest = true;
 let moodleRedirectStarted = false;
+let lastKnownOrderStatus = null;
 
 const currencyFormatter = new Intl.NumberFormat("pt-BR", {
   style: "currency",
@@ -43,12 +45,22 @@ function clearPolling() {
 function scheduleNextCheck() {
   if (pollAttempts >= MAX_POLL_ATTEMPTS) {
     clearPolling();
-    setState(
-      "success",
-      "Pagamento recebido",
-      "Seu pagamento foi confirmado, mas a liberação do curso está levando mais tempo que o esperado. Você pode acompanhar pela sua conta; não é necessário refazer a compra.",
-      "✓",
-    );
+
+    if (lastKnownOrderStatus === "paid") {
+      setState(
+        "success",
+        "Pagamento confirmado",
+        "Seu pagamento foi confirmado, mas a liberação do curso está levando mais tempo que o esperado. Acompanhe o acesso em sua conta, sem refazer a compra.",
+        "✓",
+      );
+    } else {
+      setState(
+        "pending",
+        "Ainda aguardando confirmação",
+        "Ainda não temos a confirmação do pagamento. Consulte sua conta mais tarde; não gere um novo QR Code antes de verificar o pedido.",
+        "…",
+      );
+    }
     return;
   }
 
@@ -115,6 +127,12 @@ async function openMoodleCourse(order) {
 
 function renderOrder(order) {
   if (!order) return false;
+
+  lastKnownOrderStatus = order.status || null;
+  const purchasedSlug = order.course?.slug || "";
+  if (accountLink && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(purchasedSlug)) {
+    accountLink.href = "./conta.html?curso=" + encodeURIComponent(purchasedSlug) + "#meus-cursos";
+  }
 
   details.hidden = false;
   course.textContent = order.course?.title || "Curso EVA";
