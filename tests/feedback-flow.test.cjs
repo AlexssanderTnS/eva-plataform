@@ -66,3 +66,17 @@ test('arquivos JavaScript alterados possuem sintaxe válida', () => {
     assert.doesNotThrow(() => new Function(read(name)), name);
   }
 });
+
+
+test('modal de compra avisa discretamente sobre o nome que pode aparecer no Pix', () => {
+  const resources = read('js/recursos.js');
+  const styles = read('css/recursos.css');
+  const html = read('recursos.html');
+  assert.match(resources, /course-payment-recipient-note/);
+  assert.match(resources, /Juliana Coelho Netto/);
+  assert.match(resources, /Confira os dados no seu banco antes de confirmar/);
+  assert.match(styles, /\.course-payment-recipient-note/);
+  assert.match(html, /recursos\.js\?v=20260924-pixnotice/);
+  assert.match(html, /recursos\.css\?v=20260924-pixnotice/);
+  assert.doesNotThrow(() => new Function(resources), 'js/recursos.js');
+});
