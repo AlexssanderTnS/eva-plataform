@@ -310,6 +310,12 @@ function renderModal(curso) {
           <span>Investimento</span>
           <strong>${formatCoursePrice(curso)}</strong>
         </div>
+        ${curso.available ? `
+          <p class="course-payment-recipient-note">
+            <span class="material-symbols-rounded" aria-hidden="true">info</span>
+            <span>Vai pagar com Pix? O nome <strong>Juliana Coelho Netto</strong> poderá aparecer como recebedora do pagamento à EVA. Confira os dados no seu banco antes de confirmar.</span>
+          </p>
+        ` : ""}
         <div class="course-detail-actions">
           ${
             curso.available
