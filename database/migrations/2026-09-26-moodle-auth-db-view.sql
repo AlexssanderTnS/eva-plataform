@@ -4,7 +4,7 @@
 -- NAO inclui GRANT ou credenciais: o usuario MySQL dedicado deve ser criado no cPanel.
 -- Mantem os usernames atuais do Moodle intactos ate um plano de migracao validado.
 
-CREATE OR REPLACE VIEW eva_moodle_auth AS
+CREATE OR REPLACE VIEW eva_moodle AS
 SELECT
     LOWER(TRIM(email)) AS username,
     password_hash AS password,
@@ -18,6 +18,6 @@ WHERE
     AND email_verified_at IS NOT NULL;
 
 -- Conferencia sem mostrar hashes (execute no phpMyAdmin):
--- SELECT COUNT(*) AS usuarios_habilitados FROM eva_moodle_auth;
--- SELECT username, email, firstname, lastname, idnumber FROM eva_moodle_auth LIMIT 5;
+-- SELECT COUNT(*) AS usuarios_habilitados FROM eva_moodle;
+-- SELECT username, email, firstname, lastname, idnumber FROM eva_moodle LIMIT 5;
 -- ATENCAO: senha alterada na EVA sera refletida pela visao; teste no Moodle.
