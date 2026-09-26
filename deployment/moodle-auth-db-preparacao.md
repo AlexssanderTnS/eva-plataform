@@ -21,14 +21,14 @@ Moodle autentica; compras, matrícula e controle de acesso permanecem na EVA/flu
 
 1. Fazer backup do banco e confirmar as configurações no ambiente de testes.
 2. Revisar, com suporte Moodle, política de contas pendentes de verificação/bloqueadas: a visão proposta inclui SOMENTE contas `active` e e-mail verificado.
-3. Executar `database/migrations/2026-09-26-moodle-auth-db-view.sql` **apenas no ambiente selecionado**; ele cria a visão `eva_moodle_auth`, não altera `users` nem usuários Moodle.
+3. Executar `database/migrations/2026-09-26-moodle-auth-db-view.sql` **apenas no ambiente selecionado**; ele cria a visão `eva_moodle`, não altera `users` nem usuários Moodle.
 4. Checagem sem exportar hashes:
    ```sql
-   SHOW FULL TABLES LIKE 'eva_moodle_auth';
-   SELECT COUNT(*) AS aptos FROM eva_moodle_auth;
-   SELECT username, email, firstname, lastname, idnumber FROM eva_moodle_auth LIMIT 5;
+   SHOW FULL TABLES LIKE 'eva_moodle';
+   SELECT COUNT(*) AS aptos FROM eva_moodle;
+   SELECT username, email, firstname, lastname, idnumber FROM eva_moodle LIMIT 5;
    ```
-5. Pelo cPanel, criar novo usuário MySQL exclusivo para o Moodle (nome real com prefixo definido pelo cPanel). Configurar acesso `SELECT` **somente na visão** `eva_moodle_auth`. Atenção: alguns painéis de hospedagem concedem privilégios por banco inteiro; se não permitir restringir à visão, **não conceder ALL PRIVILEGES** nem compartilhar o usuário do aplicativo. Pedir suporte HostGator para concessão SQL de escopo mínimo.
+5. Pelo cPanel, criar novo usuário MySQL exclusivo para o Moodle (nome real com prefixo definido pelo cPanel). Configurar acesso `SELECT` **somente na visão** `eva_moodle`. Atenção: alguns painéis de hospedagem concedem privilégios por banco inteiro; se não permitir restringir à visão, **não conceder ALL PRIVILEGES** nem compartilhar o usuário do aplicativo. Pedir suporte HostGator para concessão SQL de escopo mínimo.
 6. Confirmar hospedagem, porta, TLS/certificados, acesso MySQL remoto e allowlist **somente para o IP 186.227.199.34** informado pelo suporte, após confirmar diretamente com a equipe Moodle. O firewall pode ser controlado pela hospedagem. Não presumir acesso externo só porque phpMyAdmin funciona.
 7. Testar conectividade em conjunto com suporte, via canal seguro. Nunca salvar usuário/senha MySQL em repositório, chat ou documentação.
 
@@ -36,7 +36,7 @@ Moodle autentica; compras, matrícula e controle de acesso permanecem na EVA/flu
 
 - SGBD: MySQL/MariaDB; **host/porta reais: confirmar com HostGator**.
 - Banco: nome real do banco de produção (confirmar no cPanel).
-- Visão: `eva_moodle_auth`.
+- Visão: `eva_moodle`.
 - Campo de usuário: `username` (e-mail EVA normalizado).
 - Campo da senha: `password` (hash PHP; confirmar bcrypt com hash de teste, sem divulgar senha).
 - Mapeamento opcional: `email`, `firstname`, `lastname`, `idnumber`.
