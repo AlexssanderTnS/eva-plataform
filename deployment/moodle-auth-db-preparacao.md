@@ -2,6 +2,17 @@
 
 **Estado:** preparação. Nenhuma mudança na autenticação em produção está autorizada apenas por este documento.
 
+## Implementação em branch de preparação (não publicar ainda)
+
+O provisionamento foi preparado com uma opção `auth_mode` no arquivo **local** `config/moodle.local.php`:
+- Sem `auth_mode` (padrão `manual`): comportamento anterior preservado, inclusive `username=eva_<id>`.
+- `'auth_mode' => 'db'`: apenas NOVOS usuários criados pelo provisionamento terão `username` igual ao e-mail normalizado e `auth=db`. O `idnumber=eva:<id>` permanece.
+- Antes da criação `db`, o código consulta o Moodle pelo username/e-mail; em caso de colisão, interrompe para revisão em vez de vincular a conta errada.
+- Usuários Moodle já existentes são localizados por `idnumber` e atualizados SOMENTE em dados cadastrais, sem troca automática de `username`/`auth` (migração precisa de procedimento separado).
+- Ative o modo `db` somente após Thiago confirmar compatibilidade com User Key, concluir configuração do plugin de banco externo e após teste da migração em homologação.
+- Não compartilhar senha MySQL no GitHub nem copiar essa opção para produção prematuramente.
+- Atenção: branch derivada de `main`. Comparar com os arquivos efetivamente implantados na HostGator antes de qualquer merge ou deploy.
+
 ## Objetivo
 
 Disponibilizar as duas entradas para a **mesma conta Moodle**:
