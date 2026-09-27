@@ -62,7 +62,8 @@ function evaMoodleFindUserByEvaId(
 
 function evaMoodleCreateUser(
     EvaMoodleClient $client,
-    array $evaUser
+    array $evaUser,
+    string $authMode = 'manual'
 ): array {
     $evaUserId = (int) ($evaUser['id'] ?? 0);
     $firstName = trim((string) ($evaUser['first_name'] ?? ''));
@@ -80,20 +81,46 @@ function evaMoodleCreateUser(
         );
     }
 
-    
+    if (!in_array($authMode, ['manual', 'db'], true)) {
+        throw new InvalidArgumentException('Modo de autenticação Moodle inválido.');
+    }
+
+    // No modo db, o username deve coincidir com o e-mail consultado na EVA.
+    // Nunca reutilizar uma conta Moodle preexistente só por coincidência de e-mail.
+    if ($authMode === 'db') {
+        $sameUsername = $client->call(
+            'core_user_get_users_by_field',
+            [
+                'field' => 'username',
+                'values' => [$email],
+            ]
+        );
+
+        if (!is_array($sameUsername)) {
+            throw new RuntimeException('Resposta inesperada ao consultar username no Moodle.');
+        }
+
+        if ($sameUsername !== []) {
+            throw new RuntimeException(
+                'Já existe uma conta Moodle com esse e-mail como username. ' .
+                'Verifique o vínculo antes de criar um novo usuário.'
+            );
+        }
+    }
+
     $randomPassword = bin2hex(random_bytes(24)) . 'Aa1!';
 
     $result = $client->call(
         'core_user_create_users',
         [
             'users' => [[
-                'username' => evaMoodleUsername($evaUserId),
+                'username' => $authMode === 'db' ? $email : evaMoodleUsername($evaUserId),
                 'password' => $randomPassword,
                 'firstname' => $firstName,
                 'lastname' => $lastName,
                 'email' => $email,
                 'idnumber' => evaMoodleIdNumber($evaUserId),
-                'auth' => 'manual',
+                'auth' => $authMode,
                 'lang' => 'pt_br',
                 'country' => 'BR',
             ]],
@@ -113,7 +140,9 @@ function evaMoodleCreateUser(
 
     return [
         'id' => (int) $created['id'],
-        'username' => (string) ($created['username'] ?? evaMoodleUsername($evaUserId)),
+        'username' => (string) ($created['username'] ?? (
+            $authMode === 'db' ? $email : evaMoodleUsername($evaUserId)
+        )),
         'idnumber' => evaMoodleIdNumber($evaUserId),
     ];
 }
@@ -156,7 +185,8 @@ function evaMoodleUpdateUser(
 
 function evaMoodleEnsureUser(
     EvaMoodleClient $client,
-    array $evaUser
+    array $evaUser,
+    string $authMode = 'manual'
 ): int {
     $evaUserId = (int) ($evaUser['id'] ?? 0);
     $existing = evaMoodleFindUserByEvaId($client, $evaUserId);
@@ -168,7 +198,7 @@ function evaMoodleEnsureUser(
         return $moodleUserId;
     }
 
-    $created = evaMoodleCreateUser($client, $evaUser);
+    $created = evaMoodleCreateUser($client, $evaUser, $authMode);
 
     return (int) $created['id'];
 }
