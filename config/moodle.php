@@ -19,6 +19,7 @@ if (!is_array($config)) {
 $baseUrl = rtrim(trim((string) ($config['base_url'] ?? '')), '/');
 $token = trim((string) ($config['token'] ?? ''));
 $studentRoleId = (int) ($config['student_role_id'] ?? 0);
+$authMode = trim((string) ($config['auth_mode'] ?? 'manual'));
 
 if (
     $baseUrl === '' ||
@@ -36,7 +37,12 @@ if ($studentRoleId <= 0) {
     throw new RuntimeException('ID do papel Estudante no Moodle inválido.');
 }
 
+if (!in_array($authMode, ['manual', 'db'], true)) {
+    throw new RuntimeException('Modo de autenticação do Moodle inválido.');
+}
+
 return [
+    'auth_mode' => $authMode,
     'base_url' => $baseUrl,
     'token' => $token,
     'student_role_id' => $studentRoleId,
