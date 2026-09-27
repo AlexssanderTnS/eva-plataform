@@ -263,7 +263,11 @@ function evaProcessMoodleProvisionJob(
         'email' => (string) $context['email'],
     ];
 
-    $moodleUserId = evaMoodleEnsureUser($client, $evaUser);
+    $moodleUserId = evaMoodleEnsureUser(
+        $client,
+        $evaUser,
+        (string) ($config['auth_mode'] ?? 'manual')
+    );
 
     evaMoodleEnrolUser(
         $client,
