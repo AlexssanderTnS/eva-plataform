@@ -193,6 +193,20 @@ function evaMoodleEnsureUser(
 
     if ($existing !== null) {
         $moodleUserId = (int) $existing['id'];
+
+        if ($authMode === 'db') {
+            $email = strtolower(trim((string) ($evaUser['email'] ?? '')));
+            $existingUsername = strtolower(trim((string) ($existing['username'] ?? '')));
+            // Uma conta legada precisa ser migrada e validada primeiro.
+            // Nunca a recriar nem trocar username/auth silenciosamente no cron.
+            if ($existingUsername !== $email || !isset($existing['auth'])
+                || (string) $existing['auth'] !== 'db') {
+                throw new RuntimeException(
+                    'Conta Moodle existente requer migracao validada para auth db.'
+                );
+            }
+        }
+
         evaMoodleUpdateUser($client, $moodleUserId, $evaUser);
 
         return $moodleUserId;
