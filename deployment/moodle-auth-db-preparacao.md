@@ -9,6 +9,9 @@ O provisionamento foi preparado com uma opção `auth_mode` no arquivo **local**
 - `'auth_mode' => 'db'`: apenas NOVOS usuários criados pelo provisionamento terão `username` igual ao e-mail normalizado e `auth=db`. O `idnumber=eva:<id>` permanece.
 - Antes da criação `db`, o código consulta o Moodle pelo username/e-mail; em caso de colisão, interrompe para revisão em vez de vincular a conta errada.
 - Usuários Moodle já existentes são localizados por `idnumber` e atualizados SOMENTE em dados cadastrais, sem troca automática de `username`/`auth` (migração precisa de procedimento separado).
+- O cron no modo `db` recusa usuários legados sem migração validada, em vez de aparentar sucesso enquanto o login direto continua indisponível.
+- Novo `jobs/moodle-auth-migrate-existing.php`: proposta de atualização por usuário (simulação padrão); `--apply` requer autorização de ambiente explícita, configuração `auth_mode=db` e aprovação do suporte sobre a função WS `core_user_update_users` aceitar `auth`. Não faz migração em lote nem mexe nas matrículas.
+- Se o Web Service não fornecer o campo `auth` nas consultas, o script interrompe sem executar a alteração; solicitar ao Thiago procedimento administrativo para migrar essa propriedade e validar por um método autorizado.
 - Ative o modo `db` somente após Thiago confirmar compatibilidade com User Key, concluir configuração do plugin de banco externo e após teste da migração em homologação.
 - Não compartilhar senha MySQL no GitHub nem copiar essa opção para produção prematuramente.
 - Atenção: branch derivada de `main`. Comparar com os arquivos efetivamente implantados na HostGator antes de qualquer merge ou deploy.
@@ -67,7 +70,7 @@ Moodle autentica; compras, matrícula e controle de acesso permanecem na EVA/flu
 
 1. Resolver PRIMEIRO o bloqueio de transporte: API de autenticação HTTPS (exige compatibilidade/plugin do Moodle), banco com TLS e permissões mínimas ou túnel seguro confirmado pelos provedores. Em seguida, homologar `auth_db` e `auth_userkey` juntos com UMA conta de teste.
 2. Inventariar os usuários Moodle existentes (`id`, `username`, `email`, `idnumber`, `auth`) e os `moodle_user_id` gravados na EVA. Em HOMOLOGAÇÃO, executar `php jobs/moodle-auth-preflight.php` para relatório somente leitura de vínculos, colisões e migração pendente; nunca enviar resultados pessoais ou logs públicos. Resolver duplicações manualmente antes de atualizar.
-3. Em manutenção coordenada, migrar `username` de `eva_<id>` para e-mail e `auth` de `manual` para `db` para usuários correspondentes. **Preservar IDs Moodle e `idnumber`**.
+3. Em manutenção coordenada, migrar `username` de `eva_<id>` para e-mail e `auth` de `manual` para `db` para usuários correspondentes. **Preservar IDs Moodle e `idnumber`**. Em homologação, testar `php jobs/moodle-auth-migrate-existing.php --eva-user-id=ID` sem alterações; só após backup, validação do suporte da API, solução do bloqueio TLS e homologação usar modo `--apply` em UMA conta de teste. Se o serviço não devolver `auth` nem suportar alterá-lo, a migração deve ser feita pela equipe Moodle.
 4. Ajustar `evaMoodleCreateUser()` para os novos cadastros (username=e-mail, auth=db), mas manter `evaMoodleFindUserByEvaId()` como chave imutável. Tratar alterações de e-mail e a atualização do username com verificação de conflito.
 5. Testar login direto, SSO, alteração de senha EVA, usuários sem compra, matrícula após pagamento, acesso já comprado, bloqueio/exclusão e recuperação de conta.
 6. Revisar comportamento da tarefa de sincronização `auth_db` antes de habilitá-la; a documentação do Moodle informa que ela pode criar/atualizar contas. Evitar que concorra com provisionamento da EVA.
