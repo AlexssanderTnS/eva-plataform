@@ -266,7 +266,8 @@ function evaProcessMoodleProvisionJob(
     $moodleUserId = evaMoodleEnsureUser(
         $client,
         $evaUser,
-        (string) ($config['auth_mode'] ?? 'manual')
+        (string) ($config['auth_mode'] ?? 'manual'),
+        $pdo
     );
 
     evaMoodleEnrolUser(
