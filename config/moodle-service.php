@@ -60,6 +60,123 @@ function evaMoodleFindUserByEvaId(
     return $user;
 }
 
+/**
+ * Vincula uma conta criada pela autenticacao externa somente quando ela
+ * corresponde de maneira inequivoca ao usuario ativo e verificado da EVA.
+ */
+function evaMoodleAdoptExternalDbUser(
+    EvaMoodleClient $client,
+    PDO $pdo,
+    array $evaUser
+): ?int {
+    $evaUserId = (int) ($evaUser['id'] ?? 0);
+    $email = strtolower(trim((string) ($evaUser['email'] ?? '')));
+
+    if ($evaUserId <= 0 || filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+        throw new InvalidArgumentException('Usuario EVA invalido para vinculo Moodle.');
+    }
+
+    $statement = $pdo->prepare(
+        "SELECT id, moodle_user_id
+         FROM users
+         WHERE id = :id
+           AND LOWER(email) = :email
+           AND status = 'active'
+           AND email_verified_at IS NOT NULL
+         LIMIT 1"
+    );
+    $statement->execute(['id' => $evaUserId, 'email' => $email]);
+    $evaAccount = $statement->fetch(PDO::FETCH_ASSOC);
+
+    if ($evaAccount === false) {
+        throw new RuntimeException(
+            'Conta EVA nao esta ativa ou nao possui e-mail verificado.'
+        );
+    }
+
+    $byUsername = $client->call(
+        'core_user_get_users_by_field',
+        ['field' => 'username', 'values' => [$email]]
+    );
+
+    if (!is_array($byUsername)) {
+        throw new RuntimeException('Resposta inesperada ao consultar username no Moodle.');
+    }
+
+    if ($byUsername === []) {
+        return null;
+    }
+
+    if (count($byUsername) !== 1 || !is_array($byUsername[0])) {
+        throw new RuntimeException('Conta Moodle por e-mail possui resultado ambiguo.');
+    }
+
+    $candidate = $byUsername[0];
+    $moodleId = (int) ($candidate['id'] ?? 0);
+    $candidateUsername = strtolower(trim((string) ($candidate['username'] ?? '')));
+    $candidateEmail = strtolower(trim((string) ($candidate['email'] ?? '')));
+    $candidateIdNumber = trim((string) ($candidate['idnumber'] ?? ''));
+
+    // Nao assumir que e-mails iguais comprovam identidade.
+    // A API deve confirmar explicitamente o metodo de autenticacao.
+    if (
+        $moodleId <= 0 ||
+        $candidateUsername !== $email ||
+        $candidateEmail !== $email ||
+        !isset($candidate['auth']) ||
+        (string) $candidate['auth'] !== 'db' ||
+        !array_key_exists('suspended', $candidate) ||
+        (int) $candidate['suspended'] !== 0
+    ) {
+        throw new RuntimeException(
+            'Conta Moodle existente requer verificacao de identidade/autenticacao.'
+        );
+    }
+
+    $savedMoodleId = $evaAccount['moodle_user_id'] !== null
+        ? (int) $evaAccount['moodle_user_id']
+        : null;
+
+    if ($savedMoodleId !== null && $savedMoodleId !== $moodleId) {
+        throw new RuntimeException('Conta EVA ja vinculada a outro usuario Moodle.');
+    }
+
+    $statement = $pdo->prepare(
+        'SELECT id FROM users WHERE moodle_user_id = :moodle_id AND id <> :eva_id LIMIT 1'
+    );
+    $statement->execute(['moodle_id' => $moodleId, 'eva_id' => $evaUserId]);
+
+    if ($statement->fetch() !== false) {
+        throw new RuntimeException('Conta Moodle ja vinculada a outro usuario EVA.');
+    }
+
+    $expectedIdNumber = evaMoodleIdNumber($evaUserId);
+
+    if ($candidateIdNumber !== '' && $candidateIdNumber !== $expectedIdNumber) {
+        throw new RuntimeException('Conta Moodle possui identificador de outra conta.');
+    }
+
+    if ($candidateIdNumber === '') {
+        // A conta ja existe: nao criar duplicata, apenas registrar o vinculo.
+        $client->call(
+            'core_user_update_users',
+            ['users' => [[
+                'id' => $moodleId,
+                'idnumber' => $expectedIdNumber,
+            ]]]
+        );
+    }
+
+    // Confirmar a alteracao pelo identificador, sem confiar somente na
+    // resposta de sucesso da chamada de atualizacao.
+    $linked = evaMoodleFindUserByEvaId($client, $evaUserId);
+    if ($linked === null || (int) $linked['id'] !== $moodleId) {
+        throw new RuntimeException('Moodle nao confirmou o vinculo da conta existente.');
+    }
+
+    return $moodleId;
+}
+
 function evaMoodleCreateUser(
     EvaMoodleClient $client,
     array $evaUser,
@@ -186,7 +303,8 @@ function evaMoodleUpdateUser(
 function evaMoodleEnsureUser(
     EvaMoodleClient $client,
     array $evaUser,
-    string $authMode = 'manual'
+    string $authMode = 'manual',
+    ?PDO $pdo = null
 ): int {
     $evaUserId = (int) ($evaUser['id'] ?? 0);
     $existing = evaMoodleFindUserByEvaId($client, $evaUserId);
@@ -210,6 +328,14 @@ function evaMoodleEnsureUser(
         evaMoodleUpdateUser($client, $moodleUserId, $evaUser);
 
         return $moodleUserId;
+    }
+
+    if ($authMode === 'db' && $pdo !== null) {
+        $adoptedId = evaMoodleAdoptExternalDbUser($client, $pdo, $evaUser);
+        if ($adoptedId !== null) {
+            evaMoodleUpdateUser($client, $adoptedId, $evaUser);
+            return $adoptedId;
+        }
     }
 
     $created = evaMoodleCreateUser($client, $evaUser, $authMode);
