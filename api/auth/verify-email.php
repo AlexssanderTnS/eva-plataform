@@ -7,6 +7,47 @@ require __DIR__ . '/../../config/security.php';
 evaApplyApiSecurityHeaders();
 header('Content-Type: text/plain; charset=UTF-8');
 
+function evaShowVerificationSuccess(bool $alreadyVerified = false): never
+{
+    header('Content-Type: text/html; charset=UTF-8');
+    header('Cache-Control: no-store, private');
+
+    $heading = $alreadyVerified
+        ? 'E-mail já confirmado'
+        : 'E-mail confirmado com sucesso!';
+    $message = $alreadyVerified
+        ? 'Seu endereço de e-mail já foi verificado. Você já pode entrar na EVA.'
+        : 'Seu cadastro foi confirmado. Agora você já pode entrar na sua conta EVA.';
+
+    echo '<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Confirmação de e-mail | EVA</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:#f6f5fb;font-family:Arial,Helvetica,sans-serif;color:#030e2e}
+main{width:min(100%,460px);padding:40px 28px;text-align:center;background:#fff;border:1px solid #e8e4f4;border-radius:20px;box-shadow:0 12px 36px rgba(3,14,46,.08)}
+.brand{font-size:22px;font-weight:800;letter-spacing:.1em;color:#2a1f6f}
+h1{font-size:27px;line-height:1.25;margin:24px 0 14px}
+p{line-height:1.65;color:#424765}
+a{display:inline-block;margin-top:18px;padding:15px 26px;border-radius:10px;background:#2a1f6f;color:white;text-decoration:none;font-weight:700}
+a:hover,a:focus-visible{background:#42338e}
+</style>
+</head>
+<body>
+<main>
+<div class="brand">EVA</div>
+<h1>' . htmlspecialchars($heading, ENT_QUOTES, 'UTF-8') . '</h1>
+<p>' . htmlspecialchars($message, ENT_QUOTES, 'UTF-8') . '</p>
+<a href="/acesso.html">Entrar na EVA</a>
+</main>
+</body>
+</html>';
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     http_response_code(405);
     echo 'Método não permitido.';
@@ -70,8 +111,7 @@ if ($verification['email_verified_at'] !== null) {
         error_log('EVA Auth: erro ao limpar token já verificado: ' . $error->getMessage());
     }
 
-    echo 'Este e-mail já foi confirmado.';
-    exit;
+    evaShowVerificationSuccess(true);
 }
 
 if ((int) $verification['is_expired'] === 1) {
@@ -117,4 +157,4 @@ try {
     exit;
 }
 
-echo 'E-mail confirmado com sucesso.';
+evaShowVerificationSuccess();
