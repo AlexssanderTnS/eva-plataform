@@ -377,6 +377,24 @@ function evaProcessMoodleRevokeJob(
         (int) $context['user_id']
     );
 
+    // Contas criadas primeiro pelo Moodle podem nao possuir idnumber:
+    // apos a matricula, o vinculo estavel e o Moodle ID salvo na EVA.
+    if (
+        $moodleUser === null &&
+        (string) (($context['moodle_user_id'] ?? '') ?: '') !== '' &&
+        (string) (($GLOBALS['moodleConfig']['auth_mode'] ?? 'manual')) === 'db'
+    ) {
+        $moodleUser = evaMoodleFindLinkedDbUserByEmail(
+            $client,
+            (string) $context['email'],
+            (int) $context['user_id'],
+            (int) $context['moodle_user_id']
+        );
+        if ($moodleUser === null) {
+            throw new RuntimeException('Conta Moodle vinculada ausente na revogacao.');
+        }
+    }
+
     if ($moodleUser !== null) {
         $moodleUserId = (int) $moodleUser['id'];
 
