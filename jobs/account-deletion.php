@@ -24,7 +24,8 @@ function evaClaimAccountDeletion(PDO $pdo): ?array
                 adr.id AS request_id,
                 adr.user_id,
                 adr.scheduled_for,
-                u.moodle_user_id
+                u.moodle_user_id,
+                u.email
             FROM account_deletion_requests adr
             INNER JOIN users u ON u.id = adr.user_id
             WHERE
@@ -85,9 +86,22 @@ function evaReleaseAccountDeletion(PDO $pdo, int $requestId): void
 
 function evaSuspendMoodleAccount(
     EvaMoodleClient $client,
-    int $evaUserId
+    array $request
 ): void {
+    $evaUserId = (int) $request['user_id'];
     $moodleUser = evaMoodleFindUserByEvaId($client, $evaUserId);
+
+    if ($moodleUser === null && $request['moodle_user_id'] !== null) {
+        $moodleUser = evaMoodleFindLinkedDbUserByEmail(
+            $client,
+            (string) $request['email'],
+            $evaUserId,
+            (int) $request['moodle_user_id']
+        );
+        if ($moodleUser === null) {
+            throw new RuntimeException('Conta Moodle vinculada ausente durante exclusao.');
+        }
+    }
 
     if ($moodleUser === null) {
         return;
@@ -96,6 +110,8 @@ function evaSuspendMoodleAccount(
     $moodleUserId = (int) $moodleUser['id'];
     $anonymousEmail = sprintf('deleted-%d@example.invalid', $evaUserId);
 
+    // Nao sobrescrever idnumber: o Web Service pode ocultar um valor
+    // preexistente. Suspensao e anonimização devem preservar a identidade.
     $client->call(
         'core_user_update_users',
         [
@@ -105,7 +121,6 @@ function evaSuspendMoodleAccount(
                 'lastname' => 'Excluído',
                 'email' => $anonymousEmail,
                 'suspended' => 1,
-                'idnumber' => evaMoodleIdNumber($evaUserId),
             ]],
         ]
     );
@@ -237,7 +252,7 @@ for ($index = 0; $index < EVA_ACCOUNT_DELETION_LIMIT; $index++) {
     $userId = (int) $request['user_id'];
 
     try {
-        evaSuspendMoodleAccount($moodleClient, $userId);
+        evaSuspendMoodleAccount($moodleClient, $request);
         evaCompleteAccountDeletion($pdo, $requestId, $userId);
         $processed++;
     } catch (Throwable $error) {
