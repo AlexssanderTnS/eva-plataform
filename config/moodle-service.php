@@ -119,18 +119,27 @@ function evaMoodleAdoptExternalDbUser(
 
     // Nao assumir que e-mails iguais comprovam identidade.
     // A API deve confirmar explicitamente o metodo de autenticacao.
-    if (
-        $moodleId <= 0 ||
-        $candidateUsername !== $email ||
-        $candidateEmail !== $email ||
-        !isset($candidate['auth']) ||
-        (string) $candidate['auth'] !== 'db' ||
-        !array_key_exists('suspended', $candidate) ||
-        (int) $candidate['suspended'] !== 0
-    ) {
-        throw new RuntimeException(
-            'Conta Moodle existente requer verificacao de identidade/autenticacao.'
-        );
+    // Diagnostico sem expor identificadores ou dados pessoais em last_error.
+    if ($moodleId <= 0) {
+        throw new RuntimeException('Vinculo Moodle: identificador numerico ausente.');
+    }
+    if ($candidateUsername !== $email) {
+        throw new RuntimeException('Vinculo Moodle: username nao corresponde ao email EVA.');
+    }
+    if ($candidateEmail !== $email) {
+        throw new RuntimeException('Vinculo Moodle: email retornado nao corresponde ao email EVA.');
+    }
+    if (!array_key_exists('auth', $candidate)) {
+        throw new RuntimeException('Vinculo Moodle: campo auth ausente no Web Service.');
+    }
+    if ((string) $candidate['auth'] !== 'db') {
+        throw new RuntimeException('Vinculo Moodle: metodo de autenticacao nao corresponde a db.');
+    }
+    if (!array_key_exists('suspended', $candidate)) {
+        throw new RuntimeException('Vinculo Moodle: campo suspended ausente no Web Service.');
+    }
+    if ((int) $candidate['suspended'] !== 0) {
+        throw new RuntimeException('Vinculo Moodle: conta suspensa ou status invalido.');
     }
 
     $savedMoodleId = $evaAccount['moodle_user_id'] !== null
