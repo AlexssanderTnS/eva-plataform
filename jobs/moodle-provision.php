@@ -349,6 +349,7 @@ function evaProcessMoodleProvisionJob(
 function evaProcessMoodleRevokeJob(
     PDO $pdo,
     EvaMoodleClient $client,
+    array $config,
     array $context
 ): void {
     $jobId = (int) $context['job_id'];
@@ -381,8 +382,8 @@ function evaProcessMoodleRevokeJob(
     // apos a matricula, o vinculo estavel e o Moodle ID salvo na EVA.
     if (
         $moodleUser === null &&
-        (string) (($context['moodle_user_id'] ?? '') ?: '') !== '' &&
-        (string) (($GLOBALS['moodleConfig']['auth_mode'] ?? 'manual')) === 'db'
+        $context['moodle_user_id'] !== null &&
+        (string) ($config['auth_mode'] ?? 'manual') === 'db'
     ) {
         $moodleUser = evaMoodleFindLinkedDbUserByEmail(
             $client,
@@ -481,6 +482,7 @@ for ($index = 0; $index < EVA_MOODLE_JOB_LIMIT; $index++) {
             evaProcessMoodleRevokeJob(
                 $pdo,
                 $moodleClient,
+                $moodleConfig,
                 $context
             );
         } else {
