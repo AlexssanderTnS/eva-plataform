@@ -42,14 +42,23 @@ function evaMoodleFindUserByEvaId(
         return null;
     }
 
+    // A consulta por idnumber filtra no Moodle, mesmo quando o Web Service
+    // omite o proprio campo na resposta. Validar se ele estiver disponivel.
+    if (count($result) !== 1) {
+        throw new RuntimeException('Consulta Moodle por identificador ambigua.');
+    }
+
     $user = $result[0] ?? null;
 
     if (
         !is_array($user) ||
         (int) ($user['id'] ?? 0) <= 0 ||
-        !hash_equals(
-            evaMoodleIdNumber($evaUserId),
-            (string) ($user['idnumber'] ?? '')
+        (
+            array_key_exists('idnumber', $user) &&
+            !hash_equals(
+                evaMoodleIdNumber($evaUserId),
+                (string) $user['idnumber']
+            )
         )
     ) {
         throw new RuntimeException(
@@ -126,7 +135,10 @@ function evaMoodleAdoptExternalDbUser(
     if ($candidateUsername !== $email) {
         throw new RuntimeException('Vinculo Moodle: username nao corresponde ao email EVA.');
     }
-    if ($candidateEmail !== $email) {
+    // O Moodle pode ocultar o e-mail no Web Service. Nesse caso, o
+    // username e a autenticacao db (configurada contra a visao EVA)
+    // sao a referencia; um e-mail explicitamente divergente bloqueia.
+    if (array_key_exists('email', $candidate) && $candidateEmail !== $email) {
         throw new RuntimeException('Vinculo Moodle: email retornado nao corresponde ao email EVA.');
     }
     if (!array_key_exists('auth', $candidate)) {
@@ -165,25 +177,57 @@ function evaMoodleAdoptExternalDbUser(
         throw new RuntimeException('Conta Moodle possui identificador de outra conta.');
     }
 
-    if ($candidateIdNumber === '') {
-        // A conta ja existe: nao criar duplicata, apenas registrar o vinculo.
-        $client->call(
-            'core_user_update_users',
-            ['users' => [[
-                'id' => $moodleId,
-                'idnumber' => $expectedIdNumber,
-            ]]]
-        );
-    }
-
-    // Confirmar a alteracao pelo identificador, sem confiar somente na
-    // resposta de sucesso da chamada de atualizacao.
-    $linked = evaMoodleFindUserByEvaId($client, $evaUserId);
-    if ($linked === null || (int) $linked['id'] !== $moodleId) {
-        throw new RuntimeException('Moodle nao confirmou o vinculo da conta existente.');
-    }
-
+    // A ausencia de idnumber na API nao autoriza sobrescrever esse campo:
+    // ele pode estar oculto em uma conta preexistente. No modo db, manter
+    // username/e-mail como chave, e gravar o ID numerico em users apos
+    // a matricula bem-sucedida (jobs/moodle-provision.php).
     return $moodleId;
+}
+
+/**
+ * Localiza por username uma conta db ja vinculada na EVA, para revogacao
+ * e exclusao. O ID numerico gravado e obrigatorio quando disponivel.
+ */
+function evaMoodleFindLinkedDbUserByEmail(
+    EvaMoodleClient $client,
+    string $email,
+    int $evaUserId,
+    ?int $savedMoodleId
+): ?array {
+    $email = strtolower(trim($email));
+    if ($evaUserId <= 0 || filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+        throw new InvalidArgumentException('Dados invalidos para consulta Moodle.');
+    }
+
+    $result = $client->call(
+        'core_user_get_users_by_field',
+        ['field' => 'username', 'values' => [$email]]
+    );
+    if (!is_array($result) || count($result) > 1) {
+        throw new RuntimeException('Consulta Moodle por username invalida ou ambigua.');
+    }
+    if ($result === []) {
+        return null;
+    }
+
+    $user = $result[0];
+    $moodleId = is_array($user) ? (int) ($user['id'] ?? 0) : 0;
+    if (
+        !is_array($user) ||
+        $moodleId <= 0 ||
+        strtolower(trim((string) ($user['username'] ?? ''))) !== $email ||
+        !isset($user['auth']) || (string) $user['auth'] !== 'db' ||
+        (array_key_exists('email', $user) &&
+            strtolower(trim((string) $user['email'])) !== $email) ||
+        (array_key_exists('idnumber', $user) &&
+            trim((string) $user['idnumber']) !== '' &&
+            trim((string) $user['idnumber']) !== evaMoodleIdNumber($evaUserId)) ||
+        ($savedMoodleId !== null && $moodleId !== $savedMoodleId)
+    ) {
+        throw new RuntimeException('Conta Moodle nao corresponde ao vinculo EVA.');
+    }
+
+    return $user;
 }
 
 function evaMoodleCreateUser(
@@ -342,7 +386,8 @@ function evaMoodleEnsureUser(
     if ($authMode === 'db' && $pdo !== null) {
         $adoptedId = evaMoodleAdoptExternalDbUser($client, $pdo, $evaUser);
         if ($adoptedId !== null) {
-            evaMoodleUpdateUser($client, $adoptedId, $evaUser);
+            // A conta do banco externo ja existe e e gerida pelo Moodle.
+            // Nao escrever email/idnumber quando a API oculta os campos.
             return $adoptedId;
         }
     }
