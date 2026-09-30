@@ -62,6 +62,26 @@ try {
     $idnumber = array_key_exists('idnumber', $moodle)
         ? trim((string) $moodle['idnumber']) : null;
 
+    // A pesquisa pelo proprio campo de e-mail confirma a identidade do
+    // registro, mesmo quando o Web Service oculta o e-mail na resposta.
+    $byEmail = $client->call(
+        'core_user_get_users_by_field',
+        ['field' => 'email', 'values' => [$email]]
+    );
+    if (!is_array($byEmail)) {
+        throw new RuntimeException('Consulta por e-mail retornou resultado inesperado.');
+    }
+    $matchingEmailAccounts = 0;
+    foreach ($byEmail as $entry) {
+        if (is_array($entry) && (int) ($entry['id'] ?? 0) === $moodleId) {
+            ++$matchingEmailAccounts;
+        }
+    }
+    echo 'consulta_email_quantidade=' . count($byEmail) . PHP_EOL;
+    echo 'consulta_email_mesma_conta=' .
+        ($matchingEmailAccounts === 1 && count($byEmail) === 1 ? 'sim' : 'nao') .
+        PHP_EOL;
+
     echo 'moodle_id_valido=' . ($moodleId > 0 ? 'sim' : 'nao') . PHP_EOL;
     echo 'username_corresponde=' . ($username === $email ? 'sim' : 'nao') . PHP_EOL;
     echo 'email_ws=' . ($wsEmail === null ? 'AUSENTE' : (
